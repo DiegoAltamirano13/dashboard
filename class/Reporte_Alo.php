@@ -184,7 +184,7 @@ public function tabla_toneladas($plaza, $almacen, $proyecto, $fecha, $contenedor
 			}
 
 			$conn = conexion::conectar();
-			$res_array = array();
+			$res_array = array(); 
 					$sql ="SELECT t.calidad, sum (t.SALDO) as canti_cal
 								from vista_wms_inventario t,
 								     cliente c,
