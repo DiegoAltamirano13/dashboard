@@ -43,48 +43,33 @@ include '../class/Nomina_pagada.php';
 $modelNomina = new NominaPagada();
 $fec_corte = $modelNomina->sql(1,null);
 /*----- GET FECHA -----*/
-$fecha = $fec_corte[0]["MES1"]."-".$fec_corte[0]["MES2"];
+$fecha = date("Y");
 
 if ( isset($_GET["fecha"]) ){
-  if ( $obj_class->validateDate(substr($_GET["fecha"],0,10)) AND $obj_class->validateDate(substr($_GET["fecha"],11,10)) ){
     $fecha = $_GET["fecha"];
-  }else{
-    $fecha = $fec_corte[0]["MES1"]."-".$fec_corte[0]["MES2"];
-  }
-}
-/* $_GET FIL_CHECK */
-$fil_check = "on";
-if ( isset($_GET["check"]) ){
-  $fil_check = $_GET["check"];
 }
 
-
-$fil_habilitado = "ALL";
-if (isset($_GET["fil_habilitado"])) {
-  $fil_habilitado = $_GET["fil_habilitado"];
-}
-/* $_GET PLAZA */
-$plaza = "ALL";
-if ( isset($_GET["plaza"]) ){
-  switch ($_GET["plaza"]) {
-    case 'CORPORATIVO': $plaza = $_GET["plaza"]; break;
-    case 'CÓRDOBA': $plaza = $_GET["plaza"]; break;
-    case 'MÉXICO': $plaza = $_GET["plaza"]; break;
-    case 'GOLFO': $plaza = $_GET["plaza"]; break;
-    case 'PENINSULA': $plaza = $_GET["plaza"]; break;
-    case 'PUEBLA': $plaza = $_GET["plaza"]; break;
-    case 'BAJIO': $plaza = $_GET["plaza"]; break;
-    case 'OCCIDENTE': $plaza = $_GET["plaza"]; break;
-    case 'NORESTE': $plaza = $_GET["plaza"]; break;
-    default: $plaza = "ALL"; break;
-  }
+$primerTipoEncuesta = "ALL";
+if (isset($_GET["tienc"])) {
+  $primerTipoEncuesta = $_GET["tienc"];
 }
 
+$mes = date("n");
 
-/*ALMACEN */
-$almacen = "ALL";
-if (isset($_GET["almacen"])) {
-    $almacen = $_GET["almacen"];
+if ($mes < 7) {
+  $mes = 1 ;
+}
+elseif ($mes >6) {
+  $mes = 2;
+}
+
+if (isset($_GET["periodo"])) {
+  $mes = $_GET["periodo"];
+}
+
+$numeroEncuesta = "ALL";
+if (isset($_GET["ntipo"])) {
+  $numeroEncuesta = $_GET["ntipo"];
 }
 
 $cliente = "ALL";
@@ -102,40 +87,14 @@ if ( isset($_GET["contrato"]) ){
     default: $contrato = "ALL"; break;
   }
 }
-/* $_GET DEPARTAMENTO */
-$departamento = "ALL";
-if ( isset($_GET["depto"]) ){
-  $select_depto = $obj_class->filtros(2,$departamento);
-  for ($i=0; $i <count($select_depto) ; $i++) {
-    if ( $select_depto[$i]["IID_DEPTO"] == $_GET["depto"]){
-      $departamento = $_GET["depto"]; break;
-    }
-  }
-}
-/*----- GET AREA -----*/
-$area = "ALL";
-if ( isset($_GET["area"]) ){
-  if ( $departamento != 'ALL' ){
-    $select_area = $obj_class->filtros(3,$departamento);
-    for ($i=0; $i <count($select_area) ; $i++) { // FOR
-      if ( $select_area[$i]["IID_AREA"] == $_GET["area"]){
-        $area = $_GET["area"]; break;
-      }
-    }// /.FOR
-  }
-}
 
-if($plaza != 'ALL'){
-  $grafica_Paste = $obj_class->grafica_Paste($plaza,$contrato,$departamento,$area,$fil_check,$fecha,$fil_habilitado);
-}
-//GRAFICA
-$grafica = $obj_class->grafica($fecha, $cliente);
-$graficaMensual = $obj_class->graficaMensual($cliente, $fecha);
-$widgetsClientes = $obj_class->widgets($fecha, $cliente);
-$widgetsClientesHabDir = $obj_class->tipo_respuestas($fecha, $cliente);
+$grafica = $obj_class->grafica($fecha, $mes, $cliente);
+$graficaMensual = $obj_class->graficaMensual($cliente, $fecha, $mes);
+$widgetsClientes = $obj_class->widgets($fecha, $mes, $cliente);
+$widgetsClientesHabDir = $obj_class->tipo_respuestas($fecha, $mes, $cliente);
 //TABLA DETALLE ACTIVOS
 
-$tablaEncuestas = $obj_class->tablaBaja($cliente, $fecha);
+$tablaEncuestas = $obj_class->tablaBaja($cliente, $fecha, $mes);
 
 $consulta_clientes = $obj_class->filtros(5, 'ALL');
 //$selectAlmacen = $obj_class->filtros(4,$departamento);
@@ -270,7 +229,7 @@ tr.shown td.details-control {
           <div class="info-box-content">
             <span class="info-box-text">TOTAL EFECTIVIDAD HABILITADOS</span>
             <span class="info-box-number"><?php
-                                            $tabla_porcentaje = $obj_class->consultaReal(0, 1, $fecha, $cliente);
+                                            $tabla_porcentaje = $obj_class->consultaReal(0, 1, $fecha, $mes, $cliente);
                                             $pc = 0;
                                             for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
                                            ?>
@@ -301,7 +260,7 @@ tr.shown td.details-control {
           <div class="info-box-content">
             <span class="info-box-text">TOTAL EFECTIVIDAD DIRECTOS</span>
             <span class="info-box-number"><?php
-                                            $tabla_porcentaje = $obj_class->consultaReal(0, 2, $fecha, $cliente);
+                                            $tabla_porcentaje = $obj_class->consultaReal(0, 2, $fecha, $mes, $cliente);
                                             $pc = 0;
                                             for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
                                            ?>
@@ -426,26 +385,25 @@ tr.shown td.details-control {
 <section>
   <div class="row">
 
+      <?php if($primerTipoEncuesta == "ALL"){ ?>
       <div class="col-md-12">
-        <?php if ($plaza == 'ALL'){ ?>
         <div class="col-md-4">
           <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentaje Encuestas Respondidas</h3>
+              <h3 class="box-title"><i class="fa fa-bar-chart"></i> PORCENTAJE DE ENCUESTAS RESPONDIDAS</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
               </div>
             </div>
             <div class="box-body">
               <div id="graf_bar2" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction(1)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title"><i class="fa fa-bar-chart"> Porcentaje Efectividad</i> </h3>
+              <h3 class="box-title"><i class="fa fa-bar-chart"> PORCENTAJE DE EFECTIVIDAD</i> </h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
               </div>
@@ -471,9 +429,20 @@ tr.shown td.details-control {
               <!-- FILTRAR POR fecha -->
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Fecha:</span>
-                <input type="text" class="form-control pull-right" name="fil_fecha" enabled>
+                <!--<input type="text" class="form-control pull-right" name="fil_fecha" id="fil_fecha" enabled> value = "<?= $fecha  ?>" -->
+                <input type="text" name="datepicker" class="form-control pull-right" value="<?= $fecha  ?>" id="datepicker">
                 <!--<span class="input-group-addon" style="visibility: hidden"> <input type="checkbox" name="fil_check"  checked style="visibility: hidden"<?php /*if( $fil_check == 'on' ){ echo "checked";}*/ ?> > </span>-->
               </div>
+
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Fecha:</span>
+                <!--<input type="text" class="form-control pull-right" name="fil_fecha" id="fil_fecha" enabled> value = "<?= $fecha  ?>" -->
+                <select class="form-control select2" id="fil_periodo" style="width: 100%;">
+                    <option value="1" <?php if( $mes == '1'){echo "selected";} ?>>Primer Semestre</option>
+                    <option value="2" <?php if( $mes == '2'){echo "selected";} ?>>Segundo Semestre</option>
+                </select>
+              </div>
+
               <!-- FILTRAR POR PLAZA -->
               <div class="input-group"  style="display:none">
                 <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
@@ -522,38 +491,6 @@ tr.shown td.details-control {
         </div>
       </div>
 
-      <!--*###############tabla respondidas###############*-->
-      <div id="myDIV" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">ESTATUS ENCUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $tablaDetalleResp = $obj_class ->detalleRespondidas($fecha, $cliente);
-                for ($i=0; $i <count($tablaDetalleResp) ; $i++) {
-                  if ($tablaDetalleResp[$i]["ESTATUS"] == "CONTESTADA") {
-                    $color_rgb = "#28FA07";
-                  }else {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["ESTATUS"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       <div class="col-md-12">
         <div class="col-md-4">
           <div class="box box-info">
@@ -565,7 +502,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar3" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction2(1)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -579,7 +515,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar4" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction2(2)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -593,112 +528,8 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar5" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction2(3)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div id="myDIV2" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo2" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(1, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV3" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo3" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(2, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV4" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo4" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(3, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -713,7 +544,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar6" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction3(1)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -727,7 +557,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar7" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction3(2)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -741,112 +570,8 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar8" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction3(3)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div id="myDIV5" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo5" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(4, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV6" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo6" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(5, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV7" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo7" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(6, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -861,7 +586,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar9" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction4(1)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -875,7 +599,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar12" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction4(2)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -889,112 +612,8 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar13" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction4(3)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div id="myDIV8" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo8" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_Pregunta2Tabla_Det(1, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "NO") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "SI") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV9" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo9" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(7, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV10" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo10" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_PreguntaTabla_Det(8, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "EXCELENTE") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "MALO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -1009,7 +628,6 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar10" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction5(1)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
@@ -1023,86 +641,12 @@ tr.shown td.details-control {
             </div>
             <div class="box-body">
               <div id="graf_bar11" class="col-md-12" style="height:380px;"></div>
-              <button onclick="myFunction5(2)"class="btn btn-primary btn-xs pull-right"><i class="fa fa-check"></i>Detalles</button>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="myDIV11" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo11" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_Pregunta2Tabla_Det(2, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "SI") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "NO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div id="myDIV12" style="display:none;" class="col-md-12">
-        <div class="table-responsive">
-          <table id="tabla_activo12" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-                $comercial = $obj_class->grafica_Pregunta2Tabla_Det(3, $cliente, $fecha);
-                for ($i=0; $i <count($comercial) ; $i++) {
-                  if ($comercial[$i]["RESPUESTA"] == "SI") {
-                    $color_rgb = "#28FA07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "BUENO") {
-                    $color_rgb = "#FA6707";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "REGULAR") {
-                    $color_rgb = "#FAEF07";
-                  }elseif ($comercial[$i]["RESPUESTA"] == "NO") {
-                    $color_rgb = "#FA0707";
-                  }
-                  ?>
-              <tr>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["ID_CLIENTE"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td style="background-color:<?= $color_rgb ?>"><?= $comercial[$i]["RESPUESTA"] ?></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       <div class="col-md-9">
-        <div id="graf_perM" style="display:none;" ></div>
-
-        <br>
-
           <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title"><i class="fa fa-bar-chart"></i> Tabla de Encuestas</h3>
@@ -1111,45 +655,43 @@ tr.shown td.details-control {
               </div>
             </div>
             <div class="box-body">
-          <div class="table-responsive">
-          <table id="tabla_baja" class="display nowrap" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th></th>
-                <th class="small" bgcolor="#AD164D"><font color="black">ID</font></th>
-                <th class="small" bgcolor="#AD164D"><font color="black">CLIENTE</font></th>
-                <th class="small" bgcolor="#AD164D"><font color="black">USUARIO</font></th>
-                <th class="small" bgcolor="#AD164D"><font color="black">PUESTO</font></th>
-                <th class="small" bgcolor="#AD164D"><font color="black">FECHA PROGRAMADA</font></th>
-                <th class="small" bgcolor="#AD164D"><font color="black">FECHA REALIZADA</font></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php for ($i=0; $i <count($tablaEncuestas) ; $i++) { ?>
-              <tr data-child-value="<?= $tablaEncuestas[$i]["CONSECUTIVO_ENC"]  ?>">
-                <td class="details-control"></td>
-                <td><?= $tablaEncuestas[$i]["CONSECUTIVO_ENC"] ?></td>
-                <td><?= $tablaEncuestas[$i]["V_RAZON_SOCIAL"] ?></td>
-                <td><?= $tablaEncuestas[$i]["USUARIO"] ?></td>
-                <td><?= $tablaEncuestas[$i]["PUESTO"] ?></td>
-                <td><?= $tablaEncuestas[$i]["FECHA_PROG"] ?></td>
-                <td><?= $tablaEncuestas[$i]["FECHA"] ?></td>
-                <td></td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
-          <!--<input type="text" name="f1t1" id="f1t1" value="0">-->
-        </div>
+              <div class="table-responsive">
+              <table id="tabla_baja" class="display nowrap" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="small" bgcolor="#AD164D"><font color="black">ID</font></th>
+                    <th class="small" bgcolor="#AD164D"><font color="black">CLIENTE</font></th>
+                    <th class="small" bgcolor="#AD164D"><font color="black">USUARIO</font></th>
+                    <th class="small" bgcolor="#AD164D"><font color="black">PUESTO</font></th>
+                    <th class="small" bgcolor="#AD164D"><font color="black">FECHA PROGRAMADA</font></th>
+                    <th class="small" bgcolor="#AD164D"><font color="black">FECHA REALIZADA</font></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php for ($i=0; $i <count($tablaEncuestas) ; $i++) { ?>
+                  <tr data-child-value="<?= $tablaEncuestas[$i]["CONSECUTIVO_ENC"]  ?>">
+                    <td class="details-control"></td>
+                    <td><?= $tablaEncuestas[$i]["CONSECUTIVO_ENC"] ?></td>
+                    <td><?= $tablaEncuestas[$i]["V_RAZON_SOCIAL"] ?></td>
+                    <td><?= $tablaEncuestas[$i]["USUARIO"] ?></td>
+                    <td><?= $tablaEncuestas[$i]["PUESTO"] ?></td>
+                    <td><?= $tablaEncuestas[$i]["FECHA_PROG"] ?></td>
+                    <td><?= $tablaEncuestas[$i]["FECHA"] ?></td>
+                    <td></td>
+                  </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+              <!--<input type="text" name="f1t1" id="f1t1" value="0">-->
+              </div>
+            </div>
+          </div>
       </div>
-      </div>
-    </div>
 
         <!-- PLAZA -->
-        <div class="col-md-9">
-          <br>
-
+      <div class="col-md-9">
             <div class="box box-info">
               <div class="box-header with-border">
                 <h3 class="box-title"><i class="fa fa-bar-chart"></i> EFECTIVIDAD POR PLAZAS</h3>
@@ -1158,153 +700,93 @@ tr.shown td.details-control {
                 </div>
               </div>
               <div class="box-body">
-            <div class="table-responsive">
-            <table id="tabla_baja2" class="display nowrap" cellspacing="0" width="100%">
-              <thead>
-                <tr>
-                  <th class="small" bgcolor="#AD164D"><font color="black">TIPO</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">CORDOBA</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">MEXICO</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">GOLFO</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">PENINSULA</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">PUEBLA</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">BAJIO</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">OCCIDENTE</font></th>
-                  <th class="small" bgcolor="#AD164D"><font color="black">NORESTE</font></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>HABILITADO</td>
-                  <?php
-                    $tabla_porcentaje = $obj_class->consultaReal(3, 1, $fecha, $cliente);
-                    $pc = 0;
-                    for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                      <?php
-                            $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                      ?>
+                    <div class="table-responsive">
+                        <table id="tabla_baja2" class="display nowrap" cellspacing="0" width="100%">
+                            <thead>
+                              <tr>
+                                <th class="small" bgcolor="#AD164D"><font color="black">TIPO</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">CORDOBA</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">MEXICO</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">GOLFO</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">PENINSULA</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">PUEBLA</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">BAJIO</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">OCCIDENTE</font></th>
+                                <th class="small" bgcolor="#AD164D"><font color="black">NORESTE</font></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>HABILITADO</td>
+                                <?php
+                                  $tabla_porcentaje = $obj_class->consultaReal(3, 1, $fecha, $mes, $cliente);
+                                  $pc = 0;
+                                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                    <?php
+                                          $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                    ?>
 
-                  <?php } ?>
-                      <td><?php
-                          if ($pc == 0) {
-                            echo "0.00%";
-                          }else {
-                            echo round($pc/count($tabla_porcentaje))."%";
-                          }
-                      ?>
-                     </td>
+                                <?php } ?>
+                                    <td><?php
+                                        if ($pc == 0) {
+                                          echo "0.00%";
+                                        }else {
+                                          echo round($pc/count($tabla_porcentaje))."%";
+                                        }
+                                    ?>
+                                   </td>
 
-                      <?php
-                        $tabla_porcentaje = $obj_class->consultaReal(4, 1, $fecha, $cliente);
-                        $pc = 0;
-                        for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                      ?>
-                          <?php
-                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                          ?>
+                                    <?php
+                                      $tabla_porcentaje = $obj_class->consultaReal(4, 1, $fecha, $mes, $cliente);
+                                      $pc = 0;
+                                      for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                    ?>
+                                        <?php
+                                              $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                        ?>
 
-                      <?php } ?>
-                          <td>
-                            <?php
-                                if ($pc == 0) {
-                                  echo "0.00%";
-                                }else {
-                                  echo round($pc/count($tabla_porcentaje))."%";
-                                }
-                            ?>
-                          </td>
+                                    <?php } ?>
+                                        <td>
+                                          <?php
+                                              if ($pc == 0) {
+                                                echo "0.00%";
+                                              }else {
+                                                echo round($pc/count($tabla_porcentaje))."%";
+                                              }
+                                          ?>
+                                        </td>
 
-                   <?php
-                          $tabla_porcentaje = $obj_class->consultaReal(5, 1, $fecha, $cliente);
-                          $pc = 0;
-                          for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                  <?php
-                          $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                  ?>
+                                 <?php
+                                        $tabla_porcentaje = $obj_class->consultaReal(5, 1, $fecha, $mes, $cliente);
+                                        $pc = 0;
+                                        for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                <?php
+                                        $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                ?>
 
-                  <?php } ?>
-                         <td>
-                           <?php
-                               if ($pc == 0) {
-                                 echo "0.00%";
-                               }else {
-                                 echo round($pc/count($tabla_porcentaje))."%";
-                               }
-                           ?>
-                         </td>
+                                <?php } ?>
+                                       <td>
+                                         <?php
+                                             if ($pc == 0) {
+                                               echo "0.00%";
+                                             }else {
+                                               echo round($pc/count($tabla_porcentaje))."%";
+                                             }
+                                         ?>
+                                       </td>
 
-                  <?php
-                     $tabla_porcentaje = $obj_class->consultaReal(6, 1, $fecha, $cliente);
-                     $pc = 0;
-                   for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                             <?php
-                                   $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                             ?>
+                                <?php
+                                   $tabla_porcentaje = $obj_class->consultaReal(6, 1, $fecha, $mes, $cliente);
+                                   $pc = 0;
+                                 for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                           <?php
+                                                 $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                           ?>
 
-                         <?php } ?>
-                             <td>
-                               <?php
-                                   if ($pc == 0) {
-                                     echo "0.00%";
-                                   }else {
-                                     echo round($pc/count($tabla_porcentaje))."%";
-                                   }
-                               ?>
-                             </td>
-
-                  <?php
-                      $tabla_porcentaje = $obj_class->consultaReal(7, 1, $fecha, $cliente);
-                      $pc = 0;
-                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                            <?php
-                                  $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                            ?>
-
-                            <?php } ?>
-                              <td><?php
-                                  if ($pc == 0) {
-                                    echo "0.00%";
-                                  }else {
-                                    echo round($pc/count($tabla_porcentaje))."%";
-                                  }
-                              ?>
-                              </td>
-
-
-                  <?php
-                        $tabla_porcentaje = $obj_class->consultaReal(8, 1, $fecha, $cliente);
-                        $pc = 0;
-                    for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                            <?php
-                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                            ?>
-
-                             <?php } ?>
-                                          <td>
-                                            <?php
-                                                if ($pc == 0) {
-                                                  echo "0.00%";
-                                                }else {
-                                                  echo round($pc/count($tabla_porcentaje))."%";
-                                                }
-                                            ?>
-                                          </td>
-
-                <?php
-                        $tabla_porcentaje = $obj_class->consultaReal(17, 1, $fecha, $cliente);
-                        $pc = 0;
-                    for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                ?>
-                            <?php
-                                  $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                            ?>
-
-                           <?php } ?>
+                                       <?php } ?>
                                            <td>
                                              <?php
                                                  if ($pc == 0) {
@@ -1315,119 +797,76 @@ tr.shown td.details-control {
                                              ?>
                                            </td>
 
-                 <?php
-                      $tabla_porcentaje = $obj_class->consultaReal(18, 1, $fecha, $cliente);
-                      $pc = 0;
-                     for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                 ?>
-                             <?php
-                                     $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                             ?>
+                                <?php
+                                    $tabla_porcentaje = $obj_class->consultaReal(7, 1, $fecha, $mes, $cliente);
+                                    $pc = 0;
+                                for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                          <?php
+                                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                          ?>
 
-                            <?php } ?>
-                <td>
-                  <?php
-                      if ($pc == 0) {
-                        echo "0.00%";
-                      }else {
-                        echo round($pc/count($tabla_porcentaje))."%";
-                      }
-                  ?>
-                </td>
-                </tr>
-                <tr>
-                  <td>DIRECTO</td>
-                  <?php
-                    $tabla_porcentaje = $obj_class->consultaReal(3, 2, $fecha, $cliente);
-                    $pc = 0;
-                    for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                      <?php
-                            $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                      ?>
+                                          <?php } ?>
+                                            <td><?php
+                                                if ($pc == 0) {
+                                                  echo "0.00%";
+                                                }else {
+                                                  echo round($pc/count($tabla_porcentaje))."%";
+                                                }
+                                            ?>
+                                            </td>
 
-                  <?php } ?>
-                      <td>
-                        <?php
-                            if ($pc == 0) {
-                              echo "0.00%";
-                            }else {
-                              echo round($pc/count($tabla_porcentaje))."%";
-                            }
-                        ?>
-                      </td>
 
-                      <?php
-                        $tabla_porcentaje = $obj_class->consultaReal(4, 2, $fecha, $cliente);
-                        $pc = 0;
-                        #echo count($tabla_porcentaje);
-                        for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                      ?>
-                          <?php
-                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                          ?>
+                                <?php
+                                      $tabla_porcentaje = $obj_class->consultaReal(8, 1, $fecha, $mes, $cliente);
+                                      $pc = 0;
+                                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                          <?php
+                                              $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                          ?>
 
-                      <?php } ?>
-                          <td>
-                            <?php
-                                if ($pc == 0) {
-                                  echo "0.00%";
-                                }else {
-                                  echo round($pc/count($tabla_porcentaje))."%";
-                                }
-                            ?>
-                          </td>
+                                           <?php } ?>
+                                                        <td>
+                                                          <?php
+                                                              if ($pc == 0) {
+                                                                echo "0.00%";
+                                                              }else {
+                                                                echo round($pc/count($tabla_porcentaje))."%";
+                                                              }
+                                                          ?>
+                                                        </td>
 
-                   <?php
-                          $tabla_porcentaje = $obj_class->consultaReal(5, 2, $fecha, $cliente);
-                          $pc = 0;
-                          for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                  <?php
-                          $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                  ?>
+                              <?php
+                                      $tabla_porcentaje = $obj_class->consultaReal(17, 1, $fecha, $mes,  $cliente);
+                                      $pc = 0;
+                                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                              ?>
+                                          <?php
+                                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                          ?>
 
-                  <?php } ?>
-                         <td>
-                           <?php
-                               if ($pc == 0) {
-                                 echo "0.00%";
-                               }else {
-                                 echo round($pc/count($tabla_porcentaje))."%";
-                               }
-                           ?>
-                         </td>
+                                         <?php } ?>
+                                                         <td>
+                                                           <?php
+                                                               if ($pc == 0) {
+                                                                 echo "0.00%";
+                                                               }else {
+                                                                 echo round($pc/count($tabla_porcentaje))."%";
+                                                               }
+                                                           ?>
+                                                         </td>
 
-                  <?php
-                     $tabla_porcentaje = $obj_class->consultaReal(6, 2, $fecha, $cliente);
-                     $pc = 0;
-                   for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                             <?php
-                                   $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                             ?>
-
-                         <?php } ?>
-                             <td>
                                <?php
-                                   if ($pc == 0) {
-                                     echo "0.00%";
-                                   }else {
-                                     echo round($pc/count($tabla_porcentaje))."%";
-                                   }
+                                    $tabla_porcentaje = $obj_class->consultaReal(18, 1, $fecha, $mes,  $cliente);
+                                    $pc = 0;
+                                   for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
                                ?>
-                             </td>
+                                           <?php
+                                                   $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                           ?>
 
-                  <?php
-                      $tabla_porcentaje = $obj_class->consultaReal(7, 2, $fecha, $cliente);
-                      $pc = 0;
-                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                            <?php
-                                  $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                            ?>
-
-                            <?php } ?>
+                                          <?php } ?>
                               <td>
                                 <?php
                                     if ($pc == 0) {
@@ -1437,38 +876,80 @@ tr.shown td.details-control {
                                     }
                                 ?>
                               </td>
+                              </tr>
+                              <tr>
+                                <td>DIRECTO</td>
+                                <?php
+                                  $tabla_porcentaje = $obj_class->consultaReal(3, 2, $fecha, $mes,  $cliente);
+                                  $pc = 0;
+                                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                    <?php
+                                          $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                    ?>
 
+                                <?php } ?>
+                                    <td>
+                                      <?php
+                                          if ($pc == 0) {
+                                            echo "0.00%";
+                                          }else {
+                                            echo round($pc/count($tabla_porcentaje))."%";
+                                          }
+                                      ?>
+                                    </td>
 
-                  <?php
-                        $tabla_porcentaje = $obj_class->consultaReal(8, 2, $fecha, $cliente);
-                        $pc = 0;
-                    for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                  ?>
-                            <?php
-                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                            ?>
+                                    <?php
+                                      $tabla_porcentaje = $obj_class->consultaReal(4, 2, $fecha, $mes, $cliente);
+                                      $pc = 0;
+                                      #echo count($tabla_porcentaje);
+                                      for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                    ?>
+                                        <?php
+                                              $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                        ?>
 
-                             <?php } ?>
-                                          <td>
-                                            <?php
-                                                if ($pc == 0) {
-                                                  echo "0.00%";
-                                                }else {
-                                                  echo round($pc/count($tabla_porcentaje))."%";
-                                                }
-                                            ?>
-                                          </td>
+                                    <?php } ?>
+                                        <td>
+                                          <?php
+                                              if ($pc == 0) {
+                                                echo "0.00%";
+                                              }else {
+                                                echo round($pc/count($tabla_porcentaje))."%";
+                                              }
+                                          ?>
+                                        </td>
 
-                <?php
-                        $tabla_porcentaje = $obj_class->consultaReal(17, 2, $fecha, $cliente);
-                        $pc = 0;
-                    for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                ?>
-                            <?php
-                                  $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                            ?>
+                                 <?php
+                                        $tabla_porcentaje = $obj_class->consultaReal(5, 2, $fecha, $mes, $cliente);
+                                        $pc = 0;
+                                        for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                <?php
+                                        $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                ?>
 
-                           <?php } ?>
+                                <?php } ?>
+                                       <td>
+                                         <?php
+                                             if ($pc == 0) {
+                                               echo "0.00%";
+                                             }else {
+                                               echo round($pc/count($tabla_porcentaje))."%";
+                                             }
+                                         ?>
+                                       </td>
+
+                                <?php
+                                   $tabla_porcentaje = $obj_class->consultaReal(6, 2, $fecha, $mes, $cliente);
+                                   $pc = 0;
+                                 for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                           <?php
+                                                 $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                           ?>
+
+                                       <?php } ?>
                                            <td>
                                              <?php
                                                  if ($pc == 0) {
@@ -1479,195 +960,354 @@ tr.shown td.details-control {
                                              ?>
                                            </td>
 
-                 <?php
-                      $tabla_porcentaje = $obj_class->consultaReal(18, 2, $fecha, $cliente);
-                      $pc = 0;
-                     for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
-                 ?>
-                             <?php
-                                     $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
-                             ?>
+                                <?php
+                                    $tabla_porcentaje = $obj_class->consultaReal(7, 2, $fecha, $mes, $cliente);
+                                    $pc = 0;
+                                for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                          <?php
+                                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                          ?>
 
-                            <?php } ?>
-                <td>
-                  <?php
-                      if ($pc == 0) {
-                        echo "0.00%";
-                      }else {
-                        echo round($pc/count($tabla_porcentaje))."%";
-                      }
-                  ?>
-                </td>
-                </tr>
-              </tbody>
-            </table>
-            <!--<input type="text" name="f1t1" id="f1t1" value="0">-->
-          </div>
-        </div>
-        </div>
-      </div>
+                                          <?php } ?>
+                                            <td>
+                                              <?php
+                                                  if ($pc == 0) {
+                                                    echo "0.00%";
+                                                  }else {
+                                                    echo round($pc/count($tabla_porcentaje))."%";
+                                                  }
+                                              ?>
+                                            </td>
+
+
+                                <?php
+                                      $tabla_porcentaje = $obj_class->consultaReal(8, 2, $fecha, $mes, $cliente);
+                                      $pc = 0;
+                                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                                ?>
+                                          <?php
+                                              $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                          ?>
+
+                                           <?php } ?>
+                                                        <td>
+                                                          <?php
+                                                              if ($pc == 0) {
+                                                                echo "0.00%";
+                                                              }else {
+                                                                echo round($pc/count($tabla_porcentaje))."%";
+                                                              }
+                                                          ?>
+                                                        </td>
+
+                              <?php
+                                      $tabla_porcentaje = $obj_class->consultaReal(17, 2, $fecha, $mes, $cliente);
+                                      $pc = 0;
+                                  for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                              ?>
+                                          <?php
+                                                $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                          ?>
+
+                                         <?php } ?>
+                                                         <td>
+                                                           <?php
+                                                               if ($pc == 0) {
+                                                                 echo "0.00%";
+                                                               }else {
+                                                                 echo round($pc/count($tabla_porcentaje))."%";
+                                                               }
+                                                           ?>
+                                                         </td>
+
+                               <?php
+                                    $tabla_porcentaje = $obj_class->consultaReal(18, 2, $fecha, $mes, $cliente);
+                                    $pc = 0;
+                                   for ($i=0; $i <count($tabla_porcentaje) ; $i++) {
+                               ?>
+                                           <?php
+                                                   $pc = $pc + $tabla_porcentaje[$i]["PORCENTAJE"];
+                                           ?>
+
+                                          <?php } ?>
+                              <td>
+                                <?php
+                                    if ($pc == 0) {
+                                      echo "0.00%";
+                                    }else {
+                                      echo round($pc/count($tabla_porcentaje))."%";
+                                    }
+                                ?>
+                              </td>
+                              </tr>
+                            </tbody>
+                        </table>
+                    </div>
+              </div>
+            </div>
+        </div><!-- EFECTIVIDAD POR PLAZA -->
 
 
         <!--fin tabla detalles-->
-        <?php } ?>
-        <?php if ($plaza != 'ALL'){ ?>
-        <div class="row">
-
-          <div class="col-md-8">
-            <div id="grafPerAlm"></div>
-          </div>
-
-          <?php if ($plaza != 'ALL'){ ?>
+      <?php }elseif ($primerTipoEncuesta == "X") { ?>
+        <div class="col-md-12">
           <div class="col-md-4">
-            <div class="box box-primary">
+              <a href="encuestas_realizadas.php?fecha=<?=$fecha?>&periodo=<?=$mes?>&cliente=<?=$cliente?>"><button class="btn btn-sm btn-warning">Regresar <i class="fa fa-undo"></i></button></a>
+          </div>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <div class="col-md-4">
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentaje Resultados</h3>
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="graf_barFT" class="col-md-12" style="height:380px; display:block;"></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:block;" class="col-md-8">
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><i class="fa fa-bar-chart"></i>Encuestas Respondidas</h3>
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div class="table-responsive">
+                    <table id="tabla_activo" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                      <thead>
+                        <tr>
+                          <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
+                          <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
+                          <th class="small" bgcolor="#237BC7"><font color="black">ESTATUS ENCUESTA</font></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                          $tablaDetalleResp = $obj_class ->detalleRespondidas($fecha, $mes, $cliente);
+                          for ($i=0; $i <count($tablaDetalleResp) ; $i++) {
+                            if ($tablaDetalleResp[$i]["ESTATUS"] == "CONTESTADA") {
+                              $color_rgb = "#1AB394";
+                            }else {
+                              $color_rgb = "#DC1B60";
+                            }
+                            ?>
+                        <tr>
+                          <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["ID_CLIENTE"] ?></td>
+                          <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["V_RAZON_SOCIAL"] ?></td>
+                          <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["ESTATUS"] ?></td>
+                        </tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      <?php
+            }elseif ($primerTipoEncuesta == 1) {  ?>
+
+              <?php
+                  switch ($numeroEncuesta) {
+                    case '1':
+                      $encab = "ATENCIÓN COMERCIAL";
+                      break;
+                    case '2':
+                      $encab = "PAGO DE IMPUESTOS";
+                      break;
+                    case '3':
+                      $encab = "ATENCIÓN OPERATIVA A LA ENTRADA DE SU MERCANCÍA";
+                      break;
+                    case '4':
+                      $encab = "ATENCIÓN OPERATIVA A LA SALIDA DE SU MERCANCÍA";
+                      break;
+                    case '5':
+                      $encab = "CONTROL, ORGANIZACIÓN Y REPORTE DE INVENTARIOS";
+                      break;
+                    case '6':
+                      $encab = "FACTURACIÓN, COBRANZA Y ACLARACIÓN DE FACTURAS";
+                      break;
+                    case '7':
+                      $encab = "ATENCIÓN OPERATIVA";
+                      break;
+                    case '8':
+                      $encab = "EMISIÓN Y LIBERACIÓN DE CERTIFICADOS";
+                      break;
+                    default:
+
+                      break;
+                  }
+
+               ?>
+
+              <div class="col-md-12">
+                <div class="col-md-4">
+                    <a href="encuestas_realizadas.php?fecha=<?=$fecha?>&periodo=<?=$mes?>&cliente=<?=$cliente?>"><button class="btn btn-sm btn-warning">Regresar <i class="fa fa-undo"></i></button></a>
+                </div>
+              </div>
+              <br>
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="box box-info">
+                    <div class="box-header with-border">
+                      <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentajes Resultados</h3>
+                      <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                      <div id="graf_barSFTR" class="col-md-12" style="height:380px; display:block;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:block;" class="col-md-8">
+                  <div class="box box-info">
+                    <div class="box-header with-border">
+                      <h3 class="box-title"><i class="fa fa-bar-chart"></i>Encuestas Respondidas (<?= $encab ?>)</h3>
+                      <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                      <div class="table-responsive">
+                        <table id="tabla_activo" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                          <thead>
+                            <tr>
+                              <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
+                              <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
+                              <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
+                              <th class="small" bgcolor="#237BC7"><font color="black">COMENTARIO</font></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                              $tablaDetalleResp = $obj_class -> grafica_PreguntaTabla_Det($numeroEncuesta, $cliente, $fecha, $mes);
+                              for ($i=0; $i <count($tablaDetalleResp) ; $i++) {
+                                if ($tablaDetalleResp[$i]["RESPUESTA"] == "EXCELENTE") {
+                                  $color_rgb = "#1AB394";
+                                }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "BUENO") {
+                                  $color_rgb = "#F39C12";
+                                }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "REGULAR") {
+                                  $color_rgb = "#84b6f4";
+                                }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "MALO") {
+                                  $color_rgb = "#D81B60";
+                                }
+                                ?>
+                            <tr>
+                              <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["ID_CLIENTE"] ?></td>
+                              <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["V_RAZON_SOCIAL"] ?></td>
+                              <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["RESPUESTA"] ?></td>
+                              <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["RESPUESTA2"] ?></td>
+                            </tr>
+                            <?php } ?>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        <?php
+      }elseif ($primerTipoEncuesta == 2 ) {
+
+            if ($numeroEncuesta == 1) {
+              $encab = "ACTUALMENTE TIENE ALGUNA INCORFORMIDAD";
+            }elseif ($numeroEncuesta == 2) {
+              $encab = "RECOMENDARIA LOS SERVICIOS ARGO";
+            }elseif ($numeroEncuesta == 3) {
+              $encab = "HAS VISITADO NUESTRO SITIO WEB";
+            }
+
+        ?>
+        <div class="col-md-12">
+          <div class="col-md-4">
+              <a href="encuestas_realizadas.php?fecha=<?=$fecha?>&periodo=<?=$mes?>&cliente=<?=$cliente?>"><button class="btn btn-sm btn-warning">Regresar <i class="fa fa-undo"></i></button></a>
+          </div>
+        </div>
+        <br>
+        <div class="col-md-12">
+          <div class="col-md-4">
+            <div class="box box-info">
               <div class="box-header with-border">
-                <h3 class="box-title">Widgets</h3>
+                <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentajes Encuestas Respondidas</h3>
                 <div class="box-tools pull-right">
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
               </div>
-              <div class="box-body"><!--box-body-->
-
-                <!-- WIDGETS #1 -->
-                <div class="info-box bg-blue">
-                  <span class="info-box-icon"><i class="fa fa-users"></i></span>
-                  <div class="info-box-content">
-                    <span class="info-box-text">Personal Activo <?=$plaza?></span>
-                    <span class="info-box-number"><?php echo $widgets[0]["ACTIVO"]; ?></span>
-                    <div class="progress">
-                      <div class="progress-bar" style="width: 70%"></div>
-                    </div>
-                    <?php
-                    if ( $fil_check == 'on' AND $obj_class->validateDate(substr($fecha,0,10)) AND $obj_class->validateDate(substr($fecha,11,10)) ){
-                      echo '<span class="progress-description">Fecha de consulta: '.$fecha.'</span>';
-                    }else{
-                      $mesConsultaBaja = $obj_class->dual( "SELECT TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS') NOW FROM DUAL");
-                       echo '<span class="progress-description">Fecha de consulta: '.$mesConsultaBaja[0]["NOW"].'</span>';
-                    }
-                    ?>
-                  </div>
-                </div>
-                <!-- WIDGETS #2 -->
-                <div class="info-box bg-maroon">
-                  <span class="info-box-icon"><i class="fa fa-user-times"></i></span>
-                  <div class="info-box-content">
-                    <span class="info-box-text">Personal Baja<?=$plaza?></span>
-                    <span class="info-box-number"><?php echo $widgets[0]["BAJA"]; ?></span>
-                    <div class="progress">
-                      <div class="progress-bar" style="width: 70%"></div>
-                    </div>
-                    <?php
-                    if ( $fil_check == 'on' AND $obj_class->validateDate(substr($fecha,0,10)) AND $obj_class->validateDate(substr($fecha,11,10)) ){
-                      echo '<span class="progress-description">Fecha de consulta: '.$fecha.'</span>';
-                    }else{
-                      $mesConsultaBaja = $obj_class->dual( "SELECT TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1), 'DD/MM/YYYY') mes1, TO_CHAR(ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ), -1), 'DD/MM/YYYY') mes2 FROM DUAL");
-                       echo '<span class="progress-description">Fecha de consulta: '.$mesConsultaBaja[0]["MES1"].'-'.$mesConsultaBaja[0]["MES2"].'</span>';
-                    }
-                    ?>
-                  </div>
-                </div>
-                <!-- ./WIDGETS -->
-                <div class="info-box bg-maroon">
-                  <span class="info-box-icon"><i class="fa fa-user-times"></i></span>
-                  <div class="info-box-content">
-                    <span class="info-box-text">Personal HABILITADO Baja<?=$plaza?></span>
-                    <span class="info-box-number"><?php echo $widgets[0]["BAJA_HABILITADO"]; ?></span>
-                    <div class="progress">
-                      <div class="progress-bar" style="width: 70%"></div>
-                    </div>
-                    <?php
-                    if ( $fil_check == 'on' AND $obj_class->validateDate(substr($fecha,0,10)) AND $obj_class->validateDate(substr($fecha,11,10)) ){
-                      echo '<span class="progress-description">Fecha de consulta: '.$fecha.'</span>';
-                    }else{
-                      $mesConsultaBaja = $obj_class->dual( "SELECT TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1), 'DD/MM/YYYY') mes1, TO_CHAR(ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ), -1), 'DD/MM/YYYY') mes2 FROM DUAL");
-                       echo '<span class="progress-description">Fecha de consulta: '.$mesConsultaBaja[0]["MES1"].'-'.$mesConsultaBaja[0]["MES2"].'</span>';
-                    }
-                    ?>
-                  </div>
-                </div>
-
-              </div><!--/.box-body-->
+              <div class="box-body">
+                <div id="graf_barSFTR2" class="col-md-12" style="height:380px; display:block;"></div>
+              </div>
             </div>
           </div>
-          <?php } ?>
-          <?php if ($plaza != 'ALL') { ?>
-            <div id="graf_pie"></div>
-          <?php } ?>
+          <div style="display:block;" class="col-md-8">
+            <div class="box box-info">
+              <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-bar-chart"></i>Encuestas Respondidas (<?=$encab?>)</h3>
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+              </div>
+              <div class="box-body">
+                <div class="table-responsive">
+                  <table id="tabla_activo" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                      <tr>
+                        <th class="small" bgcolor="#237BC7"><font color="black">ID</font></th>
+                        <th class="small" bgcolor="#237BC7"><font color="black">CLIENTE</font></th>
+                        <th class="small" bgcolor="#237BC7"><font color="black">RESPUESTA</font></th>
+                        <th class="small" bgcolor="#237BC7"><font color="black">COMENTARIO</font></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                        $tablaDetalleResp = $obj_class -> grafica_Pregunta2Tabla_Det($numeroEncuesta, $cliente, $fecha, $mes);
+                        for ($i=0; $i <count($tablaDetalleResp) ; $i++) {
+                          if ($numeroEncuesta == 1) {
+                            if ($tablaDetalleResp[$i]["RESPUESTA"] == "SI") {
+                              $color_rgb = "#D81B60";
+                            }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "NO") {
+                              $color_rgb = "#1AB394";
+
+                            }
+                          }elseif ($numeroEncuesta == 2 || $numeroEncuesta == 3) {
+                            if ($tablaDetalleResp[$i]["RESPUESTA"] == "SI") {
+                              $color_rgb = "#1AB394";
+                            }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "NO") {
+                              $color_rgb = "#D81B60";
+                            }
+                          }
+
+                          ?>
+                      <tr>
+                        <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["ID_CLIENTE"] ?></td>
+                        <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["V_RAZON_SOCIAL"] ?></td>
+                        <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["RESPUESTA"] ?></td>
+                        <td style="background-color:<?= $color_rgb ?>"><?= $tablaDetalleResp[$i]["RESPUESTA2"] ?></td>
+                      </tr>
+                      <?php } ?>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <?php } ?>
+        <?php
+            }
+        ?>
       </div>
     </div>
-
-    <?php //if ($plaza != 'ALL'){ ?>
-    <div class="col-md-3"  style="display:none;">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title"><i class="fa fa-sliders"></i> Filtros</h3>
-          <?php if ( strlen($_SERVER['REQUEST_URI']) > strlen($_SERVER['PHP_SELF']) ){ ?>
-          <a href="encuestas_realizadas.php"><button class="btn btn-sm btn-warning">Borrar Filtros <i class="fa fa-close"></i></button></a>
-          <?php } ?>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-          </div>
-        </div>
-        <div class="box-body"><!--box-body-->
-
-          <!-- FILTRAR POR fecha -->
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Fecha:</span>
-            <input type="text" class="form-control pull-right" name="fil_fecha" enabled>
-            <!--<span class="input-group-addon" style="visibility: hidden"> <input type="checkbox" name="fil_check"  checked style="visibility: hidden"<?php /*if( $fil_check == 'on' ){ echo "checked";}*/ ?> > </span>-->
-          </div>
-          <!-- FILTRAR POR PLAZA -->
-          <div class="input-group"  style="display:none">
-            <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
-            <select class="form-control select2" id="fil_plaza" style="width: 100%;">
-              <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
-              <?php
-              $select_plaza = $obj_class->filtros(1,$departamento);;
-              for ($i=0; $i <count($select_plaza) ; $i++) { ?>
-                <option value="<?=$select_plaza[$i]["PLAZA"]?>" <?php if( $select_plaza[$i]["PLAZA"] == $plaza){echo "selected";} ?>> <?=$select_plaza[$i]["PLAZA"]?> </option>
-              <?php } ?>
-            </select>
-          </div>
-          <!-- FILTRAR POR CONTRATO -->
-          <div class="input-group"  style="display:none">
-            <span class="input-group-addon"><i class="fa fa-file-powerpoint-o"></i> Almacen:</span>
-            <select class="form-control select2" style="width: 100%;" id="nomAlm">
-              <option value="ALL" <?php if( $almacen == 'ALL'){echo "selected";} ?> >ALL</option>
-              <?php
-              $departamento = $_GET["plaza"];
-              $selectAlmacen = $obj_class->filtros(4,$departamento);
-              for ($i=0; $i <count($selectAlmacen) ; $i++) { ?>
-                <option value="<?=$selectAlmacen[$i]["IID_ALMACEN"]?>" <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>
-              <?php } ?>
-            </select>
-          </div>
-          <!-- FILTRAR POR DEPTO -->
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-folder"></i> Cliente:</span>
-            <select class="form-control select2" style="width: 100%;" id="fil_cliente">
-              <option value="ALL" <?php if($cliente == 'ALL'){echo "selected";} ?>>ALL</option>
-              <?php
-              $departamento = $_GET["almacen"];
-              $select_ctl = $obj_class->filtros(5,$departamento);
-              for ($i=0; $i <count($consulta_clientes) ; $i++) { ?>
-                <option value="<?= $consulta_clientes[$i]["IID_NUM_CLIENTE"] ?>" <?php if($consulta_clientes[$i]["IID_NUM_CLIENTE"] == $cliente){echo "selected";} ?> ><?= $consulta_clientes[$i]["V_RAZON_SOCIAL"] ?></option>
-              <?php } ?>
-            </select>
-          </div>
-          <!-- FILTRAR POR AREA -->
-          <div class="input-group">
-            <span class="input-group-addon"> <button type="button" class="btn btn-primary btn-xs pull-right btn_fil"><i class="fa fa-check"></i> Filtrar</button> </span>
-          </div>
-
-        </div><!--/.box-body-->
-      </div>
-    </div>
-    <?php //} ?>
-<!-- WIDGETS -->
   </div>
 </section>
+
 <!-- ############################ ./SECCION GRAFICA Y WIDGETS ############################# -->
 
 
@@ -1706,28 +1346,11 @@ $('#myTab a[href="' + hash + '"]').tab('show');
 <!-- Select2 -->
 <script src="../plugins/select2/select2.full.min.js"></script>
 <script type="text/javascript">
-//ACTIVA FILTRO POR FECHA
-  $('input[name="fil_fecha"]').attr("disabled", false);
-<?php
-if ( $fil_check == 'ALL' AND $obj_class->validateDate(substr($fecha,0,10)) AND $obj_class->validateDate(substr($fecha,11,10)) ){ ?>
-  $('input[name="fil_fecha"]').attr("disabled", false);
-<?php } ?>
-$('input[name="fil_check"]').on("click", function (){
-
-  if ($('input[name="fil_check"]').is(':checked')) {
-    $('input[name="fil_fecha"]').attr("disabled", false);
-  }else{
-    $('input[name="fil_fecha"]').attr("disabled", false);
-  }
-
-});
-
-
-
 //BOTON FILTRAR
 $(".btn_fil").on("click", function(){
 
-  fil_fecha = $('input[name="fil_fecha"]').val();
+  fil_fecha = $('#datepicker').val();
+  fil_periodo = $('#fil_periodo').val();
   fil_plaza = $('#fil_plaza').val();
   almacen = $('#nomAlm').val();
   cliente = $('#fil_cliente').val();
@@ -1739,7 +1362,7 @@ $(".btn_fil").on("click", function(){
 
 
 
-  url = '?cliente='+cliente+'&fecha='+fil_fecha;
+  url = '?cliente='+cliente+'&fecha='+fil_fecha+'&periodo='+fil_periodo;
 
 
   location.href = url;
@@ -1748,23 +1371,7 @@ $(".btn_fil").on("click", function(){
 
 $('.select2').select2()
 </script>
-<!-- Grafica Highcharts -->
-<script src="../plugins/highcharts/highcharts.js"></script>
-<script src="../plugins/highcharts/modules/data.js"></script>
-<script src="../plugins/highcharts/modules/exporting.js"></script>
-<script src="../plugins/flot/jquery.flot.min.js"></script>
-<!-- FLOT PIE CHARTS 3D -->
-<script src="../plugins/flot/jquery.flot.pie3d.js"></script>
-<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
-<script src="../plugins/flot/jquery.flot.resize.min.js"></script>
-<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
-<script src="../plugins/flot/jquery.flot.pie_old.js"></script>
-<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
-<script src="../plugins/flot/jquery.flot.categories.js"></script>
-<!-- FLOT ORDER BARS  -->
-<script src="../plugins/flot/jquery.flot.orderBars.js"></script>
-<!-- FLOT  bar charts click text -->
-<script src="../plugins/flot/jquery.flot.tooltip.js"></script>
+
 
 <script type="text/javascript">
 function myFunction(ventana) {
@@ -1929,10 +1536,10 @@ $donut_series2 = "pie3d: {
                                   },
                                 }";
 
-$donut_grid =  "hoverable: false,
-                clickable: false,
-                verticalLines: false,
-                horizontalLines: false,";
+$donut_grid =  "hoverable: true,
+                clickable: true,
+                verticalLines: true,
+                horizontalLines: true,";
 $donut_legend = "/*labelBoxBorderColor: 'none'*/
                 show: true "; //-- PONE LOS LABEL DEL ALDO IZQUIERDO  //
 
@@ -1942,6 +1549,9 @@ $donut_tooltip = "show: false,
       content: '".$donut_content."',
       defaultTheme: true ";
  ?>
+
+<?php if ($primerTipoEncuesta == "ALL") { ?>
+
 <script>
   $(function () {
     /* DONUT CHART */
@@ -1962,8 +1572,8 @@ $donut_tooltip = "show: false,
 
           $data = $positivasReal;
           $data2 = $negativasReal;
-          $color = "#FF0000";
-          $color2 = "#00FF00";
+          $color = "#DC1B60";
+          $color2 = "#1AB394";
       ?>
 
         {label: '<?= $label ?>', data: <?=$data?> , color: '<?= $color2 ?>'},
@@ -1996,8 +1606,6 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
-
 <script>
   $(function () {
     /* DONUT CHART */
@@ -2010,12 +1618,12 @@ $donut_tooltip = "show: false,
 
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
 
-          $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$widgetsClientes[0]["N_RESPONDIDAS"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$widgetsClientes[0]["N_RESPONDIDAS"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>NO RESPONDIDAS</button></form>' ;
-          $label2 =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$widgetsClientes[0]["RESPONDIDAS"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$widgetsClientes[0]["RESPONDIDAS"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>RESPONDIDAS</button></form>' ;
+          $label =  '<form><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="X"><input type="hidden" name="ntipo" value="X"><input type="hidden" name="periodo" value="'.$mes.'"><button href="'.$_SERVER['REQUEST_URI'].'?cliente='.$cliente.'&fecha='.$fecha.'" style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$widgetsClientes[0]["N_RESPONDIDAS"].'" class="btn btn-link btn-xs" enabled>NO RESPONDIDAS</button></form>' ;
+          $label2 =  '<form><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="X"><input type="hidden" name="ntipo" value="X"><input type="hidden" name="periodo" value="'.$mes.'"><button  href="'.$_SERVER['REQUEST_URI'].'?cliente='.$cliente.'&fecha='.$fecha.'" style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$widgetsClientes[0]["RESPONDIDAS"].'" class="btn btn-link btn-xs" enabled>RESPONDIDAS</button></form>' ;
           //$label3 =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$grafica[$i]["TIPO_RES"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$grafica[$i]["TIPO_RES"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$grafica[$i]["TIPO_RES"].'</button></form>' ;
 
-          $color ='#FAEF07';
-          $color2 = '#1FBC0C';
+          $color ='#E91B73';
+          $color2 = '#1AE2EE';
 
           $data = round($widgetsClientes[0]["N_RESPONDIDAS"], 2);
           $data2 = round($widgetsClientes[0]["RESPONDIDAS"], 2);
@@ -2053,17 +1661,13 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
-
-
-
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 1;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2074,27 +1678,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="1"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="1"<input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="1"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FA6707';
+                $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -2147,14 +1751,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 1 - 1  -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 2;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2165,27 +1769,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="2"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="2"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="2"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FA6707';
+                $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -2238,14 +1842,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 1 - 2  -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 3;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2256,27 +1860,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="3"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="3"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="3"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FA6707';
+                $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#BC0C0C';
+                $color ='#D81B60';
                 break;
               case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -2329,14 +1933,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 1 - 3  -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 4;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2347,27 +1951,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="4"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="4"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="4"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FA6707';
+                $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -2420,14 +2024,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 1  - 4 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 5;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2438,27 +2042,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="5"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="5"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="5"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FA6707';
+                $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -2511,14 +2115,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 1  - 5 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 6;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2529,27 +2133,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="6"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="6"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="6"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FA6707';
+                $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -2602,15 +2206,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
-
+    <!-- 1  - 6 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 1;
-        $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2621,13 +2224,13 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="1"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="1"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="1"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
@@ -2635,10 +2238,10 @@ $donut_tooltip = "show: false,
                 $color ='#FAEF07';
                 break;
               case 'SI':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'NO':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case 'EXCELENTE':
                 $color = '#2FFA07';
@@ -2694,14 +2297,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 2  - 1 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 2;
-        $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2712,13 +2315,13 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="2"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="2"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="2"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
@@ -2726,10 +2329,10 @@ $donut_tooltip = "show: false,
                 $color ='#FAEF07';
                 break;
               case 'NO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'SI':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case 'EXCELENTE':
                 $color = '#2FFA07';
@@ -2785,14 +2388,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 2  - 2 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 3;
-        $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2803,13 +2406,13 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="3"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="3"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="3"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
@@ -2817,10 +2420,10 @@ $donut_tooltip = "show: false,
                 $color ='#FAEF07';
                 break;
               case 'NO':
-                $color = '#BC0C0C';
+                $color = '#D81B60';
                 break;
               case 'SI':
-                $color = '#2FFA07';
+                $color = '#1AB394';
                 break;
               case 'EXCELENTE':
                 $color = '#2FFA07';
@@ -2876,14 +2479,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 2  - 3 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 7;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2894,31 +2497,28 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="7"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="7"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="7"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
-                break;
-              case 'NO':
-                $color = '#BC0C0C';
-                break;
-              case 'SI':
-                $color = '#2FFA07';
-                break;
-              case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                  $color = '#FF8000';
-                  break;
+                $color = '#F39C12';
+                break;
+              case 'MALO':
+                $color = '#D81B60';
+                break;
+              case 'EXCELENTE':
+                $color = '#1AB394';
+                break;
               case '5':
                 $color = '#BC0C0C';
                 break;
@@ -2970,14 +2570,14 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
-
+    <!-- 1  - 7 -->
 <script>
   $(function () {
     /* DONUT CHART */
     var donutData_pros_general = [
       <?php
         $tipo = 8;
-        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha);
+        $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
         for ($i=0; $i <count($graf_Pregunta) ; $i++) {
           #echo $grafica[$i]["TIPO_RES"];
           $plaza = $graf_Pregunta[$i]["RESPUESTA"];
@@ -2988,30 +2588,27 @@ $donut_tooltip = "show: false,
           // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
           switch ('1,2') {
               case '1':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="8"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '2':
-               $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+               $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="8"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
               case '1,2':
-                $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="1"><input type="hidden" name="ntipo" value="8"><input type="hidden" name="periodo" value="'.$mes.'"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
                 break;
             }
             switch ($graf_Pregunta[$i]["RESPUESTA"]) {
               case 'REGULAR':
-                $color ='#FAEF07';
-                break;
-              case 'NO':
-                $color = '#BC0C0C';
-                break;
-              case 'SI':
-                $color = '#2FFA07';
-                break;
-              case 'EXCELENTE':
-                $color = '#2FFA07';
+                $color ='#464F88';
                 break;
               case 'BUENO':
-                $color = '#FF8000';
+                $color = '#F39C12';
+                break;
+              case 'MALO':
+                $color = '#D81B60';
+                break;
+              case 'EXCELENTE':
+                $color = '#1AB394';
                 break;
               case '5':
                 $color = '#BC0C0C';
@@ -3064,155 +2661,253 @@ $donut_tooltip = "show: false,
         + "</div>";
   }
 </script>
+    <!-- 1  - 8 -->
+<?php } ?>
 
-<script type= "text/javascript">
-$(function(){
-  Highcharts.setOptions({
-    lang:{
-      thousandsSep: ','
-    }
-  });
-  var categories = [
-    <?php
-    for ($i=0; $i < count($graficaMensual) ; $i++) {
-      echo "'".$graficaMensual[$i]["MES"]."',";
-    }
-    ?>
-  ];
-  var data1 = [
-    <?php
-    for ($i=0; $i < count($graficaMensual); $i++) {
-      $año_actual = date("Y");
-      $anoComparar = substr($fecha, 6,4);
-      $mes_Comparar = substr($fecha, 14, 2);
-
-          if($graficaMensual[$i]["POSITIVAS"] == 0){
-            $porcentaje_total_pos = 0.00;
-          }else {
-              $total = $graficaMensual[$i]["POSITIVAS"] + $graficaMensual[$i]["NEGATIVAS"] + $graficaMensual[$i]["MEJORAS"];
-              $porcentaje_total_pos = number_format(($graficaMensual[$i]["POSITIVAS"]/$total)*100, 2);
-
+<?php if ($primerTipoEncuesta == "X") { ?>
+  <script>
+    $(function () {
+      /* DONUT CHART */
+      var donutData_pros_general = [
+        <?php
+          $positivasReal = 0;
+          $negativasReal = 0;
+          for ($i=0; $i <count($grafica) ; $i++) {
+            #echo $grafica[$i]["TIPO_RES"];
+            $positivasReal = $positivasReal + $grafica[$i]["PROMEDIO_POSITIVA"];
+            $negativasReal = $negativasReal + $grafica[$i]["PROMEDIO_NEGATIVO"];
           }
-          echo $porcentaje_total_pos." ,";
+            $positivasReal = round($positivasReal/count($grafica), 2);
+            $negativasReal = round($negativasReal/COUNT($grafica), 2);
+
+            $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$positivasReal.'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$positivasReal.'"  name="co_plaza" class="btn btn-link btn-xs" disabled>EFECTIVIDAD</button></form>' ;
+            $label2 =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$negativasReal.'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$negativasReal.'"  name="co_plaza" class="btn btn-link btn-xs" disabled>INEFECTIVIDAD</button></form> ' ;
+
+            $data = $positivasReal;
+            $data2 = $negativasReal;
+            $color = "#DC1B60";
+            $color2 = "#1AB394";
+        ?>
+
+          {label: '<?= $label ?>', data: <?=$data?> , color: '<?= $color2 ?>'},
+          {label: '<?= $label2 ?>', data: <?=$data2?> , color: '<?= $color ?>'}
+
+      ];
+
+      $.plot("#graf_barFT", donutData_pros_general, {
+        series: { <?= $donut_series2 ?> },
+        grid: { <?= $donut_grid  ?> },
+        //-- PONE LOS LABEL DEL ALDO IZQUIERDO //
+        legend: { <?= $donut_legend ?>},
+        //-- VALOR AL PONER EL MAUSE SOBRE LA PLAZA //
+        tooltip: {<?= $donut_tooltip ?>},
+      });
+      /* END DONUT CHART */
+
+    });
+
+
+
+    /*
+     * Custom Label formatter
+     * ----------------------
+     */
+    function labelFormatter(label, series) {
+      return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+          + label
+          +"<div style='color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px'>"+(series.percent).toFixed(2) + "%</div>"
+          + "</div>";
     }
-     ?>
-  ];
-  var data2 = [
-    <?php
-    for ($i=0; $i < count($graficaMensual); $i++) {
-      $mes_Comparar = substr($fecha, 14, 2);
+  </script>
+<?php } ?>
 
-        if($graficaMensual[$i]["NEGATIVAS"] == 0){
-          $porcentaje_total_neg = 0.00;
-        }else {
-            $total = $graficaMensual[$i]["POSITIVAS"] + $graficaMensual[$i]["NEGATIVAS"] +$graficaMensual[$i]["MEJORAS"];
-            $porcentaje_total_neg = number_format(($graficaMensual[$i]["NEGATIVAS"]/$total)*100, 2);
+<?php if ($primerTipoEncuesta == "1") { ?>
+  <script>
+    $(function () {
+      /* DONUT CHART */
+      var donutData_pros_general = [
+        <?php
+          $tipo = $numeroEncuesta;
+          $graf_Pregunta = $obj_class->grafica_Pregunta($tipo, $cliente, $fecha, $mes);
+          for ($i=0; $i <count($graf_Pregunta) ; $i++) {
+            #echo $grafica[$i]["TIPO_RES"];
+            $plaza = $graf_Pregunta[$i]["RESPUESTA"];
+            //$plaza_corta = str_word_count($plaza, 1);
+            $separador  = ' ';
+            $plaza_corta = strstr($plaza, " ", (true));//MUESTRA NOMBRE DE LA PLAZA
 
-        }
-        echo $porcentaje_total_neg." ,";
+            // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
+            switch ('1,2') {
+                case '1':
+                  $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                  break;
+                case '2':
+                 $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="4"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                  break;
+                case '1,2':
+                  $label =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                  break;
+              }
+              switch ($graf_Pregunta[$i]["RESPUESTA"]) {
+                case 'REGULAR':
+                  $color ='#464F88';
+                  break;
+                case 'BUENO':
+                  $color = '#F39C12';
+                  break;
+                case 'MALO':
+                  $color = '#D81B60';
+                  break;
+                case 'EXCELENTE':
+                  $color = '#1AB394';
+                  break;
+                case '5':
+                  $color = '#BC0C0C';
+                  break;
+                case '6':
+                  $color = '#BC0C0C';
+                  break;
+                case '7':
+                  $color = '#BC0C0C';
+                  break;
+                default:
+                  $color = '#BC0C0C';
+                  break;
+              }
+
+            $data = round($graf_Pregunta[$i]["CANTIDAD_RESPUESTA"], 2);
+            $color = $color;
+            // _-_-_-_-_- TERMNA VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
+        ?>
+
+          {label: '<?= $label ?>', data: <?=$data?> , color: '<?= $color ?>'},
+
+        <?php
+          }
+        ?>
+      ];
+
+      $.plot("#graf_barSFTR", donutData_pros_general, {
+        series: { <?= $donut_series ?> },
+        grid: { <?= $donut_grid  ?> },
+        //-- PONE LOS LABEL DEL ALDO IZQUIERDO //
+        legend: { <?= $donut_legend ?>},
+        //-- VALOR AL PONER EL MAUSE SOBRE LA PLAZA //
+        tooltip: {<?= $donut_tooltip ?>},
+      });
+      /* END DONUT CHART */
+
+    });
 
 
+
+    /*
+     * Custom Label formatter
+     * ----------------------
+     */
+    function labelFormatter(label, series) {
+      return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+          + label
+          +"<div style='color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px'>"+(series.percent).toFixed(2) + "%</div>"
+          + "</div>";
     }
-     ?>
-  ];
+  </script>
+<?php } ?>
 
-  var data3 = [
-    <?php
-    for ($i=0; $i < count($graficaMensual); $i++) {
-      $mes_Comparar = substr($fecha, 14, 2);
+<?php if ($primerTipoEncuesta == "2") { ?>
+  <script>
+    $(function () {
+      /* DONUT CHART */
+      var donutData_pros_general = [
+        <?php
+          $tipo = $numeroEncuesta;
+          $graf_Pregunta = $obj_class->grafica_Pregunta2($tipo, $cliente, $fecha, $mes);
+          for ($i=0; $i <count($graf_Pregunta) ; $i++) {
+            #echo $grafica[$i]["TIPO_RES"];
+            $plaza = $graf_Pregunta[$i]["RESPUESTA"];
+            //$plaza_corta = str_word_count($plaza, 1);
+            $separador  = ' ';
+            $plaza_corta = strstr($plaza, " ", (true));//MUESTRA NOMBRE DE LA PLAZA
 
-        if($graficaMensual[$i]["NEGATIVAS"] == 0){
-          $porcentaje_total_neg = 0.00;
-        }else {
-            $total = $graficaMensual[$i]["POSITIVAS"] + $graficaMensual[$i]["NEGATIVAS"]+ $graficaMensual[$i]["MEJORAS"];
-            $porcentaje_total_neg = number_format(($graficaMensual[$i]["MEJORAS"]/$total)*100, 2);
+            // _-_-_-_-_- VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
+            switch ('1,2') {
+                case '1':
+                  $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                  break;
+                case '2':
+                 $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                  break;
+                case '1,2':
+                  $label =  '<form ><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="2"><input type="hidden" name="ntipo" value="1"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$graf_Pregunta[$i]["RESPUESTA"].'"  name="co_plaza" class="btn btn-link btn-xs" enabled>'.$graf_Pregunta[$i]["RESPUESTA"].'</button></form>' ;
+                  break;
+              }
+              if ($numeroEncuesta == 1 ) {
+                switch ($graf_Pregunta[$i]["RESPUESTA"]) {
+                  case 'SI':
+                    $color = '#D81B60';
+                    break;
+                  case 'NO':
+                    $color = '#1AB394';
+                    break;
+                  default:
+                    $color = '#BC0C0C';
+                    break;
+                }
+              }else {
+                switch ($graf_Pregunta[$i]["RESPUESTA"]) {
+                  case 'SI':
+                    $color = '#1AB394';
+                    break;
+                  case 'NO':
+                    $color = '#D81B60';
+                    break;
+                  default:
+                    $color = '#BC0C0C';
+                    break;
+                }
+              }
 
-        }
-        echo $porcentaje_total_neg." ,";
+
+            $data = round($graf_Pregunta[$i]["CANTIDAD_RESPUESTA"], 2);
+            $color = $color;
+            // _-_-_-_-_- TERMNA VAR DE PARAMETROS DE GRAFICA DONA _-_-_-_-_- //
+        ?>
+
+          {label: '<?= $label ?>', data: <?=$data?> , color: '<?= $color ?>'},
+
+        <?php
+          }
+        ?>
+      ];
+
+      $.plot("#graf_barSFTR2", donutData_pros_general, {
+        series: { <?= $donut_series ?> },
+        grid: { <?= $donut_grid  ?> },
+        //-- PONE LOS LABEL DEL ALDO IZQUIERDO //
+        legend: { <?= $donut_legend ?>},
+        //-- VALOR AL PONER EL MAUSE SOBRE LA PLAZA //
+        tooltip: {<?= $donut_tooltip ?>},
+      });
+      /* END DONUT CHART */
+
+    });
 
 
+
+    /*
+     * Custom Label formatter
+     * ----------------------
+     */
+    function labelFormatter(label, series) {
+      return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+          + label
+          +"<div style='color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px'>"+(series.percent).toFixed(2) + "%</div>"
+          + "</div>";
     }
-     ?>
-  ];
+  </script>
+<?php
+} ?>
 
-  $('#graf_perM').highcharts({
-    chart:{
-      type:'line'
-    },
-    title:{
-      text:'EFECTIVIDAD POR MES'
-    },
-    legend:{
-      y: -40,
-      borderWidth:1,
-      backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-    },
-    yAxis:{
-      lineWidth:2,
-      offset:10,
-      tickWidth:1,
-      title:{
-        text:'PORCENTAJE'
-      },
-      labels:{
-        formatter:function(){
-          return this.value;
-        }
-      }
-    },
-    tooltip:{
-      shared:true,
-      valueSuffix: ' ',
-      useHTML: true,
-    },
-    lang:{
-      printChart:'Imprmir Grafica',
-      downloadPNG:'Descargar PNG',
-      downloadJPEG:'Descargar JPEG',
-      downloadPDF:'Descargar PDF',
-      downloadSVG:'Descargar SVG',
-      contextButtonTitle: 'Exportar Grafica'
-    },
-    credits:{
-      enabled:false
-    },
-    colors:['#33FA07', '#C21313', '#FAEB07', '#1C00ff00'],
-    //colors:['#1399C2', '#C21313', '#0D6580', '#E61717'],
-    plotOptions:{
-      series:{
-        minPointLength:3
-      }
-    },
-    xAxis:{
-      categories:categories,
-      labels:{
-        formatter: function(){
-          url = '?plaza='+this.value+'&check=<?= $fil_check; ?>';
-
-            return '<a href="'+url+'">' +
-                this.value + '</a>';
-        }
-      }
-    },
-    subtitle:{
-      text:'',
-      align:'right',
-      x:-10,
-    },
-    series:[{
-      name:'% EFECTIVIDAD',
-      data: data1,
-    },{
-      name:'% INEFECTIVIDAD',
-      data: data2,
-    },{
-      name:'% MEJORAR',
-      data: data3,
-    }
-    ]
-  });
-});
-</script>
 <!-- DataTables -->
 <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
@@ -4382,45 +4077,15 @@ $(document).ready(function () {
 <!-- date-range-picker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="../plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
-$('input[name="fil_fecha"]').daterangepicker(
-  {
-  "linkedCalendars": false,
-  "showDropdowns": true,
-//INICIA CODE OPCION PARA FORMATO EN ESPAÑOL
-  "locale": {
-  "format": "DD/MM/YYYY",
-  "separator": "-",
-  "applyLabel": "Aplicar",
-  "cancelLabel": "Cancelar",
-  "fromLabel": "From",
-  "toLabel": "To",
-  "customRangeLabel": "Fecha Personalizada",
-  "daysOfWeek": ["Do","Lu","Ma","Mi","Ju","Vi","Sa"],
-  "monthNames": ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agusto","Septiembre","Octubre","Noviembre","Diciembre"],
-  "firstDay": 1
-  },
-//TERMINA CODE OPCION PARA FORMATO EN ESPAÑOL
-    ranges: {
-      'Hoy': [moment(), moment()],
-      'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-      'Los últimos 7 días': [moment().subtract(6, 'days'), moment()],
-      'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
-      'Este mes': [moment().startOf('month'), moment().endOf('month')],
-      'El mes pasado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-      'Este Año': [moment().startOf('year'), moment().endOf('year')]
-    },
-
-    <?php if( $obj_class->validateDate(substr($fecha,0,10)) AND $obj_class->validateDate(substr($fecha,11,10)) ){ ?>
-      startDate: '<?=substr($fecha,0,10)?>',
-      endDate: '<?=substr($fecha,11,10)?>'
-    <?php }else{ ?>
-      startDate: moment().subtract(29, 'days'),
-      endDate: moment()
-    <?php } ?>
-  },
-
-);
+<script src="../plugins/datepicker/bootstrap-datepicker.js"></script>
+<script>
+  //Date picker
+    $('#datepicker').datepicker({
+      format: "yyyy",
+      viewMode: "years",
+      minViewMode: "years",
+      autoclose: true
+    });
 </script>
 <!-- Inicia FancyBox JS -->
   <!-- Add mousewheel plugin (this is optional) -->
@@ -4472,6 +4137,23 @@ $('input[name="fil_fecha"]').daterangepicker(
     });
   </script>
 <!-- Termina FancyBox JS -->
+<!-- Grafica Highcharts -->
+<script src="../plugins/highcharts/highcharts.js"></script>
+<script src="../plugins/highcharts/modules/data.js"></script>
+<script src="../plugins/highcharts/modules/exporting.js"></script>
+<script src="../plugins/flot/jquery.flot.min.js"></script>
+<!-- FLOT PIE CHARTS 3D -->
+<script src="../plugins/flot/jquery.flot.pie3d.js"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="../plugins/flot/jquery.flot.resize.min.js"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="../plugins/flot/jquery.flot.pie_old.js"></script>
+<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+<script src="../plugins/flot/jquery.flot.categories.js"></script>
+<!-- FLOT ORDER BARS  -->
+<script src="../plugins/flot/jquery.flot.orderBars.js"></script>
+<!-- FLOT  bar charts click text -->
+<script src="../plugins/flot/jquery.flot.tooltip.js"></script>
 <!-- PACE -->
 <script src="../plugins/pace/pace.min.js"></script>
 <!-- page script -->

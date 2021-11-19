@@ -12,7 +12,7 @@ class RotacionPersonal
 {
 
 	/*++++++++++++++++++++++++ GRAFICA PERSONAL ACTIVO ++++++++++++++++++++++++*/
-	public function grafica($fecha, $cliente)
+	public function grafica($fecha, $mes,  $cliente)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -31,11 +31,17 @@ class RotacionPersonal
 			$where_cliente2 = " AND ENC.ID_CLIENTE = $cliente";
 		}
 
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
-		$where_fechas = "AND TO_DATE(A.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND TO_DATE(A.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
-		$where_fechas2 = " ENC.FECHA_PROG >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND ENC.FECHA_PROG <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
+
+		$where_fechas = "AND TO_DATE(TO_CHAR(A.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(A.FECHA, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
+		$where_fechas2 = " TO_DATE(ENC.FECHA_PROG, 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(ENC.FECHA_PROG, 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
 
 
 				$sql = "SELECT (SUM(Z.TOTAL_NEGATIVAS)/SUM(Z.TOTAL_PREG))*100 AS PROMEDIO_NEGATIVO,(SUM(Z.TOTAL_POSITIVAS)/SUM(Z.TOTAL_PREG))*100 AS PROMEDIO_POSITIVA, Z.CONSECUTIVO_ENC FROM(
@@ -233,12 +239,20 @@ class RotacionPersonal
 
 	}
 
-	public function tipo_respuestas($fecha, $cliente){
+	public function tipo_respuestas($fecha, $mes, $cliente){
 		$conn = conexion::conectar();
 		$res_array = array();
 
 		$fecha_ini = substr($fecha, 0, 10);
 		$fecha_fin = substr($fecha, 11, 10);
+
+		if ($mes == 1 ) {
+			$mes1 = "01/".$fecha;
+			$mes2 = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$mes1 = "07/".$fecha;
+			$mes2 = "12/".$fecha;
+		}
 
 		$sql ="SELECT COUNT(TIPO_HAB) AS HABILITADO,
 		       COUNT(TIPO_DEP_DIRECTO) AS DIRECTO
@@ -251,7 +265,7 @@ class RotacionPersonal
 							       '' AS TIPO_DEP_DIRECTO
 							       FROM AD_SGC_ENCUESTA_ENC Y
 							       INNER JOIN CLIENTE C ON Y.ID_CLIENTE = C.IID_NUM_CLIENTE
-										 WHERE TO_DATE(Y.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'dd/mm/yyyy') AND TO_DATE(Y.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'dd/mm/yyyy')
+										 WHERE TO_DATE(TO_CHAR(Y.FECHA, 'MM/YYY'), 'MM/YYY') >= TO_DATE('$mes1', 'mm/yyyy') AND TO_DATE(TO_CHAR(Y.FECHA, 'MM/YYY'), 'MM/YYYY') <= TO_DATE('$mes2', 'mm/yyyy')
 							UNION ALL
 							SELECT '' AS TIPO_HAB,
 							       CASE WHEN C.N_TIPO_CLIENTE = 2 THEN
@@ -259,8 +273,8 @@ class RotacionPersonal
 							       END AS TIPO_DEP_DIRECTO
 							       FROM AD_SGC_ENCUESTA_ENC Y
 							       INNER JOIN CLIENTE C ON Y.ID_CLIENTE = C.IID_NUM_CLIENTE
-									 	 WHERE TO_DATE(Y.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'dd/mm/yyyy') AND TO_DATE(Y.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'dd/mm/yyyy'))";
-										 #echo $sql;
+									 	 WHERE TO_DATE(TO_CHAR(Y.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$mes1', 'mm/yyyy') AND TO_DATE(TO_CHAR(Y.FECHA, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$mes2', 'mm/yyyy'))";
+										#echo $sql;
 					$stid = oci_parse($conn, $sql);
 					oci_execute($stid);
 
@@ -273,16 +287,10 @@ class RotacionPersonal
 	}
 
 
-	public function widgets($fecha, $cliente)
+	public function widgets($fecha, $mes, $cliente)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
-
-		$and_fecha_act = " ";
-		$and_fecha_act2 = " ";
-		$and_fecha_can = " AND can.fecha_cancelacion >= TRUNC( ADD_MONTHS(TRUNC(SYSDATE, 'MM'),0) ) AND can.fecha_cancelacion < TRUNC( ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ),-1) ) ";
-		$fecha_cancel =" and RCAN.FECHA_CANCELACION <= TRUNC( ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ),0) ) ";
-
 
 		if ($cliente == "ALL") {
 			$where_cliente = " ";
@@ -290,11 +298,16 @@ class RotacionPersonal
 			$where_cliente = " AND R.ID_CLIENTE = $cliente";
 		}
 
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
-		$where_fechas = "AND R.D_FECHA_ENVIO >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND R.D_FECHA_ENVIO <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
-		$where_fechas2 = "TO_DATE(R.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND TO_DATE(R.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
+		$where_fechas = "AND TO_DATE(TO_CHAR(R.D_FECHA_ENVIO, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.D_FECHA_ENVIO, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
+		$where_fechas2 = "TO_DATE(TO_CHAR(R.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.FECHA, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
 
 		$sql ="SELECT SUM(NO_RESPONDIDAS) AS N_RESPONDIDAS, SUM(RESPONDIDAS)AS RESPONDIDAS FROM(
 									SELECT COUNT(R.N_STATUS) AS NO_RESPONDIDAS, 0 AS RESPONDIDAS FROM AD_SGC_ENCUESTA_TIPO_CLIENTE R
@@ -326,16 +339,10 @@ class RotacionPersonal
 	}
 
 	//*detalle de tabla RESPONDIDAS
-	public function detalleRespondidas($fecha, $cliente)
+	public function detalleRespondidas($fecha, $mes, $cliente)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
-
-		$and_fecha_act = " ";
-		$and_fecha_act2 = " ";
-		$and_fecha_can = " AND can.fecha_cancelacion >= TRUNC( ADD_MONTHS(TRUNC(SYSDATE, 'MM'),0) ) AND can.fecha_cancelacion < TRUNC( ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ),-1) ) ";
-		$fecha_cancel =" and RCAN.FECHA_CANCELACION <= TRUNC( ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ),0) ) ";
-
 
 		if ($cliente == "ALL") {
 			$where_cliente = " ";
@@ -344,10 +351,17 @@ class RotacionPersonal
 		}
 
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
-		$where_fechas = "AND R.D_FECHA_ENVIO >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND R.D_FECHA_ENVIO <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
-		$where_fechas2 = "TO_DATE(R.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND TO_DATE(R.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
+
+
+		$where_fechas = "AND TO_DATE(TO_CHAR(R.D_FECHA_ENVIO, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.D_FECHA_ENVIO, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
+		$where_fechas2 = "TO_DATE(TO_CHAR(R.FECHA, 'MM/YYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.FECHA, 'MM/YYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
 
 		$sql ="SELECT R.ID_CLIENTE, CL.V_RAZON_SOCIAL,  'SIN CONTESTAR' AS ESTATUS
 		          FROM AD_SGC_ENCUESTA_TIPO_CLIENTE R
@@ -381,7 +395,7 @@ class RotacionPersonal
 	}
 
 // total pagos
-	public function graficaMensual($cliente, $fecha){
+	public function graficaMensual($cliente, $fecha, $mes){
 
 		if ($cliente == "ALL") {
 			$where_cliente = " ";
@@ -392,11 +406,15 @@ class RotacionPersonal
 		}
 
 
-		$fecha_ini =  substr($fecha,6,4);
-		//echo $fecha_ini;
-		$fecha_fin = substr($fecha,17,4);
-		$where_fechas = "AND TO_CHAR(EE.FECHA, 'YYYY') = '$fecha_fin'";
-		$where_fechas2 = "TO_CHAR(ENC.FECHA, 'YYYY') = '$fecha_fin'";
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
+		$where_fechas = "AND TO_CHAR(EE.FECHA, 'YYYY') = '$fecha'";
+		$where_fechas2 = "TO_CHAR(ENC.FECHA, 'YYYY') = '$fecha'";
 
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -479,7 +497,7 @@ class RotacionPersonal
 	}
 
 	/*++++++++++++++++++++++++ SQL TABLA DETALLE BAJA ++++++++++++++++++++++++*/
-	public function tablaBaja($cliente, $fecha)
+	public function tablaBaja($cliente, $fecha, $mes)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -489,11 +507,15 @@ class RotacionPersonal
 		}else {
 			$where_cliente = " AND ENCE.ID_CLIENTE = $cliente";
 		}
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
 
-
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
-		$where_fechas = " WHERE TO_DATE(ENCE.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'DD/MM/YYYY') AND TO_DATE(ENCE.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
+		$where_fechas = " WHERE TO_DATE(TO_CHAR(ENCE.FECHA, 'MM/YYY'),'MM/YYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(ENCE.FECHA, 'MM/YYY'), 'MM/YYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
 
 
 
@@ -519,7 +541,7 @@ class RotacionPersonal
 		return $res_array;
 	}
 
-	public function grafica_Pregunta($tipo, $cliente, $fecha)
+	public function grafica_Pregunta($tipo, $cliente, $fecha, $mes)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -531,8 +553,14 @@ class RotacionPersonal
 		}
 
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
+
 		switch ($tipo) {
 			case '1':
 				$subpreg = 'ATENCIÓN COMERCIAL';
@@ -569,7 +597,7 @@ class RotacionPersonal
 		         INNER JOIN AD_SGC_ENCUESTA_RESPUESTA F ON A.ID_RESPUESTA = F.ID_RESPUESTA
 		         WHERE D.SUBPREGUNTA = '$subpreg'
 						 			$where_cliente
-		               AND B.FECHA >= TO_DATE('$fecha_ini', 'dd/mm/yyyy') AND B.FECHA <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')
+		               AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'mm/yyyy') AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'mm/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')
 		         GROUP BY F.RESPUESTA";
 
 			#	echo $sql;
@@ -588,7 +616,7 @@ class RotacionPersonal
 	}
 
 
-	public function grafica_PreguntaTabla_Det($tipo, $cliente, $fecha)
+	public function grafica_PreguntaTabla_Det($tipo, $cliente, $fecha, $mes)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -599,9 +627,14 @@ class RotacionPersonal
 			$where_cliente = " AND B.ID_CLIENTE = $cliente";
 		}
 
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
 		switch ($tipo) {
 			case '1':
 				$subpreg = 'ATENCIÓN COMERCIAL';
@@ -632,16 +665,16 @@ class RotacionPersonal
 				break;
 		}
 
-		$sql = "SELECT B.ID_CLIENTE, CL.V_RAZON_SOCIAL, F.RESPUESTA  FROM  AD_SGC_ENCUESTA_ENC B
+		$sql = "SELECT B.ID_CLIENTE, CL.V_RAZON_SOCIAL, F.RESPUESTA,  F.RESPUESTA2  FROM  AD_SGC_ENCUESTA_ENC B
 		         INNER JOIN AD_SGC_ENCUESTA_DET A ON A.CONSECUTIVO_ENC = B.CONSECUTIVO_ENC
 		         INNER JOIN AD_SGC_ENCUESTA_SUBPREGUNTA D ON A.ID_PREGUNTA = D.ID_PREGUNTA AND D.ID_SUBPREGUNTA = A.ID_SUBPREGUNTA AND B.ENCUESTA_TIPO = D.TIPO_ENCUESTA
 		         INNER JOIN AD_SGC_ENCUESTA_RESPUESTA F ON A.ID_RESPUESTA = F.ID_RESPUESTA
 						 INNER JOIN CLIENTE CL ON B.ID_CLIENTE = CL.IID_NUM_CLIENTE
 		         WHERE D.SUBPREGUNTA = '$subpreg'
 						 			$where_cliente
-		               AND B.FECHA >= TO_DATE('$fecha_ini', 'dd/mm/yyyy') AND B.FECHA <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')";
+		               AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'mm/yyyy') AND  TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
 
-			#	echo $sql;
+				#echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 
@@ -656,7 +689,7 @@ class RotacionPersonal
 		return $res_array;
 	}
 
-	public function grafica_Pregunta2($tipo, $cliente, $fecha)
+	public function grafica_Pregunta2($tipo, $cliente, $fecha, $mes)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -668,8 +701,14 @@ class RotacionPersonal
 		}
 
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
+
 		switch ($tipo) {
 			case '1':
 				$subpreg = '¿ACTUALMENTE TIENE ALGUNA INCONFORMIDAD O QUEJA QUE NO HA SIDO CUBIERTA POR ARGO?';
@@ -691,7 +730,7 @@ class RotacionPersonal
 		         INNER JOIN AD_SGC_ENCUESTA_PREGUNTA D ON A.ID_PREGUNTA = D.ID_PREGUNTA AND B.ENCUESTA_TIPO = D.TIPO_ENCUESTA AND A.ID_CONSECUTIVO = D.IID_CONSECUTIVO
 		         INNER JOIN AD_SGC_ENCUESTA_RESPUESTA F ON A.ID_RESPUESTA = F.ID_RESPUESTA
 		         WHERE D.PREGUNTA = '$subpreg'
-		               AND B.FECHA >= TO_DATE('$fecha_ini', 'dd/mm/yyyy') AND B.FECHA <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')
+		               AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'mm/yyyy') AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')
 									 $where_cliente
 		         GROUP BY F.RESPUESTA";
 
@@ -711,7 +750,7 @@ class RotacionPersonal
 		return $res_array;
 	}
 
-	public function grafica_Pregunta2Tabla_Det($tipo, $cliente, $fecha)
+	public function grafica_Pregunta2Tabla_Det($tipo, $cliente, $fecha, $mes)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -722,9 +761,14 @@ class RotacionPersonal
 			$where_cliente = " AND B.ID_CLIENTE = $cliente";
 		}
 
+		if ($mes == 1 ) {
+			$fecha_ini = "01/".$fecha;
+			$fecha_fin = "06/".$fecha;
+		}elseif ($mes == 2) {
+			$fecha_ini = "07/".$fecha;
+			$fecha_fin = "12/".$fecha;
+		}
 
-		$fecha_ini =  substr($fecha,0,10);
-		$fecha_fin = substr($fecha,11,10);
 		switch ($tipo) {
 			case '1':
 				$subpreg = '¿ACTUALMENTE TIENE ALGUNA INCONFORMIDAD O QUEJA QUE NO HA SIDO CUBIERTA POR ARGO?';
@@ -741,13 +785,13 @@ class RotacionPersonal
 		}
 	#	$subpreg ='¿ESTA CONFORME CON EL SETVICIO QUE SE LE BRINDO POR PARTE DE ARGO ALMACENADORA?';
 
-		$sql = "SELECT b.id_cliente, CL.V_RAZON_SOCIAL , F.RESPUESTA  FROM  AD_SGC_ENCUESTA_ENC B
+		$sql = "SELECT b.id_cliente, CL.V_RAZON_SOCIAL , F.RESPUESTA, F.RESPUESTA2  FROM  AD_SGC_ENCUESTA_ENC B
 		         INNER JOIN AD_SGC_ENCUESTA_DET A ON A.CONSECUTIVO_ENC = B.CONSECUTIVO_ENC
 		         INNER JOIN AD_SGC_ENCUESTA_PREGUNTA D ON A.ID_PREGUNTA = D.ID_PREGUNTA AND B.ENCUESTA_TIPO = D.TIPO_ENCUESTA AND A.ID_CONSECUTIVO = D.IID_CONSECUTIVO
 		         INNER JOIN AD_SGC_ENCUESTA_RESPUESTA F ON A.ID_RESPUESTA = F.ID_RESPUESTA
 						 INNER JOIN CLIENTE CL ON B.ID_CLIENTE = CL.IID_NUM_CLIENTE
 		         WHERE D.PREGUNTA = '$subpreg'
-		               AND B.FECHA >= TO_DATE('$fecha_ini', 'dd/mm/yyyy') AND B.FECHA <= TO_DATE('$fecha_fin', 'DD/MM/YYYY')
+		               AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'mm/yyyy') AND TO_DATE(TO_CHAR(B.FECHA, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')
 									 $where_cliente";
 
 #echo $SQL;
@@ -885,7 +929,7 @@ class RotacionPersonal
 	    return $d && $d->format($format) === $date;
 	}
 
-	function consultaReal($plaza, $tipo, $fecha, $cliente){
+	function consultaReal($plaza, $tipo, $fecha, $mes, $cliente){
 			$conn = conexion::conectar();
 			$res_array = array();
 			if ($plaza == 0) {
@@ -893,9 +937,16 @@ class RotacionPersonal
 			}else {
 				$where_plaza = " WHERE Z.PLAZA = $plaza";
 			}
-			$fecha_ini =  substr($fecha,0,10);
-			$fecha_fin = substr($fecha,11,10);
-			$fechaF = "AND TO_DATE(A.FECHA, 'DD/MM/YYY') >= TO_DATE('$fecha_ini', 'dd/mm/yyyy')  AND TO_DATE(A.FECHA, 'DD/MM/YYY') <= TO_DATE('$fecha_fin', 'dd/mm/yyyy') ";
+
+			if ($mes == 1 ) {
+				$fecha_ini = "01/".$fecha;
+				$fecha_fin = "06/".$fecha;
+			}elseif ($mes == 2) {
+				$fecha_ini = "07/".$fecha;
+				$fecha_fin = "12/".$fecha;
+			}
+
+			$fechaF = "AND TO_DATE(TO_CHAR(A.FECHA, 'MM/YYY'), 'MM/YYY') >= TO_DATE('$fecha_ini', 'mm/yyyy')  AND TO_DATE(TO_CHAR(A.FECHA, 'MM/YYY'), 'MM/YYY') <= TO_DATE('$fecha_fin', 'mm/yyyy') ";
 
 			if ($cliente == "ALL") {
 				$were_cl = " ";
