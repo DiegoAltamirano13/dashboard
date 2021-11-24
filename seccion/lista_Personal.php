@@ -123,8 +123,8 @@ $codigobars = " ";
       <div class="nav-tabs-custom">
             <?php
                   $tablaActivos = $obj_class->tablaActivos("CORPORATIVO");
-                  $tablaActivos2 = $obj_class->tablaActivos("CÓRDOBA");
-                  $tablaActivos3 = $obj_class->tablaActivos("MÉXICO");
+                  $tablaActivos2 = $obj_class->tablaActivos("CORDOBA");
+                  $tablaActivos3 = $obj_class->tablaActivos("MEXICO");
                   $tablaActivos4 = $obj_class->tablaActivos("GOLFO");
                   $tablaActivos5 = $obj_class->tablaActivos("PENINSULA");
                   $tablaActivos6 = $obj_class->tablaActivos("PUEBLA");

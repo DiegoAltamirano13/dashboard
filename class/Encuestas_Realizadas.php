@@ -361,7 +361,7 @@ class RotacionPersonal
 
 
 		$where_fechas = "AND TO_DATE(TO_CHAR(R.D_FECHA_ENVIO, 'MM/YYYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.D_FECHA_ENVIO, 'MM/YYYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
-		$where_fechas2 = "TO_DATE(TO_CHAR(R.FECHA, 'MM/YYY'), 'MM/YYYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.FECHA, 'MM/YYY'), 'MM/YYYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
+		$where_fechas2 = "TO_DATE(TO_CHAR(R.FECHA, 'MM/YYY'), 'MM/YYY') >= TO_DATE('$fecha_ini', 'MM/YYYY') AND TO_DATE(TO_CHAR(R.FECHA, 'MM/YYY'), 'MM/YYY') <= TO_DATE('$fecha_fin', 'MM/YYYY')";
 
 		$sql ="SELECT R.ID_CLIENTE, CL.V_RAZON_SOCIAL,  'SIN CONTESTAR' AS ESTATUS
 		          FROM AD_SGC_ENCUESTA_TIPO_CLIENTE R

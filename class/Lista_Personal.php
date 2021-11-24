@@ -190,6 +190,10 @@ class ListaPersonal
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 
+		if ($plaza == 'CÓRDOBA') {
+			#echo $sql;
+		}
+
 		while (($row = oci_fetch_assoc($stid)) != false)
 		{
 			$res_array[]= $row;

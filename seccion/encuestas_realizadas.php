@@ -1096,7 +1096,7 @@ tr.shown td.details-control {
                             if ($tablaDetalleResp[$i]["ESTATUS"] == "CONTESTADA") {
                               $color_rgb = "#1AB394";
                             }else {
-                              $color_rgb = "#DC1B60";
+                              $color_rgb = "#922B3E";
                             }
                             ?>
                         <tr>
@@ -1198,7 +1198,7 @@ tr.shown td.details-control {
                                 }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "REGULAR") {
                                   $color_rgb = "#84b6f4";
                                 }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "MALO") {
-                                  $color_rgb = "#D81B60";
+                                  $color_rgb = "#922B3E";
                                 }
                                 ?>
                             <tr>
@@ -1272,7 +1272,7 @@ tr.shown td.details-control {
                         for ($i=0; $i <count($tablaDetalleResp) ; $i++) {
                           if ($numeroEncuesta == 1) {
                             if ($tablaDetalleResp[$i]["RESPUESTA"] == "SI") {
-                              $color_rgb = "#D81B60";
+                              $color_rgb = "#922B3E";
                             }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "NO") {
                               $color_rgb = "#1AB394";
 
@@ -1281,7 +1281,7 @@ tr.shown td.details-control {
                             if ($tablaDetalleResp[$i]["RESPUESTA"] == "SI") {
                               $color_rgb = "#1AB394";
                             }elseif ($tablaDetalleResp[$i]["RESPUESTA"] == "NO") {
-                              $color_rgb = "#D81B60";
+                              $color_rgb = "#922B3E";
                             }
                           }
 
@@ -1572,7 +1572,7 @@ $donut_tooltip = "show: false,
 
           $data = $positivasReal;
           $data2 = $negativasReal;
-          $color = "#DC1B60";
+          $color = "#922B3E";
           $color2 = "#1AB394";
       ?>
 
@@ -1622,7 +1622,7 @@ $donut_tooltip = "show: false,
           $label2 =  '<form><input type="hidden" name="fecha" value="'.$fecha.'"><input type="hidden" name="cliente" value="'.$cliente.'"><input type="hidden" name="tienc" value="X"><input type="hidden" name="ntipo" value="X"><input type="hidden" name="periodo" value="'.$mes.'"><button  href="'.$_SERVER['REQUEST_URI'].'?cliente='.$cliente.'&fecha='.$fecha.'" style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$widgetsClientes[0]["RESPONDIDAS"].'" class="btn btn-link btn-xs" enabled>RESPONDIDAS</button></form>' ;
           //$label3 =  '<form method="post"><input type="hidden" name="co_plaza_nombre" value="'.$grafica[$i]["TIPO_RES"].'"><input type="hidden" name="grafica_co_pros" value="2"><button style="color:#222D32; text-shadow:#fff 1px -1px, #fff -1px 1px, #fff 1px 1px, #fff -1px -1px" type="submit" value="'.$grafica[$i]["TIPO_RES"].'"  name="co_plaza" class="btn btn-link btn-xs" disabled>'.$grafica[$i]["TIPO_RES"].'</button></form>' ;
 
-          $color ='#E91B73';
+          $color ='#922B3E';
           $color2 = '#1AE2EE';
 
           $data = round($widgetsClientes[0]["N_RESPONDIDAS"], 2);
@@ -1695,7 +1695,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -1786,7 +1786,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -1877,7 +1877,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color ='#D81B60';
+                $color ='#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -1968,7 +1968,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -2059,7 +2059,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -2150,7 +2150,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -2238,7 +2238,7 @@ $donut_tooltip = "show: false,
                 $color ='#FAEF07';
                 break;
               case 'SI':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'NO':
                 $color = '#1AB394';
@@ -2329,7 +2329,7 @@ $donut_tooltip = "show: false,
                 $color ='#FAEF07';
                 break;
               case 'NO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'SI':
                 $color = '#1AB394';
@@ -2420,7 +2420,7 @@ $donut_tooltip = "show: false,
                 $color ='#FAEF07';
                 break;
               case 'NO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'SI':
                 $color = '#1AB394';
@@ -2514,7 +2514,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -2605,7 +2605,7 @@ $donut_tooltip = "show: false,
                 $color = '#F39C12';
                 break;
               case 'MALO':
-                $color = '#D81B60';
+                $color = '#922B3E';
                 break;
               case 'EXCELENTE':
                 $color = '#1AB394';
@@ -2685,7 +2685,7 @@ $donut_tooltip = "show: false,
 
             $data = $positivasReal;
             $data2 = $negativasReal;
-            $color = "#DC1B60";
+            $color = "#922B3E";
             $color2 = "#1AB394";
         ?>
 
@@ -2756,7 +2756,7 @@ $donut_tooltip = "show: false,
                   $color = '#F39C12';
                   break;
                 case 'MALO':
-                  $color = '#D81B60';
+                  $color = '#922B3E';
                   break;
                 case 'EXCELENTE':
                   $color = '#1AB394';
@@ -2844,7 +2844,7 @@ $donut_tooltip = "show: false,
               if ($numeroEncuesta == 1 ) {
                 switch ($graf_Pregunta[$i]["RESPUESTA"]) {
                   case 'SI':
-                    $color = '#D81B60';
+                    $color = '#922B3E';
                     break;
                   case 'NO':
                     $color = '#1AB394';
@@ -2859,7 +2859,7 @@ $donut_tooltip = "show: false,
                     $color = '#1AB394';
                     break;
                   case 'NO':
-                    $color = '#D81B60';
+                    $color = '#922B3E';
                     break;
                   default:
                     $color = '#BC0C0C';
