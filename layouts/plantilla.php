@@ -87,7 +87,7 @@ $class_active = $_SESSION['modulo_actual'];
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  
+
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -334,6 +334,22 @@ $class_active = $_SESSION['modulo_actual'];
         </li>
         <?php } ?>
       <!-- ****** TERMINA MENU DE COMERCIO EXTERIOR ****** -->
+      <!-- ******** INICIA MENU DE SGC ******** -->
+       <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '56'); if ($modulos_valida > 0){ ?>
+       <li class="<?php if($active=="sgc.php"||$active=="notificaciones.php"||$active=="upload_minuta.php"){echo "active";}?> treeview" title="SISTEMA DE GESTION DE CALIDAD">
+         <a href="#">
+           <i class="fa fa-line-chart"></i> <span>Sistema de Gestion de Calidad</span>
+           <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+         </a>
+         <ul class="treeview-menu">
+           <!-- BOTTON CONTROL DE SACP -->
+           <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '56'); if ($modulos_valida > 0){ ?>
+           <li class="<?php if($active=="sgc.php"||$active=="upload_minuta.php"){echo "active";}?>"><a class="click_modal_cargando" href="sgc.php"><i class="fa fa-circle-o"></i> SACP</a></li>
+           <?php } ?>
+         </ul>
+       </li>
+       <?php } ?>
+    <!-- ******** TERMINA MENU DE SGC ******** -->
 
       <!-- ****** INICIA MENU DE SISTEMAS ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '1,2,50'); if ($modulos_valida > 0){ ?>

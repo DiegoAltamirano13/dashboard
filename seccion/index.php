@@ -1107,6 +1107,24 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   </div>
                   <?php } ?>
 
+                    <!-- INICIA BOTON SGC -->
+
+  	<?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 56); if($modulos_valida > 0){ ?>
+  		  <div class="col-md-3 col-sm-6 col-xs-12">
+  		  	<div style="background-color:#D9EDF7" class="info-box">
+  		  		<span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/revision-positiva.png" alt="Icono Modulo"></span>
+                      <div class="info-box-content">
+                        <span class="info-box-number">
+                          <h4>Dashboard Acciones Correctivas</h4>
+                         </span>
+                       </div>
+                     <a class="click_modal_cargando" href="sgc.php">
+                  <button class="btn bg-gray  btn-block" data-intro="Botón para entrar al Dashboard Sistemas">Entrar <i class="fa fa-arrow-circle-right"></i></button>                 </a>
+                </div>
+              </div>
+      <?php } ?>
+      <!-- TERMINA BOTON SGC -->
+
               </div>
               <!-- TERMINA BOTONES DE CADA SECCION -->
 
