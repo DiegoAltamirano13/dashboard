@@ -123,8 +123,8 @@ $codigobars = " ";
       <div class="nav-tabs-custom">
             <?php
                   $tablaActivos = $obj_class->tablaActivos("CORPORATIVO");
-                  $tablaActivos2 = $obj_class->tablaActivos("CORDOBA");
-                  $tablaActivos3 = $obj_class->tablaActivos("MEXICO");
+                  $tablaActivos2 = $obj_class->tablaActivos("CÓRDOBA");
+                  $tablaActivos3 = $obj_class->tablaActivos("MÉXICO");
                   $tablaActivos4 = $obj_class->tablaActivos("GOLFO");
                   $tablaActivos5 = $obj_class->tablaActivos("PENINSULA");
                   $tablaActivos6 = $obj_class->tablaActivos("PUEBLA");
@@ -138,10 +138,10 @@ $codigobars = " ";
           <li class="active"><a href="#tab_corporativo" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL COORPORATIVO
             <span data-toggle="tooltip" title="" class="badge bg-verde" data-original-title="Total de Personal"><?php echo count($tablaActivos); ?></span></a>
           </li>
-          <li><a href="#tab_cordoba" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL CORDOBA
+          <li><a href="#tab_cordoba" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL CÓRDOBA
             <span data-toggle="tooltip" title="" class="badge bg-verde" data-original-title="Total de Personal"><?php echo count($tablaActivos2); ?></span></a>
           </li>
-          <li><a href="#tab_mex" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL MEXICO
+          <li><a href="#tab_mex" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL MÉXICO
             <span data-toggle="tooltip" title="" class="badge bg-verde" data-original-title="Total de Personal"><?php echo count($tablaActivos3); ?></span></a>
           </li>
           <li><a href="#tab_golfo" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL GOLFO
@@ -728,10 +728,10 @@ $codigobars = " ";
           <li class="active" style="color:#2EA620;"><a href="#tab_corporativo" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL INACTIVO COORPORATIVO
             <span data-toggle="tooltip" title="" class="badge bg-red" data-original-title="Total de Personal"><?php echo count($tablaActivos); ?></span></a>
           </li>
-          <li><a href="#tab_cordoba" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL INACTIVO CORDOBA
+          <li><a href="#tab_cordoba" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL INACTIVO CÓRDOBA
             <span data-toggle="tooltip" title="" class="badge bg-red" data-original-title="Total de Personal"><?php echo count($tablaActivos2); ?></span></a>
           </li>
-          <li><a href="#tab_mex" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL INACTIVO MEXICO
+          <li><a href="#tab_mex" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL INACTIVO MÉXICO
             <span data-toggle="tooltip" title="" class="badge bg-red" data-original-title="Total de Personal"><?php echo count($tablaActivos3); ?></span></a>
           </li>
           <li><a href="#tab_golfo" data-toggle="tab"><i class="fa fa-users"></i> PERSONAL INACTIVO GOLFO
