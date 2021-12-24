@@ -234,7 +234,7 @@ if (isset($_POST["import"]))
                                   }
                               }
                             } else {
-                              echo $query;
+                            #  echo $query;
                                 $type = "error";
                                 $message = "Problema Importando Excel!!!";
                             }

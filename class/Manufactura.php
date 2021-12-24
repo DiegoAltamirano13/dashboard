@@ -535,7 +535,497 @@ class Op_in_car_des_info
 
 	}
 	// -_-_-_-_-_-_-_-_- TERMINA METODO PARA INFORMACION CARGAS(SALIDAS) 1 -_-_-_-_-_-_-_-_-
+	public function car_des_prog_info($plaza_manufac,$dia_manufac,$fec_ini_per_manufac,$fec_fin_per_manufac,$select_manufac_global_plaza)
+	{
+		/* CONCATENACION AND SQL */
+		if ($dia_manufac == true){
+			switch (true) {
+				case ( $fec_ini_per_manufac == true ) && ( $fec_fin_per_manufac == true ):
+					$and_sql_fecha_op_manufac = " AND TRUNC(cargas.d_fec_llegada_aprox) > to_date('".$fec_fin_per_manufac."','dd-mm-yyyy') ";
+					$and_slq_fecha_no_terminados = "  AND TRUNC(cargas.d_fec_llegada_aprox) > to_date('".$fec_fin_per_manufac."', 'dd-mm-yyyy')  ";
+					$and_sql_fecha_terminados = " AND TRUNC(cargas.d_fec_llegada_aprox) > TO_DATE('".$fec_fin_per_manufac."', 'dd-mm-yyyy')";
+					break;
 
+				default:
+					$and_sql_fecha_op_manufac = " AND TRUNC(cargas.d_fec_llegada_aprox) > TO_DATE('".$dia_manufac."','dd-mm-yyyy') ";
+					$and_slq_fecha_no_terminados = "    AND TRUNC(cargas.d_fec_llegada_aprox) > to_date('".$dia_manufac."', 'dd-mm-yyyy') ";
+					$and_sql_fecha_terminados = " AND TRUNC(cargas.d_fec_llegada_aprox) > TO_DATE('".$dia_manufac."', 'dd-mm-yyyy')";
+					break;
+			}
+		}
+		/* CONCATENACION AND SQL */
+		$select_cd = " SELECT  cli.iid_num_cliente AS IID_NUM_CLIENTE, pla.iid_plaza AS id_plaza, pla.v_razon_social AS plaza, alm.v_nombre AS almacen, cargas.id_almacen AS almacen_id, cli.v_razon_social AS rs, cli.v_nombre_corto AS cliente, cargas.n_status AS status,
+				to_char(cargas.d_fec_recepcion, 'dd-mm-yyyy HH24:MI:SS') AS registrado, to_char(cargas.d_fec_llegada_real, 'dd-mm-yyyy HH24:MI:SS') AS llega,
+				to_char(cargas.d_fec_ini_car_des, 'dd-mm-yyyy HH24:MI:SS') AS inicia, to_char(cargas.d_fec_fin_car_des, 'dd-mm-yyyy HH24:MI:SS') AS fin,
+    			to_char(cargas.d_fec_desp_vehic, 'dd-mm-yyyy HH24:MI:SS') AS despacho,
+					cargas.n_tiempo_operacion
+				,cargas.id_tipo AS tipo, cargas.v_observaciones_salida AS obs, cargas.v_observaciones_cancelacion AS obs_can, veh.v_descripcion AS vehiculo, cargas.v_placas_vehiculo_real AS placas1, cargas.v_placas_vehiculo_dos AS placas2, cargas.id_anden AS anden
+				,ume.v_descripcion AS ume, cargas.n_cantidad_ume AS cantidad, per.v_nombre AS almacenista_n, per.v_ape_pat AS almacenista_p, per.v_ape_mat AS almacenista_m
+				,cargas.id_solicitud AS solicitud, cargas.iid_arr_ret AS arribo, cargas.n_tiempo_operacion, cargas.iid_regimen,
+       case when cli.iid_num_cliente = 2905 then
+            ane.vid_usuario_cdvigente
+       else
+            ' '
+       end as proyecto,
+       case when cli.iid_num_cliente = 2905 then
+            ane.vid_factura
+       else
+            ' '
+       end as factura";
+
+		$union_cordoba = "";
+		$union_Mex = "";
+		$union_Golfo = "";
+		$union_Peninsula = "";
+		$union_Puebla = "";
+		$union_Bajio = "";
+		$union_Occidente = "";
+		$union_Noreste = "";
+		$union_Leon = "";
+
+		$arrayReal =array("Val"=>$select_manufac_global_plaza);
+
+		$arrayCount = count($select_manufac_global_plaza);
+
+		//print_r($arrayReal);
+		//echo $arrayCount;
+		//print_r($select_manufac_global_plaza);
+		if (!empty($plaza_manufac)) {
+					if ($plaza_manufac == 'CÓRDOBA (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "3";
+						$union_cordoba = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 3
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'MÉXICO (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "4";
+						$union_cordoba = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 4
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'GOLFO (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "5";
+						$union_Golfo = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 5
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'PENINSULA (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "6";
+						$union_Peninsula = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 6
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'PUEBLA (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "7";
+						$union_Puebla = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 7
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'BAJIO (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "8";
+						$union_Bajio = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 8
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'OCCIDENTE (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "17";
+						$union_Occidente = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 17
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}elseif ($plaza_manufac == 'NORESTE (ARGO)') {
+						$data_link = " ";
+						$inplaza = $inplaza. "18";
+						$union_Noreste = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+								LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+								LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+								LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+								LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+								LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+								LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+								LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+								WHERE cargas.id_tipo IN (1,2)
+								AND pla.iid_plaza = 18
+								".$and_sql_fecha_op_manufac."
+								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+								AND cargas.iid_regimen = 1
+								AND CARGAS.N_CROSSDOCK = 0
+								UNION";
+					}
+		}else {
+
+					$inplaza = "";
+					for ($i=0; $i < $arrayCount; $i++) {
+						switch ($select_manufac_global_plaza[$i]){
+									////////////////////////////// CASO PARA PLAZA 3 (CORDOBA)//////////////////////////////////////
+
+									case "3":
+										$data_link = " ";
+										$inplaza = $inplaza. "3,";
+										$union_cordoba = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 3
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									////////////////////////////// CASO PARA PLAZA 4 (MEXICO)//////////////////////////////////////
+									case "4":
+										$data_link = " ";
+										$inplaza = $inplaza. "4,";
+										$union_Mex = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 4
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									////////////////////////////// CASO PARA PLAZA 5 (GOLFO)//////////////////////////////////////
+									case "5":
+										$data_link = " ";
+										$inplaza = $inplaza. "5,";
+										$union_Golfo = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 5
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									////////////////////////////// CASO PARA PLAZA 6 (PENINSULA)//////////////////////////////////////
+									case "6":
+										$data_link = " ";
+										$inplaza = $inplaza. "6,";
+										$union_Peninsula = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 6
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									////////////////////////////// CASO PARA PLAZA 7 (PUEBLA)//////////////////////////////////////
+									case "7":
+										$data_link = " ";
+										$inplaza = $inplaza. "7,";
+										$union_Puebla = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 7
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									//////////////////////////////// CASO PARA PLAZA 8 (BAJIO) ////////////////////////////////////
+									case "8":
+										$data_link = " ";
+										$inplaza = $inplaza. "8,";
+										$union_Bajio = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 8
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									////////////////////////////// CASO PARA PLAZA 17 (OCCIDENTE)//////////////////////////////////////
+									case "17":
+										$data_link = " ";
+										$inplaza = $inplaza. "17,";
+										$union_Occidente = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 17
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+									////////////////////////////// CASO PARA PLAZA 18 (NORESTE)//////////////////////////////////////
+									case "18":
+										$data_link = "";
+										$inplaza = $inplaza. "18,";
+										$union_Noreste = $select_cd." FROM op_in_solicitud_carga_descarga".$data_link." cargas
+												LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+												LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+												LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+												LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+												LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+												LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+												LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+												WHERE cargas.id_tipo IN (1,2)
+												AND pla.iid_plaza = 18
+												".$and_sql_fecha_op_manufac."
+												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+												AND cargas.iid_regimen = 1
+												AND CARGAS.N_CROSSDOCK = 0
+												UNION";
+									break;
+						}
+					}
+			$inplaza = substr($inplaza, 0, -1);
+	}
+		$conn = conexion::conectar();
+	 	$sql_process = " UNION $select_cd
+									  FROM op_in_solicitud_carga_descarga cargas
+									  LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+									  LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+									  LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+									  LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo =
+									                                       cargas.id_tipo_vehiculo_real
+									  LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+									  LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+									  LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo =
+									                                         cargas.iid_arr_ret
+									 WHERE cargas.id_tipo IN (1, 2)
+									   AND pla.iid_plaza in (".$inplaza.")
+									   ".$and_slq_fecha_no_terminados."
+									   AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+									   AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
+									   AND cargas.iid_regimen = 1
+									   AND CARGAS.N_CROSSDOCK = 0
+									UNION
+										$select_cd
+									  FROM op_in_solicitud_carga_descarga cargas
+									  LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+									  LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+									  LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+									  LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo =
+									                                       cargas.id_tipo_vehiculo_real
+									  LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+									  LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+									  LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo =
+									                                         cargas.iid_arr_ret
+									 WHERE cargas.id_tipo IN (1, 2)
+									   AND pla.iid_plaza in (".$inplaza.")
+									   ".$and_slq_fecha_no_terminados."
+									   AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+									   AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
+									   AND cargas.iid_regimen = 2
+									   AND CARGAS.N_CROSSDOCK = 0 ";
+
+	  $sql_termina = " UNION $select_cd
+										FROM op_in_solicitud_carga_descarga cargas
+									 LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+									 LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+									 LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+									 LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo =
+																												cargas.id_tipo_vehiculo_real
+									 LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+									 LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+									 LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo =
+																													cargas.iid_arr_ret
+									WHERE cargas.id_tipo IN (1, 2)
+										AND pla.iid_plaza in (".$inplaza.")
+										".$and_sql_fecha_terminados."
+										AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+										AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
+										AND cargas.iid_regimen = 1
+										AND CARGAS.N_CROSSDOCK = 0
+									UNION $select_cd
+									FROM op_in_solicitud_carga_descarga cargas
+									LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+									LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+									LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+									LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo =
+																											 cargas.id_tipo_vehiculo_real
+									LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+									LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+									LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo =
+																												 cargas.iid_arr_ret
+								 WHERE cargas.id_tipo IN (1, 2)
+									 AND pla.iid_plaza in (".$inplaza.")
+									 ".$and_sql_fecha_terminados."
+									 AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+									 AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
+									 AND cargas.iid_regimen = 2
+									 AND CARGAS.N_CROSSDOCK = 0
+									 ORDER BY cliente ASC ";
+
+		$sql = $select_cd." FROM op_in_solicitud_carga_descarga cargas
+				LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+				LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+				LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+				LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+				LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+				LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+				LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+				WHERE cargas.id_tipo IN (1,2)
+				AND pla.iid_plaza in (".$inplaza.")
+				".$and_sql_fecha_op_manufac."
+				AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+				AND cargas.iid_regimen = 1
+				AND CARGAS.N_CROSSDOCK = 0
+				UNION".
+		    $select_cd." FROM op_in_solicitud_carga_descarga cargas
+				LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
+				LEFT JOIN plaza pla ON pla.iid_plaza = cargas.id_plaza
+				LEFT JOIN cliente cli on cli.iid_num_cliente = cargas.id_cliente
+				LEFT JOIN op_in_tipo_vehiculo veh on veh.iid_tipo = cargas.id_tipo_vehiculo_real
+				LEFT JOIN co_ume ume on ume.iid_ume = cargas.iid_ume
+				LEFT JOIN no_personal per on per.iid_empleado = cargas.id_almacenista
+				LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
+				WHERE cargas.id_tipo IN (1,2) AND pla.iid_plaza in (".$inplaza.")
+				".$and_sql_fecha_op_manufac."
+				AND (cargas.n_virtual is null or cargas.n_virtual = 0)
+				AND cargas.iid_regimen = 2
+				AND CARGAS.N_CROSSDOCK = 0
+				$sql_process
+				$sql_termina";
+		$stid = oci_parse($conn, $sql);
+		oci_execute($stid );
+  #  echo $sql;
+
+		while (($row = oci_fetch_assoc($stid)) != false)
+		{
+			$this->res_cargas_info[]=$row;
+		}
+			oci_free_statement($stid);
+			oci_close($conn);
+			return $this->res_cargas_info;
+
+	}
 
 	// -_-_-_-_-_-_-_-_- INICIA METODO HISTORIAL DE OPERACIONES POR PLAZA -_-_-_-_-_-_-_-_-
 	public function historial_plaza($plaza_manufac)

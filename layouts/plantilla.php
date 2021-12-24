@@ -383,16 +383,21 @@ $class_active = $_SESSION['modulo_actual'];
             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
           <ul class="treeview-menu">
-            <!-- BOTTON ROTACION DE PERSONAL -->
+            <!-- BOTTON LISTA PERSONAL -->
             <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
             <li class="<?php if($active=="lista_Personal.php"){echo "active";}?>"><a class="click_modal_cargando" href="lista_Personal.php"><i class="fa fa-circle-o"></i> Lista de Personal</a>
             </li>
             <?php } ?>
+              <!-- BOTTON ROTACION DE PERSONAL -->
             <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="rotacion_personal.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal.php"><i class="fa fa-circle-o"></i> Rotación de Personal</a>
+            <li class="<?php if($active=="rotacion_personal.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal.php"><i class="fa fa-circle-o"></i> Rotación de Personal(Quincenal)</a>
             </li>
             <?php } ?>
             <!--TERMINA BOTTON ROTACION DE PERSONAL -->
+            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
+            <li class="<?php if($active=="rotacion_personal_semana_quincena.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal_semana_quincena.php"><i class="fa fa-circle-o"></i> Rotación de Personal (Semanal)</a>
+            </li>
+            <?php } ?>
             <!-- BOTTON OMINA PAGADA -->
             <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '20'); if ($modulos_valida > 0){ ?>
             <li class="<?php if($active=="nomina_pagada.php"){echo "active";}?>"><a class="click_modal_cargando" href="nomina_pagada.php"><i class="fa fa-circle-o"></i> Nomina Pagada</a></li>

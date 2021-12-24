@@ -21,7 +21,7 @@ session_start();
 include_once '../libs/conOra.php';
 $conn   = conexion::conectar();
 
-include_once '../class/Rotacion_personal.php';
+include_once '../class/Rotacion_personal_Semanal_Quincenal.php';
 $obj_class = new RotacionPersonal();
 //////////////////////////// INICIO DE AUTOLOAD
 function autoload($clase){
@@ -119,7 +119,7 @@ $widgets = $obj_class->widgets($plaza,$contrato,$departamento,$area,$fil_check,$
 $widgetsAnuales = $obj_class->anualesWidgets($plaza);
 $empleado = $obj_class->cantidadEmpleados($fecha);
 //GRAFICA
-$grafica = $obj_class->grafica($plaza,$contrato,$departamento,$area,$fil_check,$fecha,$fil_habilitado);
+$grafica = $obj_class->grafica($plaza,$contrato,$departamento,$area,$fil_check,$fecha,$fil_habilitado, 0);
 $graficaMensual = $obj_class->graficaMensual($plaza,$fecha,$fil_check,$fil_habilitado);
 //TABLA DETALLE ACTIVOS
 $tablaActivos = $obj_class->tablaActivos($plaza,$contrato,$departamento,$area,$fil_check,$fecha);
@@ -140,7 +140,7 @@ $rotacionPorAlmacen = $obj_class->grafica_PerAlmacen($plaza,$contrato,$departame
       <h1>
         <?php /*echo $fecha;*/ ?>
         Dashboard
-        <small>Rotación de Personal (Quincenal)</small>
+        <small>Rotación de Personal(Semanal)</small>
       </h1>
     </section>
     <!-- Main content -->
@@ -166,8 +166,10 @@ $rotacionPorAlmacen = $obj_class->grafica_PerAlmacen($plaza,$contrato,$departame
 
         <?php if ($plaza == 'ALL'){ ?>
         <div class="col-md-12">
-          <div id="graf_perM2"></div>
-          <div id="graf_bar"></div>
+          <!--<div id="graf_perM2"></div>-->
+          <div id="graf_perMSemanal"></div>
+          <!--<div id="graf_bar"></div>-->
+          <div id="graf_barSemanal"></div>
           <div id="graf_perM"></div>
         </div>
         <?php } ?>
@@ -961,13 +963,14 @@ $(function () {
     });
     var categories = [
     <?php
-     for ($i=0; $i <count($grafica) ; $i++) {
+    $graficaQuincenal = $obj_class->grafica($plaza,$contrato,$departamento,$area,$fil_check,$fecha,$fil_habilitado, 1);
+     for ($i=0; $i <count($graficaQuincenal) ; $i++) {
 
-       if ($grafica[$i]["BAJA"]> 0) {
-          $valor_calculo = number_format(($grafica[$i]["BAJA"]/$grafica[$i]["ACTIVO"]) * 100, 2);
-          echo "'".$grafica[$i]["PLAZA"]. "  ".$valor_calculo ." %',";
+       if ($graficaQuincenal[$i]["BAJA"]> 0) {
+          $valor_calculo = number_format(($graficaQuincenal[$i]["BAJA"]/$graficaQuincenal[$i]["ACTIVO"]) * 100, 2);
+          echo "'".$graficaQuincenal[$i]["PLAZA"]. "  ".$valor_calculo ." %',";
        }else {
-          echo "'".$grafica[$i]["PLAZA"]." 0.00 %',";
+          echo "'".$graficaQuincenal[$i]["PLAZA"]." 0.00 %',";
        }
 
      }
@@ -975,22 +978,22 @@ $(function () {
     ];
     var data1 = [
     <?php
-    for ($i=0; $i <count($grafica) ; $i++) {
-      echo $grafica[$i]["ACTIVO"].",";
+    for ($i=0; $i <count($graficaQuincenal) ; $i++) {
+      echo $graficaQuincenal[$i]["ACTIVO"].",";
     }
     ?>
     ];
     var data2 = [
     <?php
-    for ($i=0; $i <count($grafica) ; $i++) {
-      echo $grafica[$i]["BAJA"].",";
+    for ($i=0; $i <count($graficaQuincenal) ; $i++) {
+      echo $graficaQuincenal[$i]["BAJA"].",";
     }
     ?>
     ];
     var data3 = [
     <?php
-    for ($i=0; $i <count($grafica) ; $i++) {
-      echo $grafica[$i]["ACTIVON"].",";
+    for ($i=0; $i <count($graficaQuincenal) ; $i++) {
+      echo $graficaQuincenal[$i]["ACTIVON"].",";
     }
     ?>
     ];
@@ -1000,7 +1003,275 @@ $(function () {
             type: 'column'
         },
          title: {
-            text: 'ROTACIÓN DE PERSONAL'
+            text: 'ROTACIÓN DE PERSONAL (QUINCENAL)'
+        },
+
+        legend: {
+            y: -40,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+
+        yAxis: {
+            lineWidth: 2,
+            min: 0,
+            offset: 10,
+            tickWidth: 1,
+            title: {
+                text: 'Personal'
+            },
+            labels: {
+                formatter: function () {
+                  return this.value;
+                }
+            }
+        },
+        tooltip: {
+          shared: false,
+          valueSuffix: ' ',
+          useHTML: false,
+          //valueDecimals: 2,
+          //valuePrefix: '$',
+          //valueSuffix: ' USD'
+        },
+        lang: {
+          printChart: 'Imprimir Grafica',
+          downloadPNG: 'Descargar PNG',
+          downloadJPEG: 'Descargar JPEG',
+          downloadPDF: 'Descargar PDF',
+          downloadSVG: 'Descargar SVG',
+          contextButtonTitle: 'Exportar grafica'
+        },
+        credits: {
+            enabled: false
+        },
+        colors: ['#0073B7', '#D81B60', '#008000'],
+        plotOptions: {
+          series: {
+            minPointLength: 3,
+            dataLabels:{
+              enabled: true
+            },
+            enableMouseTracking:false
+          }
+        },
+        xAxis: {
+          //tickmarkPlacement: 'on',
+          //gridLineWidth: 1,
+          categories: categories,
+          labels: {
+            formatter: function () {
+              var plaza = this.value;
+              var separador = " ";
+              var limite = 1;
+              var plazaReal = plaza.split(separador, limite);
+
+              console.log("lA PLAZA REAL "+plazaReal);
+              url = '?plaza='+this.value+'&check=on';
+              url = '?plaza='+plazaReal+'&check=on&contrato=<?=$contrato?>&depto=<?=$departamento?>&area=<?=$area?>&fecha=<?=$fecha?>';
+                return '<a href="'+url+'">' +
+                    this.value + '</a>';
+            }
+          }
+        },
+        subtitle: {
+          text: '* Click en el nombre de la plaza para filtrar',
+          align: 'right',
+          x: -10,
+        },
+        series:  [{
+          showInLegend:false,
+            name: 'Personal Activo',
+            data: data1,
+        }, {
+          showInLegend:false,
+            name: 'Personal de Baja',
+            data: data2,
+        },{
+          showInLegend:false,
+            name: 'Personal Nuevo',
+            data: data3,
+        }]
+
+    });
+});
+<?php if ($plaza != 'ALL'){ ?>
+  Highcharts.setOptions({
+    lang:{
+      thousandsSep: ','
+    }
+  });
+  var categories = [
+    <?php
+    for ($i=0; $i < count($grafica_Paste) ; $i++) {
+      echo "'".$grafica_Paste[$i]["MES"]."',";
+    }
+    ?>
+  ];
+  var data1 = [
+    <?php
+    for ($i=0; $i < count($grafica_Paste) ; $i++) {
+
+      $mes_Comparar = substr($fecha, 14, 2);
+      if ($i < $mes_Comparar){
+        echo $grafica_Paste[$i]["ACTIVO"].",";
+      }
+      else {
+        echo "0 ,";
+      }
+    }
+    ?>
+  ];
+  var data2 = [
+    <?php
+    for ($i=0; $i < count($grafica_Paste) ; $i++) {
+      $mes_Comparar = substr($fecha, 14, 2);
+      if ($i < $mes_Comparar){
+        echo $grafica_Paste[$i]["BAJA"].",";
+      }else{
+        echo "0 ,";
+      }
+    }
+    ?>
+  ];
+  $('#graf_pie').highcharts({
+    chart:{
+      type: 'column'
+    },
+    title:{
+      text: 'ROTACIÓN DE PERSONAL POR AÑO '
+    },
+
+    legend:{
+      y:-40,
+      borderWidth:1,
+      backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+    },
+    yAxis:{
+      lineWidth: 2,
+      min: 0,
+      offset: 10,
+      tickWidth: 1,
+      title: {
+          text: 'Personal'
+      },
+      labels: {
+          formatter: function () {
+            return this.value;
+          }
+      }
+    },
+    tooltip: {
+      shared: false,
+      valueSuffix: ' ',
+      useHTML: false,
+      //valueDecimals: 2,
+      //valuePrefix: '$',
+      //valueSuffix: ' USD'
+    },
+    lang: {
+      printChart: 'Imprimir Grafica',
+      downloadPNG: 'Descargar PNG',
+      downloadJPEG: 'Descargar JPEG',
+      downloadPDF: 'Descargar PDF',
+      downloadSVG: 'Descargar SVG',
+      contextButtonTitle: 'Exportar grafica'
+    },
+    credits: {
+        enabled: false
+    },
+    colors: ['#0073B7', '#D81B60'],
+    plotOptions: {
+      series: {
+        minPointLength: 3,
+        dataLabels:{
+          enabled: true
+        },
+        enableMouseTracking:false
+      }
+    },
+    xAxis:{
+      categories: categories,
+      labels:{
+        formatter:function(){
+          url = '?plaza='+this.value+'&check=<?= $fil_check; ?>';
+          url = '?plaza='+this.value+'&check=<?=$fil_check?>&contrato=<?=$contrato?>&depto=<?=$departamento?>&area=<?=$area?>&fecha=<?=$fecha?>';
+            return '<a href="'+url+'">' +
+                this.value + '</a>';
+        }
+      }
+    },
+    subtitle:{
+      text: '',
+      align: 'right',
+      x:-10,
+    },
+    series:[{
+      showInLegend:false,
+      name:'Personal Activo',
+      data:data1,
+    },{
+      showInLegend:false,
+      name: 'Personal de baja',
+      data:data2,
+    }]
+  });
+<?php } ?>
+</script>
+
+
+<script type="text/javascript">
+
+$(function () {
+
+    Highcharts.setOptions({
+    lang: {
+      thousandsSep: ','
+    }
+    });
+    var categories = [
+    <?php
+     $graficaSemanal = $obj_class->grafica($plaza,$contrato,$departamento,$area,$fil_check,$fecha,$fil_habilitado, 2);
+     for ($i=0; $i <count($graficaSemanal) ; $i++) {
+
+       if ($graficaSemanal[$i]["BAJA"]> 0) {
+          $valor_calculo = number_format(($graficaSemanal[$i]["BAJA"]/$graficaSemanal[$i]["ACTIVO"]) * 100, 2);
+          echo "'".$graficaSemanal[$i]["PLAZA"]. "  ".$valor_calculo ." %',";
+       }else {
+          echo "'".$graficaSemanal[$i]["PLAZA"]." 0.00 %',";
+       }
+
+     }
+    ?>
+    ];
+    var data1 = [
+    <?php
+    for ($i=0; $i <count($graficaSemanal) ; $i++) {
+      echo $graficaSemanal[$i]["ACTIVO"].",";
+    }
+    ?>
+    ];
+    var data2 = [
+    <?php
+    for ($i=0; $i <count($graficaSemanal) ; $i++) {
+      echo $graficaSemanal[$i]["BAJA"].",";
+    }
+    ?>
+    ];
+    var data3 = [
+    <?php
+    for ($i=0; $i <count($graficaSemanal) ; $i++) {
+      echo $graficaSemanal[$i]["ACTIVON"].",";
+    }
+    ?>
+    ];
+
+    $('#graf_barSemanal').highcharts({
+        chart: {
+            type: 'column'
+        },
+         title: {
+            text: 'ROTACIÓN DE PERSONAL (SEMANAL)'
         },
 
         legend: {
@@ -1433,7 +1704,7 @@ $(function(){
       type:'line'
     },
     title:{
-      text:'ROTACION DE PERSONAL MENSUAL'
+      text:'ROTACIÓN DE PERSONAL MENSUAL (SEMANAL)'
     },
     legend:{
       y: -40,
@@ -1505,13 +1776,13 @@ $(function(){
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-1;} else { echo substr($fecha, 6, 5)-1;} ?>',
       data: data4,
     },{
-      name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-2;} else { echo substr($fecha, 6, 5)-2;} ?>',
+      name:'Personal Activo del <?php if ($fecha == 'ALL') { echo date('Y')-2;} else { echo substr($fecha, 6, 5)-2;} ?>',
       data: data5,
     },{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-2;} else { echo substr($fecha, 6, 5)-2;} ?>',
       data: data6,
     },{
-      name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-3;} else { echo substr($fecha, 6, 5)-3;} ?>',
+      name:'Personal Activo del <?php if ($fecha == 'ALL') { echo date('Y')-3;} else { echo substr($fecha, 6, 5)-3;} ?>',
       data: data7,
     },{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-3;} else { echo substr($fecha, 6, 5)-3;} ?>',
@@ -1547,11 +1818,11 @@ $(function(){
       $tipo = 2 ;
       $tipo2 = 3 ;
       if ($anio2 == $anio) {
-        $porcentaje_anual1 = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes);
-        $porcentaje_anual2 = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo2, $mes);
+        $porcentaje_anual1 = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes, 1);
+        $porcentaje_anual2 = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo2, $mes, 1);
       }else {
-        $porcentaje_anual1 = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo);
-        $porcentaje_anual2 = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo2, $mes);
+        $porcentaje_anual1 = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo , 1);
+        $porcentaje_anual2 = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo2, 1);
       }
           echo number_format($porcentaje_anual1[0]["PORCENTAJE"]+$porcentaje_anual2[0]["PORCENTAJE"], 2).",";
     }
@@ -1564,9 +1835,9 @@ $(function(){
       $anio2 = $anio - 4 +  $i;
       $tipo = 3 ;
       if ($anio2 == $anio) {
-          $porcentaje_anual = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes);
+          $porcentaje_anual = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes, 1);
       }else {
-          $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo);
+          $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, 1);
       }
       echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
     }
@@ -1579,9 +1850,9 @@ $(function(){
       $anio2 = $anio - 4 + $i;
       $tipo = 2 ;
       if ($anio2 == $anio) {
-          $porcentaje_anual = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes);
+          $porcentaje_anual = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes, 1);
       }else {
-          $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo);
+          $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo,  1);
       }
       echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
     }
@@ -1593,7 +1864,7 @@ $(function(){
     for ($i=0; $i < 5; $i++) {
       $anio2 = $anio - $i;
       $tipo = 1 ;
-      $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo);
+      $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, 1);
         //if ($i < $mes_Comparar){
           echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
         //}
@@ -1608,7 +1879,202 @@ $(function(){
       type:'column'
     },
     title:{
-      text:'ROTACIÓN ANUAL GENERAL, ADMINISTRATIVO Y OPERATIVO.'
+      text:'ROTACIÓN ANUAL GENERAL, ADMINISTRATIVO Y OPERATIVO (QUINCENAL).'
+    },
+    legend:{
+      y: -40,
+      borderWidth:1,
+      backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+    },
+    yAxis:{
+      lineWidth:2,
+      offset:10,
+      tickWidth:1,
+      title:{
+        text:'Personal'
+      },
+      labels:{
+        formatter:function(){
+          return this.value;
+        }
+      }
+    },
+    tooltip:{
+      shared:true,
+      valueSuffix: ' ',
+      useHTML: true,
+    },
+    lang:{
+      printChart:'Imprmir Grafica',
+      downloadPNG:'Descargar PNG',
+      downloadJPEG:'Descargar JPEG',
+      downloadPDF:'Descargar PDF',
+      downloadSVG:'Descargar SVG',
+      contextButtonTitle: 'Exportar Grafica'
+    },
+    credits:{
+      enabled:false
+    },
+    colors:['#1399C2', '#C21313', '#5CBC0C', '#060606'],
+    //colors:['#1399C2', '#C21313', '#0D6580', '#E61717'],
+    plotOptions: {
+          series: {
+            minPointLength: 3,
+            dataLabels:{
+              enabled: true
+            },
+            enableMouseTracking:false
+          }
+    },
+    xAxis:{
+      categories:categories,
+      labels:{
+        formatter: function(){
+          url = '?plaza='+this.value+'&check=<?= $fil_check; ?>';
+          url = '?plaza='+this.value+'&check=<?=$fil_check?>&contrato=<?=$contrato?>&depto=<?=$departamento?>&area=<?=$area?>&fecha=<?=$fecha?>';
+            return '<a href="'+url+'">' +
+                this.value + '</a>';
+        }
+      }
+    },
+    subtitle:{
+      text:'',
+      align:'right',
+      x:-10,
+    },
+    series:[{
+      name:'% ROTACION DE PERSONAL GENERAL',
+      type: 'column',
+      data: data1,
+      color: "yellow",
+    },{
+      name:'% ROTACIÓN DE PERSONAL ADMINISTRATIVO',
+      type: 'column',
+      data: data2,
+    },{
+      name:'% ROTACIÓN DE PERSONAL OPERATIVO',
+      type: 'column',
+      data: data3,
+    }/*,{
+      name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-1;} else { echo substr($fecha, 6, 5)-1;} ?>',
+      data: data4,
+    }*/
+    ]
+  });
+});
+</script>
+
+<script type= "text/javascript">
+$(function(){
+  Highcharts.setOptions({
+    lang:{
+      thousandsSep: ','
+    }
+  });
+  var categories = [
+    <?php
+    $anio = substr($fecha, 17, 4);
+    for ($i=0; $i < 5 ; $i++) {
+      $anio2 = $anio - 4 + $i;
+      echo "'".$anio2."',";
+    }
+    ?>
+  ];
+  var data1 = [
+    <?php
+    $anio = substr($fecha, 17, 4);
+    $mes = substr($fecha, 14, 2);
+    for ($i=0; $i < 5; $i++) {
+      $anio2 = $anio - 4 + $i;
+      $tipo = 2 ;
+      $tipo2 = 3 ;
+      if ($anio2 == $anio) {
+        $porcentaje_anual1 = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes, 2);
+        $porcentaje_anual2 = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo2, $mes, 2);
+      }else {
+        $porcentaje_anual1 = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo , 2);
+        $porcentaje_anual2 = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo2, 2);
+      }
+
+      if (COUNT($porcentaje_anual1) == 0 AND COUNT($porcentaje_anual2) == 0) {
+        echo number_format( "0" , 2). ",";
+      }elseif (COUNT($porcentaje_anual2) == 0 AND COUNT($porcentaje_anual1) > 0 ) {
+        echo number_format($porcentaje_anual1[0]["PORCENTAJE"], 2). ",";
+      }elseif (COUNT($porcentaje_anual1) == 0 AND COUNT($porcentaje_anual2) > 0){
+        echo number_format($porcentaje_anual2[0]["PORCENTAJE"], 2). ",";
+      }else {
+        echo number_format($porcentaje_anual1[0]["PORCENTAJE"]+$porcentaje_anual2[0]["PORCENTAJE"], 2).",";
+      }
+
+    }
+     ?>
+  ];
+  var data2 = [
+    <?php
+    $anio = substr($fecha, 17, 4);
+    for ($i=0; $i < 5; $i++) {
+      $anio2 = $anio - 4 +  $i;
+      $tipo = 3 ;
+      if ($anio2 == $anio) {
+          $porcentaje_anual = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes, 2);
+      }else {
+          $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, 2);
+      }
+
+      if (COUNT($porcentaje_anual) == 0 ) {
+        echo number_format( "0" , 2). ",";
+      }else {
+        //echo number_format($porcentaje_anual1[0]["PORCENTAJE"]+$porcentaje_anual2[0]["PORCENTAJE"], 2).",";
+        echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
+      }
+    }
+     ?>
+  ];
+  var data3 = [
+    <?php
+    $anio = substr($fecha, 17, 4);
+    for ($i=0; $i < 5; $i++) {
+      $anio2 = $anio - 4 + $i;
+      $tipo = 2 ;
+      if ($anio2 == $anio) {
+          $porcentaje_anual = $obj_class->portAlmacen2($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, $mes, 2);
+      }else {
+          $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo,  2);
+      }
+      //echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
+      if (COUNT($porcentaje_anual) == 0 ) {
+        echo number_format( "0" , 2). ",";
+      }else {
+        //echo number_format($porcentaje_anual1[0]["PORCENTAJE"]+$porcentaje_anual2[0]["PORCENTAJE"], 2).",";
+        echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
+      }
+    }
+     ?>
+  ];
+  var data4 = [
+    <?php
+    $anio = substr($fecha, 17, 4);
+    for ($i=0; $i < 5; $i++) {
+      $anio2 = $anio - $i;
+      $tipo = 1 ;
+      $porcentaje_anual = $obj_class->portAlmacen($plaza,$anio2,$fil_check,$fil_habilitado, $tipo, 2);
+        //if ($i < $mes_Comparar){
+//          echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
+          if (COUNT($porcentaje_anual) == 0 ) {
+            echo number_format( "0" , 2). ",";
+          }else {
+            //echo number_format($porcentaje_anual1[0]["PORCENTAJE"]+$porcentaje_anual2[0]["PORCENTAJE"], 2).",";
+            echo number_format($porcentaje_anual[0]["PORCENTAJE"], 2).",";
+          }
+    }
+     ?>
+  ];
+  $('#graf_perMSemanal').highcharts({
+    chart:{
+      type:'column'
+    },
+    title:{
+      text:'ROTACIÓN ANUAL GENERAL (SEMANAL).'
     },
     legend:{
       y: -40,

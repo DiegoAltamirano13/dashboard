@@ -89,6 +89,9 @@ if(isset($_POST['fec_fin_per_manufac']))
 
   $time = time();
   date_default_timezone_set("America/Mexico_City");
+
+
+$info_manufac_car_desProgramados = $obj_op_in_car_des_info->car_des_prog_info($plaza_manufac,$dia_manufac,$fec_ini_per_manufac,$fec_fin_per_manufac,$select_manufac_global_plaza);
 ///////////////////////////////////////////
 ?>
 <!-- ####################################### Incluir Plantilla Principal ##########################-->
@@ -509,6 +512,7 @@ if(isset($_POST['fec_fin_per_manufac']))
           <li><a id="tab_car_fin_des" data-toggle="tab" href="#link_tab_car_fin_des">FIN. DESFASADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_car[]">0</span></a></li>
           <li><a id="tab_car_fin_des_ritmo" data-toggle="tab" href="#link_tab_car_fin_des_ritmo">FIN. DESFASADO POR RITMO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_car_ritmo[]">0</span></a></li>
           <li><a id="tab_car_can" data-toggle="tab" href="#link_tab_car_can">CANCELADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_can_car[]">0</span></a></li>
+          <li><a id="tab_car_prog" data-toggle="tab" href="#link_tab_car_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue"><?= count($info_manufac_car_desProgramados); ?></span></a></li>
         </ul>
       </p>
       <div class="box-tools pull-right">
@@ -520,7 +524,7 @@ if(isset($_POST['fec_fin_per_manufac']))
       <div class="nav-tabs-custom"><!-- nav-tabs-custom -->
         <div class="tab-content"><!-- tab-content -->
         <!-- TAB PARA CARGAS EN PROCESO -->
-          <div id="link_tab_car_pro" class="tab-pane fade in active">
+  <div id="link_tab_car_pro" class="tab-pane fade in active">
 
           <h5 class="text-blue text-center"> CARGAS EN PROCESO <?= $plaza_manufac." <code>". $titulo_fec_manufac."</code>" ?> </h5><hr>
 
@@ -942,9 +946,140 @@ if(isset($_POST['fec_fin_per_manufac']))
               <?php }} ?>
               </tbody>
               </table>
+               </div>
+            <!-- TERMINA TABLA PARA CARGAS FINALIZADAS EN TIEMPO -->
+          </div>
+
+          <div id="link_tab_car_prog" class="tab-pane fade">
+
+          <h5 class="text-green text-center"><i class="fa fa-check-square-o"></i> CARGAS PROGRAMADAS <?= $plaza_manufac." <code>". $titulo_fec_manufac."</code>" ?> </h5><hr>
+            <!-- INICIA TABLA PARA CARGAS FINALIZADAS EN TIEMPO -->
+            <div class="table-responsive">
+              <table id="tabla_manufac_car_tiem" class="table compact table-hover table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th class="small">ALMACEN</th>
+                  <th class="small">CLIENTE</th>
+                  <th class="small">LLEGADA</th>
+                  <th class="small">DESPACHO</th>
+                  <th class="small">TIEMPO</th>
+                  <th class="small">STATUS</th>
+                  <th class="small">REGIMEN</th>
+                  <th class="small">OBS.</th>
+                  <th class="small">T/VEHÍCULO</th>
+                  <th class="small">PLACAS</th>
+                  <th class="small">UME</th>
+                  <th class="small">CANTIDAD</th>
+                  <th class="small">ALMACENISTA</th>
+                  <!--<th class="small">DETALLES VEHICULO</th>-->
+                </tr>
+              </thead>
+              <tbody>
+              <?php
+              #echo count($info_manufac_car_desProgramados);
+                for ($i=0; $i <count($info_manufac_car_desProgramados) ; $i++) {
+                //--  --//
+                switch (true) {
+                case ( $info_manufac_car_desProgramados[$i]["LLEGA"] == false ):
+                   $calculo_tiempo = "<code>error no se registró tiempo</code>";
+                  break;
+                case ( $info_manufac_car_desProgramados[$i]["DESPACHO"] == true ):
+                  $fechaFin_car_gen = $info_manufac_car_desProgramados[$i]["DESPACHO"] ;
+                  $calculo_tiempo = $obj_op_in_car_des_info->calculo_tiempo($info_manufac_car_desProgramados[$i]["LLEGA"],$fechaFin_car_gen);
+                  $calculo_minutos = $obj_op_in_car_des_info->dif_minutos($info_manufac_car_desProgramados[$i]["DESPACHO"],$info_manufac_car_desProgramados[$i]["LLEGA"]);
+                  $TIEMPO_OPERACION = $info_manufac_car_desProgramados[$i]["N_TIEMPO_OPERACION"]+25;// POR LOS ESTANDARES
+                  break;
+                default:
+                  $fechaFin_car_gen = strftime("%d-%m-%Y %H:%M:%S");
+                  $calculo_tiempo = $obj_op_in_car_des_info->calculo_tiempo($info_manufac_car_desProgramados[$i]["LLEGA"],$fechaFin_car_gen);
+                  $calculo_minutos = $obj_op_in_car_des_info->dif_minutos($info_manufac_car_desProgramados[$i]["DESPACHO"],$info_manufac_car_desProgramados[$i]["LLEGA"]);
+                  $TIEMPO_OPERACION = $info_manufac_car_desProgramados[$i]["N_TIEMPO_OPERACION"]+25;// POR LOS ESTANDARES
+                  break;
+                }
+                //--  --//
+                if ( $info_manufac_car_des[$i]["TIPO"] == 1 ){ // Aqui esta a 90
+                  #echo $info_manufac_car_des[$i]["SOLICITUD"]. " " .$TIEMPO_OPERACION;
+                  #$cargas_fin_tiempo[$i] = $i;
+                  #echo $TIEMPO_OPERACION;
+              ?>
+                <tr>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACEN"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["RS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["LLEGA"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["DESPACHO"] ?></td>
+                  <td class="small"><?= $calculo_tiempo ?></td>
+                  <td class="small"><span class="badge bg-green">CUMPLIO</span></td>
+                  <td class="small">
+                                    <?php if ($info_manufac_car_desProgramados[$i]["IID_REGIMEN"] == 1) {
+                                      echo "NACIONAL";
+                                    }else {
+                                      echo "FISCAL";
+                                    } ?>
+                                    </td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["OBS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["VEHICULO"] ?></td>
+                  <td class="small"><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS1"]?></span><br><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS2"]?></span></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["UME"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["CANTIDAD"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACENISTA_N"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_P"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_M"] ?></td>
+                  <!-- <td class="small"><?= $info_manufac_car_desProgramados[$i]["PROYECTO"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["FACTURA"] ?></td> -->
+                  <!--<td class="small">
+                   INICIA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA
+                  <?php
+                  #echo "<a class='fancybox fancybox.iframe' href='manufactura_det_retarr.php?almacen=".$info_manufac_car_desProgramados[$i]["ALMACEN_ID"]."&retarr=".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."'>
+                  #<span class='badge bg-teal btn'><i class='fa fa-truck'></i> ".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."</span>
+                  #</a> ";
+                  ?>
+                  </td>-->
+                  <!-- TERMINA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA -->
+
+                </tr>
+              <?php  } elseif ($info_manufac_car_desProgramados[$i]["TIPO"] == 1 && ($info_manufac_car_desProgramados[$i]["STATUS"] == 5 OR $info_manufac_car_desProgramados[$i]["STATUS"] == 9 )&& $calculo_minutos < 90  && $info_manufac_car_desProgramados[$i]["IID_NUM_CLIENTE"] == 2905 ) {
+                $cargas_fin_tiempo[$i] = $i;
+                ?>
+                <tr>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACEN"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["RS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["LLEGA"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["DESPACHO"] ?></td>
+                  <td class="small"><?= $calculo_tiempo ?></td>
+                  <td class="small"><span class="badge bg-green">CUMPLIO</span></td>
+                  <td class="small">
+                                    <?php if ($info_manufac_car_desProgramados[$i]["IID_REGIMEN"] == 1) {
+                                      echo "NACIONAL";
+                                    }else {
+                                      echo "FISCAL";
+                                    } ?>
+                                    </td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["OBS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["VEHICULO"] ?></td>
+                  <td class="small"><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS1"]?></span><br><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS2"]?></span></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["UME"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["CANTIDAD"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACENISTA_N"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_P"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_M"] ?></td>
+                  <!-- <td class="small"><?= $info_manufac_car_desProgramados[$i]["PROYECTO"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["FACTURA"] ?></td> -->
+                  <!--<td class="small">
+                   INICIA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA
+                  <?php
+                //  echo "<a class='fancybox fancybox.iframe' href='manufactura_det_retarr.php?almacen=".$info_manufac_car_desProgramados[$i]["ALMACEN_ID"]."&retarr=".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."'>
+                //  <span class='badge bg-teal btn'><i class='fa fa-truck'></i> ".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."</span>
+                //  </a> ";
+                  ?>
+                  </td>                  -->
+                  <!-- TERMINA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA -->
+
+                </tr>
+              <?php }} ?>
+              </tbody>
+              </table>
             </div>
             <!-- TERMINA TABLA PARA CARGAS FINALIZADAS EN TIEMPO -->
           </div>
+
+
+
         <!-- TAB PARA CARGAS FINALIZADO DESFASADO -->
           <div id="link_tab_car_fin_des" class="tab-pane fade">
 
@@ -1321,6 +1456,7 @@ if(isset($_POST['fec_fin_per_manufac']))
           <li><a id="tab_des_fin_des" data-toggle="tab" href="#link_tab_des_fin_des">FIN. DESFASADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_des[]">0</span></a></li>
           <li><a id="tab_des_fin_des" data-toggle="tab" href="#link_tab_des_fin_des_ritmo">FIN. DESFASADO POR RITMO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_des_ritmo[]">0</span></a></li>
           <li><a id="tab_des_can" data-toggle="tab" href="#link_tab_des_can">CANCELADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_can_des[]">0</span></a></li>
+          <li><a id="tab_des_prog" data-toggle="tab" href="#link_tab_descar_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue">0</span></a></li>-
         </ul>
       </p>
       <div class="box-tools pull-right">
@@ -1733,6 +1869,10 @@ if(isset($_POST['fec_fin_per_manufac']))
             </div>
             <!-- TERMINA TABLA PARA DESCARGAS FINALIZADAS EN TIEMPO -->
           </div>
+
+          <!--DESCARGAS EN PROCESO -- >
+
+
         <!-- TAB PARA DESCARGAS FINALIZADO DESFASADO -->
           <div id="link_tab_des_fin_des" class="tab-pane fade">
 
@@ -1938,7 +2078,7 @@ if(isset($_POST['fec_fin_per_manufac']))
                      ?>
                   </tr>
                 <?php  } elseif ( $info_manufac_car_des[$i]["TIPO"] == 2 && ($info_manufac_car_des[$i]["STATUS"] == 5 OR $info_manufac_car_des[$i]["STATUS"] == 9) && $calculo_minutos > 90 && $info_manufac_car_des[$i]["IID_NUM_CLIENTE"] == 2905
-                  && $calculo_minutos_ritmo > $TIEMPO_OPERACION-25){ //90                
+                  && $calculo_minutos_ritmo > $TIEMPO_OPERACION-25){ //90
                   $descargas_fin_des_ritmo[$i] = $i;?>
                   <tr>
                     <td class="small"><?= $info_manufac_car_des[$i]["ALMACEN"] ?></td>
@@ -2060,6 +2200,133 @@ if(isset($_POST['fec_fin_per_manufac']))
               </table>
             </div>
             <!-- TERMINA TABLA PARA DESCARGAS CANCELADAS -->
+          </div>
+          <div id="link_tab_descar_prog" class="tab-pane fade">
+
+          <h5 class="text-green text-center"><i class="fa fa-check-square-o"></i> DESCARGAS PROGRAMADAS <?= $plaza_manufac." <code>". $titulo_fec_manufac."</code>" ?> </h5><hr>
+            <!-- INICIA TABLA PARA CARGAS FINALIZADAS EN TIEMPO -->
+            <div class="table-responsive">
+              <table id="tabla_manufac_car_tiem2" class="table compact table-hover table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th class="small">ALMACEN</th>
+                  <th class="small">CLIENTE</th>
+                  <th class="small">LLEGADA</th>
+                  <th class="small">DESPACHO</th>
+                  <th class="small">TIEMPO</th>
+                  <th class="small">STATUS</th>
+                  <th class="small">REGIMEN</th>
+                  <th class="small">OBS.</th>
+                  <th class="small">T/VEHÍCULO</th>
+                  <th class="small">PLACAS</th>
+                  <th class="small">UME</th>
+                  <th class="small">CANTIDAD</th>
+                  <th class="small">ALMACENISTA</th>
+                  <!--<th class="small">DETALLES VEHICULO</th>-->
+                </tr>
+              </thead>
+              <tbody>
+              <?php
+              #echo count($info_manufac_car_desProgramados);
+                for ($i=0; $i <count($info_manufac_car_desProgramados) ; $i++) {
+                //--  --//
+                switch (true) {
+                case ( $info_manufac_car_desProgramados[$i]["LLEGA"] == false ):
+                   $calculo_tiempo = "<code>error no se registró tiempo</code>";
+                  break;
+                case ( $info_manufac_car_desProgramados[$i]["DESPACHO"] == true ):
+                  $fechaFin_car_gen = $info_manufac_car_desProgramados[$i]["DESPACHO"] ;
+                  $calculo_tiempo = $obj_op_in_car_des_info->calculo_tiempo($info_manufac_car_desProgramados[$i]["LLEGA"],$fechaFin_car_gen);
+                  $calculo_minutos = $obj_op_in_car_des_info->dif_minutos($info_manufac_car_desProgramados[$i]["DESPACHO"],$info_manufac_car_desProgramados[$i]["LLEGA"]);
+                  $TIEMPO_OPERACION = $info_manufac_car_desProgramados[$i]["N_TIEMPO_OPERACION"]+25;// POR LOS ESTANDARES
+                  break;
+                default:
+                  $fechaFin_car_gen = strftime("%d-%m-%Y %H:%M:%S");
+                  $calculo_tiempo = $obj_op_in_car_des_info->calculo_tiempo($info_manufac_car_desProgramados[$i]["LLEGA"],$fechaFin_car_gen);
+                  $calculo_minutos = $obj_op_in_car_des_info->dif_minutos($info_manufac_car_desProgramados[$i]["DESPACHO"],$info_manufac_car_desProgramados[$i]["LLEGA"]);
+                  $TIEMPO_OPERACION = $info_manufac_car_desProgramados[$i]["N_TIEMPO_OPERACION"]+25;// POR LOS ESTANDARES
+                  break;
+                }
+                //--  --//
+                if ( $info_manufac_car_des[$i]["TIPO"] == 2 ){ // Aqui esta a 90
+                  #echo $info_manufac_car_des[$i]["SOLICITUD"]. " " .$TIEMPO_OPERACION;
+                  #$cargas_fin_tiempo[$i] = $i;
+                  #echo $TIEMPO_OPERACION;
+              ?>
+                <tr>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACEN"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["RS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["LLEGA"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["DESPACHO"] ?></td>
+                  <td class="small"><?= $calculo_tiempo ?></td>
+                  <td class="small"><span class="badge bg-green">CUMPLIO</span></td>
+                  <td class="small">
+                                    <?php if ($info_manufac_car_desProgramados[$i]["IID_REGIMEN"] == 1) {
+                                      echo "NACIONAL";
+                                    }else {
+                                      echo "FISCAL";
+                                    } ?>
+                                    </td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["OBS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["VEHICULO"] ?></td>
+                  <td class="small"><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS1"]?></span><br><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS2"]?></span></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["UME"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["CANTIDAD"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACENISTA_N"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_P"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_M"] ?></td>
+                  <!-- <td class="small"><?= $info_manufac_car_desProgramados[$i]["PROYECTO"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["FACTURA"] ?></td> -->
+                  <!--<td class="small">
+                   INICIA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA
+                  <?php
+                  #echo "<a class='fancybox fancybox.iframe' href='manufactura_det_retarr.php?almacen=".$info_manufac_car_desProgramados[$i]["ALMACEN_ID"]."&retarr=".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."'>
+                  #<span class='badge bg-teal btn'><i class='fa fa-truck'></i> ".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."</span>
+                  #</a> ";
+                  ?>
+                  </td>-->
+                  <!-- TERMINA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA -->
+
+                </tr>
+              <?php  } elseif ($info_manufac_car_desProgramados[$i]["TIPO"] == 1 && ($info_manufac_car_desProgramados[$i]["STATUS"] == 5 OR $info_manufac_car_desProgramados[$i]["STATUS"] == 9 )&& $calculo_minutos < 90  && $info_manufac_car_desProgramados[$i]["IID_NUM_CLIENTE"] == 2905 ) {
+                $cargas_fin_tiempo[$i] = $i;
+                ?>
+                <tr>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACEN"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["RS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["LLEGA"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["DESPACHO"] ?></td>
+                  <td class="small"><?= $calculo_tiempo ?></td>
+                  <td class="small"><span class="badge bg-green">CUMPLIO</span></td>
+                  <td class="small">
+                                    <?php if ($info_manufac_car_desProgramados[$i]["IID_REGIMEN"] == 1) {
+                                      echo "NACIONAL";
+                                    }else {
+                                      echo "FISCAL";
+                                    } ?>
+                                    </td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["OBS"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["VEHICULO"] ?></td>
+                  <td class="small"><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS1"]?></span><br><span class="badge label-info"><?=$info_manufac_car_desProgramados[$i]["PLACAS2"]?></span></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["UME"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["CANTIDAD"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["ALMACENISTA_N"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_P"]." ".$info_manufac_car_desProgramados[$i]["ALMACENISTA_M"] ?></td>
+                  <!-- <td class="small"><?= $info_manufac_car_desProgramados[$i]["PROYECTO"] ?></td>
+                  <td class="small"><?= $info_manufac_car_desProgramados[$i]["FACTURA"] ?></td> -->
+                  <!--<td class="small">
+                   INICIA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA
+                  <?php
+                //  echo "<a class='fancybox fancybox.iframe' href='manufactura_det_retarr.php?almacen=".$info_manufac_car_desProgramados[$i]["ALMACEN_ID"]."&retarr=".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."'>
+                //  <span class='badge bg-teal btn'><i class='fa fa-truck'></i> ".$info_manufac_car_desProgramados[$i]["SOLICITUD"]."</span>
+                //  </a> ";
+                  ?>
+                  </td>                  -->
+                  <!-- TERMINA CODE QUE MUESTRA EL ARRIBO O SOLICITUD DEPENDIENDO LA PLAZA -->
+
+                </tr>
+              <?php }} ?>
+              </tbody>
+              </table>
+            </div>
+            <!-- TERMINA TABLA PARA DESCARGAS FINALIZADAS EN TIEMPO -->
           </div>
         </div><!-- ./tab-content -->
       </div><!-- ./nav-tabs-custom -->

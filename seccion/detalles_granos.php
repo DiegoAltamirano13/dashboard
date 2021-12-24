@@ -164,7 +164,7 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
   <!-- ############################ SECCION GRAFICA ############################# -->
   <section>
     <div class="row"><!-- row -->
-      <div class="col-md-9">
+      <div class="col-md-4">
         <div class="box box-info">
           <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentaje Toneladas Con/Sin Tenedor</h3>
@@ -174,6 +174,21 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
           </div>
           <div class="box-body">
             <div id="graf_bar2" class="col-md-12" style="height:380px;"></div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="box box-info">
+          <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentaje Tipo de Mercancia</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+          </div>
+          <div class="box-body">
+            <div id="graf_bar3" class="col-md-12" style="height:380px;"></div>
 
           </div>
         </div>
@@ -243,21 +258,6 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
         </div><!--/.box-body-->
       </div>
 
-      </div>
-
-      <div class="col-md-9">
-        <div class="box box-info">
-          <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-bar-chart"></i> Porcentaje Tipo de Mercancia</h3>
-            <div class="box-tools pull-right">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            </div>
-          </div>
-          <div class="box-body">
-            <div id="graf_bar3" class="col-md-12" style="height:380px;"></div>
-
-          </div>
-        </div>
       </div>
 
       <!--FILTROS-->      <!-- /.col-md-3 -->
@@ -339,40 +339,30 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
                         <?php $habcdt = $habcdt + $tabla_toneladas3[$i]["CANTIDADCTD"];
                                $habN  = $habN + $tabla_toneladas3[$i]["CANTIDADN"];
                                $habS = $habS +  $tabla_toneladas3[$i]["CANTIDADS"];} ?>
-                        <tr style="background: #3b83bd">
-                          <td></td>
-                          <td>TOTAL EN HABILITADO</td>
-                          <td></td>
-                          <td></td>
-                          <td><?= number_format($habcdt/1000, 2) ?></td>
-                          <td><?= number_format($habN/1000, 2) ?></td>
-                          <td><?= number_format($habS/1000, 2) ?></td>
-                          <td><?= number_format(($habS+$habN+$habcdt)/1000, 2) ?></td>
-                        </tr>
                         <?php $dirn = 0; $dirs = 0; $dircdt = 0; $transitoTotal = 0; for ($i=0; $i <count($tabla_toneladas4) ; $i++) { ?>
-                        <tr>
-                          <!--<td class="small">CL</td>-->
-                          <td class="small"><?= $tabla_toneladas4[$i]["V_NOMBRE"] ?></td>
-                          <td class="small"><?= $tabla_toneladas4[$i]["V_RAZON_SOCIAL"] ?></td>
-                          <td class="small"><?= $tabla_toneladas4[$i]["NINF"] ?></td>
-                          <td class="small"><?= $tabla_toneladas4[$i]["PARTE"] ?></td>
-                          <td class="small"><?= number_format($tabla_toneladas4[$i]["CANTIDADCTD"]/1000, 2) ?></td>
-                          <td class="small"><?= number_format($tabla_toneladas4[$i]["CANTIDADN"]/1000, 2) ?></td>
-                          <td class="small"><?= number_format($tabla_toneladas4[$i]["CANTIDADS"]/1000, 2) ?></td>
-                          <td class="small"><?= number_format(($tabla_toneladas4[$i]["CANTIDADS"]/1000) + ($tabla_toneladas4[$i]["CANTIDADN"]/1000) + ($tabla_toneladas4[$i]["CANTIDADCTD"]/1000),2) ?></td>
-                        </tr>
-                        <?php $dircdt = $dircdt + $tabla_toneladas4[$i]["CANTIDADCTD"];
-                               $dirn  = $dirn + $tabla_toneladas4[$i]["CANTIDADN"];
-                               $dirs = $dirs +  $tabla_toneladas4[$i]["CANTIDADS"];} ?>
+                               <tr>
+                                 <!--<td class="small">CL</td>-->
+                                 <td class="small"><?= $tabla_toneladas4[$i]["V_NOMBRE"] ?></td>
+                                 <td class="small"><?= $tabla_toneladas4[$i]["V_RAZON_SOCIAL"] ?></td>
+                                 <td class="small"><?= $tabla_toneladas4[$i]["NINF"] ?></td>
+                                 <td class="small"><?= $tabla_toneladas4[$i]["PARTE"] ?></td>
+                                 <td class="small"><?= number_format($tabla_toneladas4[$i]["CANTIDADCTD"]/1000, 2) ?></td>
+                                 <td class="small"><?= number_format($tabla_toneladas4[$i]["CANTIDADN"]/1000, 2) ?></td>
+                                 <td class="small"><?= number_format($tabla_toneladas4[$i]["CANTIDADS"]/1000, 2) ?></td>
+                                 <td class="small"><?= number_format(($tabla_toneladas4[$i]["CANTIDADS"]/1000) + ($tabla_toneladas4[$i]["CANTIDADN"]/1000) + ($tabla_toneladas4[$i]["CANTIDADCTD"]/1000),2) ?></td>
+                               </tr>
+                               <?php $dircdt = $dircdt + $tabla_toneladas4[$i]["CANTIDADCTD"];
+                                      $dirn  = $dirn + $tabla_toneladas4[$i]["CANTIDADN"];
+                                      $dirs = $dirs +  $tabla_toneladas4[$i]["CANTIDADS"];} ?>
                         <tr style="background: #3b83bd">
                           <td></td>
-                          <td>TOTAL DIRECTO</td>
+                          <td>TOTAL</td>
                           <td></td>
                           <td></td>
-                          <td><?= number_format($dircdt/1000, 2) ?></td>
-                          <td><?= number_format($dirn/1000, 2) ?></td>
-                          <td><?= number_format($dirs/1000, 2) ?></td>
-                          <td><?= number_format(($dirs+$dirn+$dircdt)/1000, 2) ?></td>
+                          <td><?= number_format(($habcdt+$dircdt)/1000, 2) ?></td>
+                          <td><?= number_format(($habN+$dirn)/1000, 2) ?></td>
+                          <td><?= number_format(($habS+$dirs)/1000, 2) ?></td>
+                          <td><?= number_format(($habS+$habN+$habcdt+$dircdt+$dirn+$dirs)/1000, 2) ?></td>
                         </tr>
                       </tbody>
                       <tfoot>
@@ -444,7 +434,7 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
             <section>
               <div class="box box-success">
                 <div class="box-header with-border">
-                  <h3 class="box-title"><i class="fa fa-table"></i> SEPARACION POR ALMACEN HABILITADO</h3>
+                  <h3 class="box-title"><i class="fa fa-table"></i> RESUMEN GENERAL ALMACEN HABILITADO</h3>
                   <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -453,7 +443,7 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
                 <div class="box-body"><!--box-body-->
 
                   <div class="table-responsive" id="container">
-                    <table id="tabla_nomina3" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <table id="tabla_nomina3" class="table table-striped table-bordered" cellspacing="0" width="100%" data-page-length='50'>
                       <thead>
                         <tr>
                           <th class="small" bgcolor="#4791de"><font color="white">NOMBRE</font></th>
@@ -478,6 +468,7 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
                           <td class="small"><?= number_format($tabla_toneladas3[$i]["CANTIDADN"]/1000 + $tabla_toneladas3[$i]["CANTIDADS"]/1000, 2) ?></td>
                         </tr>
                         <?php } ?>
+
                       </tbody>
                       <tfoot>
                          <tr>
@@ -494,7 +485,7 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
               </div>
             </section>
 
-            <section>
+            <section >
               <div class="box box-success">
                 <div class="box-header with-border">
                   <h3 class="box-title"><i class="fa fa-table"></i> SEPARACION POR ALMACEN DIRECTO</h3>
@@ -534,7 +525,7 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
                       </tbody>
                       <tfoot>
                          <tr>
-                             <th colspan="2" style="text-align:right">Total Toneladas:</th>
+                             <th colspan="4" style="text-align:right">Total Toneladas:</th>
                              <th></th>
                              <th></th>
                              <th></th>
@@ -842,7 +833,9 @@ $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
 $(document).ready(function() {
 
     $('#tabla_nomina3').DataTable( {
-      "lengthMenu": [[25, 25, -1], [25, 25, "All"]],
+      "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+      "scrollY": 450,
+      paging: false,
       "footerCallback": function ( row, data, start, end, display ) {
           var api = this.api(), data;
 
@@ -927,7 +920,6 @@ $(document).ready(function() {
               ''+number_format(pageTotal3 , 2)
           );
       },
-      "scrollY": 450,
       fixedHeader: true,
       "dom": '<"toolbar">frtip',
       stateSave: true,
@@ -1001,7 +993,7 @@ $(document).ready(function() {
 
           // Total over all pages
           total = api
-              .column( 4 )
+              .column( 6 )
               .data()
               .reduce( function (a, b) {
                   return Intl.NumberFormat().format(intVal(a) + intVal(b));
@@ -1010,7 +1002,7 @@ $(document).ready(function() {
               }, 0 );
 
               total2 = api
-                  .column( 3 )
+                  .column( 5 )
                   .data()
                   .reduce( function (a, b) {
                       return Intl.NumberFormat().format(intVal(a) + intVal(b));
@@ -1019,7 +1011,7 @@ $(document).ready(function() {
                   }, 0 );
 
                   total3 = api
-                      .column( 2 )
+                      .column( 4 )
                       .data()
                       .reduce( function (a, b) {
                           return Intl.NumberFormat().format(intVal(a) + intVal(b));
@@ -1029,7 +1021,7 @@ $(document).ready(function() {
 
           // Total over this page
           pageTotal = api
-              .column( 4, { page: 'current'} )
+              .column( 6, { page: 'current'} )
               .data()
               .reduce( function (a, b) {
                 var number = intVal(a) + intVal(b);
@@ -1038,7 +1030,7 @@ $(document).ready(function() {
               }, 0 );
 
               pageTotal2 = api
-                  .column( 3, { page: 'current'} )
+                  .column( 5, { page: 'current'} )
                   .data()
                   .reduce( function (a, b) {
                     var number = intVal(a) + intVal(b);
@@ -1047,7 +1039,7 @@ $(document).ready(function() {
                   }, 0 );
 
                   pageTotal3 = api
-                      .column( 2, { page: 'current'} )
+                      .column( 4, { page: 'current'} )
                       .data()
                       .reduce( function (a, b) {
                         var number = intVal(a) + intVal(b);
@@ -1056,17 +1048,17 @@ $(document).ready(function() {
                       }, 0 );
 
           // Update footer
-          $( api.column( 4 ).footer() ).html(
+          $( api.column( 6 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal , 2)
           );
 
-          $( api.column( 3 ).footer() ).html(
+          $( api.column( 5 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal2 , 2)
           );
 
-          $( api.column( 2 ).footer() ).html(
+          $( api.column( 4 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal3 , 2)
           );
