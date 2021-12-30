@@ -470,24 +470,15 @@ $contador_descargas=0;
             </div>
             <!-- <button class="btn bg-red-active btn-block">Más Información <i class="fa fa-arrow-circle-right"></i></button> -->
           </div>
-        </div><!-- Termino Widgets Desfasados -->
-
-        <div class="col-md-3 col-sm-6 col-xs-12"><!-- Widgets Programados-->
-          <div class="info-box bg-morado">
-            <span class="info-box-icon bg-morado"><i class="fa fa-calendar"></i></span>
-            <div class="info-box-content bg-morado">
-              <span class="info-box-text">Programados</span>
-              <span id="widgets_programadas" class="info-box-number">0</span>
-              <span class="progress-description">Carga: <b id="widgets_cargas_programadas[]">0</b></span>
-              <span class="progress-description">Descarga: <b id="widgets_descargas_programadas[]">0</b></span>
-            </div>
-          </div>
-        </div><!-- Termino Widgets Desfasados -->
-
+        </div>
+        <!-- Termino Widgets Desfasados -->
       </div>
       <!-- /.row -->
       </section><!-- Termina la seccion de los Widgets -->
 <!-- ######################################### Termino de Widgets ######################################### -->
+
+
+
 
 <!-- *********************************** INICIA SECCION GENERAL DE OPERACIONES MANUFACTURA *********************************** -->
 <?php if ($plaza_manufac == false) { ?><!-- reduce las conecciones al seleccionar una plaza -->
@@ -499,6 +490,9 @@ $contador_descargas=0;
 
 <?php } ?><!-- reduce las conecciones al seleccionar una plaza -->
 <!-- *********************************** TERMINA SECCION GENERAL DE OPERACIONES MANUFACTURA *********************************** -->
+
+
+
 
 
 <!-- ****************************** INICIA SECCION POR PLAZA SELECCIONADA DE OPERACIONES MANUFACTURA ****************************** -->
@@ -520,7 +514,7 @@ $contador_descargas=0;
           <li><a id="tab_car_fin_des" data-toggle="tab" href="#link_tab_car_fin_des">FIN. DESFASADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_car[]">0</span></a></li>
           <li><a id="tab_car_fin_des_ritmo" data-toggle="tab" href="#link_tab_car_fin_des_ritmo">FIN. DESFASADO POR RITMO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_car_ritmo[]">0</span></a></li>
           <li><a id="tab_car_can" data-toggle="tab" href="#link_tab_car_can">CANCELADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_can_car[]">0</span></a></li>
-          <li><a id="tab_car_des" data-toggle="tab" href="#link_tab_car_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_cargas_programadas[]">0</span></a></li>
+          <li><a id="tab_car_prog" data-toggle="tab" href="#link_tab_car_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_cargas_programadas"><?= $contador_cargas ?></span></a></li>
         </ul>
       </p>
       <div class="box-tools pull-right">
@@ -1424,7 +1418,7 @@ $contador_descargas=0;
           <li><a id="tab_des_fin_des" data-toggle="tab" href="#link_tab_des_fin_des">FIN. DESFASADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_des[]">0</span></a></li>
           <li><a id="tab_des_fin_des" data-toggle="tab" href="#link_tab_des_fin_des_ritmo">FIN. DESFASADO POR RITMO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_desfasados_des_ritmo[]">0</span></a></li>
           <li><a id="tab_des_can" data-toggle="tab" href="#link_tab_des_can">CANCELADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_can_des[]">0</span></a></li>
-          <li><a id="tab_des_prog" data-toggle="tab" href="#link_tab_descar_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_descargas_programadas[]">0</span></a></li>
+          <li><a id="tab_des_prog" data-toggle="tab" href="#link_tab_descar_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_descargas_programadas"><?= $contador_descargas; ?></span></a></li>
         </ul>
       </p>
       <div class="box-tools pull-right">
@@ -2284,7 +2278,6 @@ $contador_descargas=0;
           <li><a id="tab_otr_con" data-toggle="tab" href="#link_tab_otr_con">FIN EN TIEMPO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_otros_proceso3[]">0</span></a></li>
           <li><a id="tab_otr_conDES" data-toggle="tab" href="#link_tab_otr_condes">DESFASADOS&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_otros_proceso4[]">0</span></a></li>
           <li><a id="tab_otr_can" data-toggle="tab" href="#link_tab_otr_can">CANCELADO&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_otros_proceso5[]">0</span></a></li>
-          <li><a id="tab_otr_prog" data-toggle="tab" href="#link_tab_otr_prog">PROGRAMADOS&nbsp; &nbsp;<span class="badge bg-light-blue" id="widgets_cross_programadas[]">0</span></a></li>
         </ul>
       </p>
       <div class="box-tools pull-right">
@@ -2839,8 +2832,10 @@ $contador_descargas=0;
             <!-- TERMINA TABLA PARA OTROS CONCLUIDOS -->
           </div>
 
+
           <!-- TAB OTROS CANCELADOS -->
           <div id="link_tab_otr_can" class="tab-pane fade">
+
           <h5 class="text-red text-center"><i class="fa fa-ban"></i> OPERACIONES CROSSDOCK CANCELADOS <?= $plaza_manufac." <code>". $titulo_fec_manufac."</code>" ?> </h5><hr>
 
             <!-- INICIA TABLA PARA OTROS CANCELADOS -->
@@ -2891,58 +2886,9 @@ $contador_descargas=0;
             <!-- TERMINA TABLA PARA OTROS CANCELADOS -->
           </div>
 
-
-            <div id="link_tab_otr_prog" class="tab-pane fade"><!-- INICIA TABLA PARA VEHICULOS CANCELADOS -->
-              <h5 class="text-green text-center"><i class="fa fa-ban"></i> OPERACIONES CROSSDOCK PROGRAMADOS <?= $plaza_manufac." <code>". $titulo_fec_manufac."</code>" ?> </h5><hr>
-              <div class="table-responsive">
-                <table id="tabla_manufac_car_can5" class="table compact table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                <thead>
-                  <tr>
-                    <th class="small">ALMACEN</th>
-                    <th class="small">SOL.</th>
-                    <!--<th class="small">OPERACIÓN</th>-->
-                    <th class="small">CLIENTE</th>
-                    <th class="small">FECHA APROX LLEGADA</th>
-                    <th class="small">STATUS</th>
-                    <th class="small">OBS.</th>
-                    <th class="small">T/VEHÍCULO</th>
-                    <th class="small">PLACAS</th>
-                    <th class="small">UME</th>
-                    <th class="small">CANTIDAD</th>
-                    <!--<th class="small">MERCANCÍA</th>
-                    <th class="small">ALMACENISTA</th>-->
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $otros_car_des_info = $obj_info_otros_manufac->otros_info_car_des_prog($plaza_manufac,$dia_manufac,$fec_ini_per_manufac,$fec_fin_per_manufac,$select_manufac_global_plaza);
-                  for ($i=0; $i <count($otros_car_des_info) ; $i++) {
-                    if($otros_car_des_info[$i]["STATUS"]== 0 ){
-                     $otros_cross_programados+=1;
-                  ?>
-                  <tr>
-                    <td class="small"><?= $otros_car_des_info[$i]["ALMACEN"] ?></td>
-                    <td class="small"><code><?= $otros_car_des_info[$i]["SOLICITUD"] ?></code></td>
-                    <!--<td class="small"><?= $otros_car_des_info[$i]["OPERACION"] ?></td>-->
-                    <td class="small"><?= $otros_car_des_info[$i]["RS"] ?></td>
-                    <td class="small"><span class="badge bg-info"><i class="fa  fa-clock-o"></i> <?= $otros_car_des_info[$i]["LLEGA_APROX"] ?></span></td>
-                    <td class="small"><span class="badge bg-red">PROGRAMADO</span></td>
-                    <td class="small"><?= $otros_car_des_info[$i]["OBS_CAN"] ?></td>
-                    <td class="small"><?= $otros_car_des_info[$i]["VEHICULO"] ?></td>
-                    <td class="small"><span class="badge label-info"><?=$otros_car_des_info[$i]["PLACAS1"]?></span><br><span class="badge label-info"><?=$otros_car_des_info[$i]["PLACAS2"]?></span></td>
-                    <td class="small"><?= $otros_car_des_info[$i]["UME"] ?></td>
-                    <td class="small"><?= $otros_car_des_info[$i]["CANTIDAD"] ?></td>
-                    <!--<td class="small"><?= $otros_car_des_info[$i]["DES_MER"] ?></td>
-                    <td class="small"><?= $otros_car_des_info[$i]["AL_NOM"].' '.$otros_car_des_info[$i]["AL_APEP"].' '.$otros_car_des_info[$i]["AL_APEM"] ?></td>-->
-                  </tr>
-                <?php } } ?>
-                </tbody>
-                </table>
-              </div>
-           </div><!-- TERMINA TABLA PARA VEHICULOS PROGRAMADOS -->
-
         </div><!-- ./tab-content -->
       </div><!-- ./nav-tabs-custom -->
+
     </div><!--/.box-body-->
   </div>
 </section>
@@ -3094,12 +3040,11 @@ $("#check_cor,#check_mex,#check_gol,#check_pen,#check_pue,#check_baj,#check_occ,
     $('#widgets_can_des\\[\\]').text('<?=$total_descargas_canceladas?>')
     $('#widgets_can_car\\[\\]').text('<?=$total_cargas_canceladas?>')
 
-  //WIDGETS VEHICULOS PROGRAMADAS POR EL CLIENTE
-    $('#widgets_programadas').text('<?=$contador_cargas+$contador_descargas?>')
-    $('#widgets_cargas_programadas\\[\\]').text('<?=$contador_cargas?>')
-    $('#widgets_descargas_programadas\\[\\]').text('<?=$contador_descargas?>')
-    $('#widgets_cross_programadas').text('<?=$otros_cross_programados?>')
+  //WIDGETS PARA CARGAS PROGRAMADAS POR EL CLIENTE
+    $('#widgets_cargas_programadas').text('<?=$contador_cargas?>')
 
+  //WIDGETS PARA DESCARGAS PROGRAMADAS POR EL CLIENTE
+    $('#widgets_descargas_programadas').text('<?=$contador_descargas?>')
 });
 </script>
 <!-- script para guargar el tap seleccionado -->

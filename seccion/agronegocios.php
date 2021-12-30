@@ -1153,8 +1153,8 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
                   <a class="fancybox fancybox.iframe" href="<?= 'agronegocios_det.php?op=ofc&par='.$consulta_carga_status[$i]["PARTIDA"].'&ofc='.$consulta_carga_status[$i]["OFC"].'&fol='.$consulta_carga_status[$i]["FOLIO_DET"] ?>">
                   <span class="badge badge bg-teal-active btn"> <i class="fa fa-eye"></i> Detalles </span>
                   </a>
-                  <!-- INICIA CODE NOTIFICACION -->
-                  <button type="button" class="btn btn-sm badge bg-green" data-toggle="modal" data-target="#modal_what<?=$consulta_carga_status[$i]["PARTIDA"].$consulta_carga_status[$i]["OFC"].$consulta_carga_status[$i]["FOLIO_DET"]?>"> <i class="fa fa-whatsapp"></i> Notificar</button>
+                  <!-- INICIA CODE NOTIFICACION
+                  <button type="button" class="btn btn-sm badge bg-green" data-toggle="modal" data-target="#modal_what<?=$consulta_carga_status[$i]["PARTIDA"].$consulta_carga_status[$i]["OFC"].$consulta_carga_status[$i]["FOLIO_DET"]?>"> <i class="fa fa-whatsapp"></i> Notificar</button>-->
                   <!-- TERMINA CODE NOTIFICACION -->
                   <br><br><br>
 
