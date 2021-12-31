@@ -103,11 +103,28 @@ $contador_descargas=0;
  .imgwrapper {
    width: 95%;
 }
+
+.main{
+  max-width: auto;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  padding: 1rem;
+  grid-gap: 1rem;
+}
+
+@media all and (max-width: 775px){
+  .main{
+    display: inline;
+  }
+  .col-3{
+    padding: 3px;
+  }
+}
 </style>
 <!-- DataTables -->
 <!-- <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">  -->
 <!-- <link rel="stylesheet" href="../plugins/datatables/jquery.dataTables.min.css"> -->
-
 <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.min.css">
 <link rel="stylesheet" href="../plugins/datatables/extensions/buttons_datatable/buttons.dataTables.min.css">
@@ -119,11 +136,7 @@ $contador_descargas=0;
  <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
-
-        Dashboard
-        <small>Manufactura</small>
-      </h1>
+      <h1>Dashboard<small>Manufactura</small></h1>
 
       <ol class="breadcrumb">
         <li>
@@ -150,11 +163,9 @@ $contador_descargas=0;
         </li>
         <?php } ?>
       </ol>
-
     </section>
     <!-- Main content -->
     <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
-
 
 <!-- INICIA CODE FECHA PERSONALIZADA -->
       <div class="tab-content" id="content_car_text_btn_reg[]">
@@ -184,8 +195,6 @@ $contador_descargas=0;
 
 
 <!-- ######################################## INICIO DE MODALS ######################################### -->
-
-
 
   <!-- MODAL SELECCION DE PLAZAS GLOBAL -->
   <div class="modal fade" id="modal_sel_plaza_glo" data-backdrop="static" role="dialog">
@@ -225,7 +234,6 @@ $contador_descargas=0;
             <div class="checkbox"><label>
               <!-- <input type="checkbox" id="check_leo" <?php if ($select_manufac_global_plaza[8]==true){echo "checked";} ?> >PLAZA LEON -->
             </label></div>
-
 
           </div><!-- ./form-group -->
         </div><!-- ./modal-body -->
@@ -379,7 +387,6 @@ $contador_descargas=0;
             echo "<option value='".$historial_plaza[$i]["FECHA"]."'>".$historial_plaza[$i]["FECHA"]."</option>";
           }
         ?>
-
         <?php  } ?>
         <!-- TERMINA SELECT POR PLAZA SELECCIONADA -->
 
@@ -400,35 +407,35 @@ $contador_descargas=0;
 <!-- ######################################## Inicio de Widgets ######################################### -->
     <section><!-- Inicia la seccion de los Widgets -->
       <div class="row">
+      <h4 align="center" class="box-title text-light-blue"><i class="fa fa-truck"></i> OPERACIONES MANUFACTURA <?= $plaza_manufac ?> <code><?=$titulo_fec_manufac?></code></h4>
+      <hr>
 
-      <h4 align="center" class="box-title text-light-blue"><i class="fa fa-truck"></i> OPERACIONES MANUFACTURA <?= $plaza_manufac ?> <code><?=$titulo_fec_manufac?></code></h4><hr>
-
+      <div class="main">
       <!-- Widgets Numero de cargas -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-3">
           <div class="info-box bg-aqua">
             <span class="info-box-icon bg-aqua"><i class="fa fa-upload"></i></span>
             <div class="info-box-content bg-aqua">
               <span class="info-box-text">Cargas</span>
                   <span id="widgets_cargas" class="info-box-number">0</span>
                   <span class="progress-description">
-                    EnProceso:<b id="widgets_cargas_pro[]">0</b>
+                    En Proceso:<b id="widgets_cargas_pro[]">0</b>
                   </span>
                   <span class="progress-description">
                     Finalizado: <b id="widgets_cargas_fin[]">0</b>
                   </span>
-            </div>
-            <!-- <button class="btn bg-aqua-active btn-block">Más Información <i class="fa fa-arrow-circle-right"></i></button> -->
+            </div><!-- <button class="btn bg-aqua-active btn-block">Más Información <i class="fa fa-arrow-circle-right"></i></button> -->
           </div>
         </div>
         <!-- Widgets Numero de descargas -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-3">
           <div class="info-box bg-green">
             <span class="info-box-icon bg-green"><i class="fa fa-download"></i></span>
             <div class="info-box-content bg-green">
               <span class="info-box-text">Descargas</span>
                   <span id="widgets_descargas" class="info-box-number">0</span>
                   <span class="progress-description">
-                    EnProceso: <b id="widgets_descargas_pro[]">0</b>
+                    En Proceso: <b id="widgets_descargas_pro[]">0</b>
                   </span>
                   <span class="progress-description">
                     Finalizado: <b id="widgets_descargas_fin[]">0</b>
@@ -438,7 +445,7 @@ $contador_descargas=0;
           </div>
         </div>
         <!-- Widgets Otros -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-3">
           <div class="info-box bg-yellow">
             <span class="info-box-icon bg-yellow"><i class="fa fa-ticket"></i></span>
               <div class="info-box-content bg-yellow">
@@ -455,7 +462,7 @@ $contador_descargas=0;
           </div>
         </div>
         <!-- Widgets Desfasados -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-3">
           <div class="info-box bg-red">
             <span class="info-box-icon bg-red"><i class="fa fa-warning"></i></span>
             <div class="info-box-content bg-red">
@@ -472,7 +479,7 @@ $contador_descargas=0;
           </div>
         </div><!-- Termino Widgets Desfasados -->
 
-        <div class="col-md-3 col-sm-6 col-xs-12"><!-- Widgets Programados-->
+        <div class="col-3"><!-- Widgets Programados-->
           <div class="info-box bg-morado">
             <span class="info-box-icon bg-morado"><i class="fa fa-calendar"></i></span>
             <div class="info-box-content bg-morado">
@@ -483,10 +490,10 @@ $contador_descargas=0;
             </div>
           </div>
         </div><!-- Termino Widgets Desfasados -->
+      </div> <!-- /.row -->
+    </div>
+    </section><!-- Termina la seccion de los Widgets -->
 
-      </div>
-      <!-- /.row -->
-      </section><!-- Termina la seccion de los Widgets -->
 <!-- ######################################### Termino de Widgets ######################################### -->
 
 <!-- *********************************** INICIA SECCION GENERAL DE OPERACIONES MANUFACTURA *********************************** -->
@@ -3098,7 +3105,7 @@ $("#check_cor,#check_mex,#check_gol,#check_pen,#check_pue,#check_baj,#check_occ,
     $('#widgets_programadas').text('<?=$contador_cargas+$contador_descargas?>')
     $('#widgets_cargas_programadas\\[\\]').text('<?=$contador_cargas?>')
     $('#widgets_descargas_programadas\\[\\]').text('<?=$contador_descargas?>')
-    $('#widgets_cross_programadas').text('<?=$otros_cross_programados?>')
+    $('#widgets_cross_programadas\\[\\]').text('<?=$otros_cross_programados?>')
 
 });
 </script>

@@ -562,7 +562,7 @@ class Op_in_car_des_info
 									to_char(cargas.d_fec_ini_car_des, 'dd-mm-yyyy HH24:MI:SS') AS inicia, to_char(cargas.d_fec_fin_car_des, 'dd-mm-yyyy HH24:MI:SS') AS fin,
 					    		to_char(cargas.d_fec_desp_vehic, 'dd-mm-yyyy HH24:MI:SS') AS despacho,
 									cargas.n_tiempo_operacion
-									,cargas.id_tipo AS tipo, cargas.v_observaciones_salida AS obs, cargas.v_observaciones_cancelacion AS obs_can, veh.v_descripcion AS vehiculo, cargas.v_placas_vehiculo_real AS placas1, cargas.v_placas_vehiculo_dos AS placas2, cargas.id_anden AS anden
+									,cargas.id_tipo AS tipo, cargas.v_observaciones_salida AS obs, cargas.v_observaciones_cancelacion AS obs_can, veh.v_descripcion AS vehiculo, cargas.v_placas_vehiculo AS placas1, cargas.v_placas_vehiculo_dos AS placas2, cargas.id_anden AS anden
 									,ume.v_descripcion AS ume, cargas.n_cantidad_ume AS cantidad, per.v_nombre AS almacenista_n, per.v_ape_pat AS almacenista_p, per.v_ape_mat AS almacenista_m
 									,cargas.id_solicitud AS solicitud, cargas.iid_arr_ret AS arribo, cargas.n_tiempo_operacion, cargas.iid_regimen,
 					        case when cli.iid_num_cliente = 2905 then ane.vid_usuario_cdvigente else ' ' end as proyecto,
@@ -1671,7 +1671,7 @@ class Op_in_car_des_info
 								to_char(cargas.d_fec_ini_car_des, 'dd-mm-yyyy HH24:MI:SS') AS inicia, to_char(cargas.d_fec_fin_car_des, 'dd-mm-yyyy HH24:MI:SS') AS fin,
 								to_char(cargas.d_fec_desp_vehic, 'dd-mm-yyyy HH24:MI:SS') AS despacho,
 								cargas.n_tiempo_operacion
-								,cargas.id_tipo AS tipo, cargas.v_observaciones_salida AS obs, cargas.v_observaciones_cancelacion AS obs_can, veh.v_descripcion AS vehiculo, cargas.v_placas_vehiculo_real AS placas1, cargas.v_placas_vehiculo_dos AS placas2, cargas.id_anden AS anden
+								,cargas.id_tipo AS tipo, cargas.v_observaciones_salida AS obs, cargas.v_observaciones_cancelacion AS obs_can, veh.v_descripcion AS vehiculo, cargas.v_placas_vehiculo AS placas1, cargas.v_placas_vehiculo_dos AS placas2, cargas.id_anden AS anden
 								,ume.v_descripcion AS ume, cargas.n_cantidad_ume AS cantidad, per.v_nombre AS almacenista_n, per.v_ape_pat AS almacenista_p, per.v_ape_mat AS almacenista_m
 								,cargas.id_solicitud AS solicitud, cargas.iid_arr_ret AS arribo, cargas.n_tiempo_operacion, cargas.iid_regimen,
 								case when cli.iid_num_cliente = 2905 then ane.vid_usuario_cdvigente else ' ' end as proyecto,
@@ -2084,7 +2084,7 @@ class Op_in_car_des_info
 			LEFT JOIN OP_IN_ARRIBOS_NAD_ENC ane on ane.iid_arribo = cargas.iid_arr_ret
 			WHERE cargas.id_tipo IN (1,2) AND pla.iid_plaza in (".$inplaza.")
 			".$and_sql_fecha_op_manufac."
-			AND (cargas.n_virtual is null or cargas.n_virtual = 0)			
+			AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 			AND CARGAS.N_CROSSDOCK = 1
 			$sql_process
 			$sql_termina";

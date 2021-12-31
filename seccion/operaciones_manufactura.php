@@ -305,6 +305,7 @@ $total_otros = $total_otros_pendientes + $total_otros_proceso + $total_otros_con
   $total_otros = $total_otros_pendientes + $total_otros_proceso + $total_otros_concluidos ;
 }
 
+$otros_cross_programados = count($otros_cross_programados);
 
 
 
