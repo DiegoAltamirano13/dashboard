@@ -200,7 +200,7 @@ $countBim = $instClass->countBim($fecha,$bimestre_sel);
  <div class="row">
 
   <!-- WIDGETS PROYECTOS EN PROCESO -->
-  <div class="col-md-3 col-sm-6 col-xs-12">
+  <div class="col-md-2">
     <div class="small-box bg-verde">
       <div class="inner">
         <h3 class="text-center"><?= $widgets[0]["TODOS"] ?></h3>
@@ -213,8 +213,8 @@ $countBim = $instClass->countBim($fecha,$bimestre_sel);
     </div>
   </div>
   <!-- WIDGETS PROYECTOS POR INICIAR -->
-  <div class="col-md-3 col-sm-6 col-xs-12">
-    <div class="small-box bg-morado">
+  <div class="col-md-2">
+    <div class="small-box bg-fushia3">
       <div class="inner">
         <h3 class="text-center"><?= $widgets[0]["INICIAR"] ?></h3>
         <b>Proyectos por iniciar <?php if ( isset($_GET["fecha"]) ){echo $fecha;}else{ echo substr($fecha,6,4);} ?></b>
@@ -225,8 +225,21 @@ $countBim = $instClass->countBim($fecha,$bimestre_sel);
       <a href="<?= "?bimfil=".$bimfil."&fecha=".$fecha."&status=2&pro=".$pro."&tarea=".$tarea."&actividad=".$actividad; ?>" class="small-box-footer">Detalles <i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
+  <!--PROCESO WIDGED -->
+  <div class="col-md-2">
+    <div class="small-box bg-morado">
+      <div class="inner">
+        <h3 class="text-center"><?= $widgets[0]["PROCESO"] ?></h3>
+        <b>Proyectos en proceso <?php if ( isset($_GET["fecha"]) ){echo $fecha;}else{ echo substr($fecha,6,4);} ?></b>
+      </div>
+      <div class="icon">
+        <i class="ion ion-loop"></i>
+      </div>
+      <a href="<?= "?bimfil=".$bimfil."&fecha=".$fecha."&status=ALL&pro=".$pro."&tarea=".$tarea."&actividad=".$actividad; ?>" class="small-box-footer">Detalles <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
   <!-- WIDGETS PROYECTOS DESFASADOS -->
-  <div class="col-md-3 col-sm-6 col-xs-12">
+  <div class="col-md-2">
     <div class="small-box bg-fuchsia2">
       <div class="inner">
         <h3 class="text-center"><?= $widgets[0]["DESFASADOS"] ?></h3>
@@ -239,7 +252,7 @@ $countBim = $instClass->countBim($fecha,$bimestre_sel);
     </div>
   </div>
   <!-- WIDGETS PROYECTOS TERMINADOS -->
-  <div class="col-md-3 col-sm-6 col-xs-12">
+  <div class="col-md-2">
     <!-- small box -->
     <div class="small-box bg-blue">
       <div class="inner">
@@ -422,28 +435,49 @@ $countBim = $instClass->countBim($fecha,$bimestre_sel);
               if (is_null($tareas[$i]["D_FECHA_INICIO"]) AND is_null($tareas[$i]["D_FECHA_INI_REAL"]) AND is_null($tareas[$i]["D_FECHA_FIN"]) && is_null($tareas[$i]["D_FECHA_FIN_REAL"])){
                 $colorBar = "default"; $colorBtn = "default";
               }
-              else if ( $tareas[$i]["D_FECHA_INICIO"]==true && $tareas[$i]["D_FECHA_INI_REAL"] ==true && $tareas[$i]["D_FECHA_FIN"]==true && $tareas[$i]["D_FECHA_FIN_REAL"]==true ){ // if
+              else if ( $tareas[$i]["D_FECHA_INICIO"]==true && $tareas[$i]["D_FECHA_INI_REAL"] ==true
+                  && $tareas[$i]["D_FECHA_FIN"]==true && $tareas[$i]["D_FECHA_FIN_REAL"]==true ){ // if
 
                 //Tareas que se iniciaron desfasadas pero se terminó en el tiempo estipulado aunque pasó la fecha de entrega – barra en rojo e indicador de porcentaje en amarillo
-                if ( strtotime($tareas[$i]["D_FECHA_INICIO"]) < strtotime($tareas[$i]["D_FECHA_INI_REAL"]) && strtotime($tareas[$i]["D_FECHA_FIN"] ) < strtotime($tareas[$i]["D_FECHA_FIN_REAL"]) && $tareas[$i]["STATUS"] <> 'DESFASADO'){// if para inicio-desafasado termino-desafasado
+                if ( strtotime($tareas[$i]["D_FECHA_INICIO"]) < strtotime($tareas[$i]["D_FECHA_INI_REAL"])
+                    && strtotime($tareas[$i]["D_FECHA_FIN"] ) < strtotime($tareas[$i]["D_FECHA_FIN_REAL"] )
+                    ){// if para inicio-desafasado termino-desafasado
                   $colorBar = "red"; $colorBtn = "yellow";
-                }// /.if para inicio-desafasado termino-desafasado
+                }//IF INICIO CORRECTO TERMINO DESFASADO
+                if ( strtotime($tareas[$i]["D_FECHA_INICIO"]) <= strtotime($tareas[$i]["D_FECHA_INI_REAL"])
+                    && strtotime($tareas[$i]["D_FECHA_FIN"] ) < strtotime($tareas[$i]["D_FECHA_FIN_REAL"] )
+                    ){// if para inicio-desafasado termino-desafasado
+                  $colorBar = "red"; $colorBtn = "red";
+                }
+                // /.if para inicio-desafasado termino-desafasado
                 //Tareas que se iniciaron desfasadas pero se terminó  y entregó en la fecha de indicada – barra en rojo e indicador de porcentaje en azul
-                else if(strtotime($tareas[$i]["D_FECHA_INICIO"]) < strtotime($tareas[$i]["D_FECHA_INI_REAL"]) && $tareas[$i]["D_FECHA_FIN"] == $tareas[$i]["D_FECHA_FIN_REAL"] && $tareas[$i]["STATUS"] <> 'DESFASADO' ){ // else if para inicio-desafasado termino-bien /* @ki */
+                else if(strtotime($tareas[$i]["D_FECHA_INICIO"]) < strtotime($tareas[$i]["D_FECHA_INI_REAL"])
+                        && $tareas[$i]["D_FECHA_FIN"] == $tareas[$i]["D_FECHA_FIN_REAL"] ){ // else if para inicio-desafasado termino-bien /* @ki */
                   $colorBar = "red"; $colorBtn = "aqua";
                 }// /.else if para inicio-desafasado termino-bien
                 //Tareas que se iniciaron bien pero se terminó  y entregó en la fecha de desface – barra en azul e indicador de porcentaje en amarillo
-                else if(strtotime($tareas[$i]["D_FECHA_INICIO"]) >= strtotime($tareas[$i]["D_FECHA_INI_REAL"]) && strtotime($tareas[$i]["D_FECHA_FIN"]) < strtotime($tareas[$i]["D_FECHA_FIN_REAL"]) && $tareas[$i]["STATUS"] <> 'DESFASADO'){// else if para inicio-bien termino-desafasado  /* @ki */
+                else if(strtotime($tareas[$i]["D_FECHA_INICIO"]) >= strtotime($tareas[$i]["D_FECHA_INI_REAL"])
+                        && strtotime($tareas[$i]["D_FECHA_FIN"]) < strtotime($tareas[$i]["D_FECHA_FIN_REAL"])){// else if para inicio-bien termino-desafasado  /* @ki */
                   $colorBar = "aqua"; $colorBtn = "yellow";
                 }// /.else if para inicio-bien termino-desafasado
                 //Tareas que se iniciaron en tiempo y se terminó en tiempo y forma/Tareas que se iniciaron en tiempo y se terminó antes de la fecha indicada/Tareas que se iniciaron antes de tiempo y se terminó antes de la fecha indicada– barra en azul e indicador de porcentaje en azul
-                else if($tareas[$i]["D_FECHA_INICIO"] == $tareas[$i]["D_FECHA_INI_REAL"] && $tareas[$i]["D_FECHA_FIN"] == $tareas[$i]["D_FECHA_INI_REAL"] && $tareas[$i]["STATUS"] <> 'DESFASADO' || $tareas[$i]["D_FECHA_INICIO"] == $tareas[$i]["D_FECHA_INI_REAL"] && $tareas[$i]["D_FECHA_FIN"] > $tareas[$i]["D_FECHA_INI_REAL"]|| $tareas[$i]["D_FECHA_INICIO"] > $tareas[$i]["D_FECHA_INI_REAL"] && isset($tareas[$i]["D_FECHA_INI_REAL"]) && strtotime($tareas[$i]["D_FECHA_FIN"]) > strtotime($tareas[$i]["D_FECHA_INI_REAL"]) && isset($tareas[$i]["D_FECHA_INI_REAL"]) && $tareas[$i]["STATUS"] <> 'DESFASADO' || strtotime($tareas[$i]["D_FECHA_INICIO"]) > strtotime($tareas[$i]["D_FECHA_INI_REAL"]) && $tareas[$i]["D_FECHA_FIN"] == $tareas[$i]["D_FECHA_INI_REAL"]){// else if para inicio-bien termino-desafasado /* @ki */
+                else if($tareas[$i]["D_FECHA_INICIO"] == $tareas[$i]["D_FECHA_INI_REAL"]
+                        && $tareas[$i]["D_FECHA_FIN"] == $tareas[$i]["D_FECHA_FIN_REAL"]
+                        || $tareas[$i]["D_FECHA_INICIO"] == $tareas[$i]["D_FECHA_INI_REAL"]
+                        && $tareas[$i]["D_FECHA_FIN"] > $tareas[$i]["D_FECHA_FIN_REAL"]
+                        || $tareas[$i]["D_FECHA_INICIO"] > $tareas[$i]["D_FECHA_INI_REAL"]
+                        && isset($tareas[$i]["D_FECHA_INI_REAL"])
+                        && strtotime($tareas[$i]["D_FECHA_FIN"]) > strtotime($tareas[$i]["D_FECHA_INI_REAL"])
+                        && isset($tareas[$i]["D_FECHA_FIN_REAL"])
+                        || strtotime($tareas[$i]["D_FECHA_INICIO"]) > strtotime($tareas[$i]["D_FECHA_INI_REAL"])
+                        && $tareas[$i]["D_FECHA_FIN"] == $tareas[$i]["D_FECHA_FIN_REAL"]){// else if para inicio-bien termino-desafasado /* @ki */
                   $colorBar = "aqua"; $colorBtn = "aqua";
                   }// /.else if para inicio-bien termino-desafasado
                   //evalua si el estatus esta en desface para pintar el color en rojo
                   else{
                     $colorBar = "red"; $colorBtn = "red";
                   }
+                  //echo "1";
               }// /.if
               /* /.CONDICIONES SI TENEMOS DATOS EN D_FECHA_INICIO,D_FECHA_INI_REAL,D_FECHA_FIN,D_FECHA_FIN_REAL */
 

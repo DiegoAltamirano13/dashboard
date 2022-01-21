@@ -1022,11 +1022,11 @@ public function detalleGastos($fecha,$plaza,$almacen)
    ) AS FACTURAS_CANCELADAS
  FROM AD_FA_FACTURA FACTURA
       INNER JOIN PLAZA P ON FACTURA.IID_PLAZA = P.IID_PLAZA
- WHERE FACTURA.D_FEC_FACTURA >= to_date ( '$fecha_inicio', 'dd/mm/yyyy') AND to_date(FACTURA.D_FEC_FACTURA, 'dd/mm/yyyy') <= to_date( '$fecha_fin', 'dd/mm/yyyy') AND FACTURA.STATUS > 5
+ WHERE FACTURA.D_FEC_FACTURA >= to_date ( '$fecha_inicio', 'dd/mm/yyyy') AND to_date(FACTURA.D_FEC_FACTURA, 'dd/mm/yyy') <= to_date( '$fecha_fin', 'dd/mm/yYyy') AND FACTURA.STATUS > 5 AND FACTURA.STATUS <> 6
        AND FACTURA.IID_PLAZA IN ($andPlaza)
  GROUP BY FACTURA.IID_PLAZA, P.V_RAZON_SOCIAL";
 						//5 HABILITADO 15 FISCAL HABILITADO
-        #   echo $sql;
+          # echo $sql;
 	 $stid = oci_parse($conn, $sql);
 	 oci_execute($stid);
 

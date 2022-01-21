@@ -14,7 +14,7 @@
 
 <footer class="main-footer">
 
-    <strong>Copyright &copy; <?=date("Y")?> <a href="http://www.argoalmacenadora.com.mx/index.php"> ARGO Almacenadora</a>.</strong> Todos los derechos reservados.
+    <strong>Copyright &copy; <?=date("Y")?> <a href="http://www.argoalmacenadora.com.mx/index.php"> Argo Almacenadora</a>.</strong> Todos los derechos reservados.
     <div class="pull-right hidden-xs">
         <strong style="text-align:right;">Desarrollado Por: ARGO-TIC <b>  Version</b> 2.3.8</strong>
     </div>

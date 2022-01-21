@@ -96,7 +96,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-3 social-login">
-                        	<strong><font size="2" color="navy">Copyright © 1991-2017</font> <a style="color:#FFFFFF" href="http://www.argoalmacenadora.com.mx/index.php"> ARGO Almacenadora.</a> </strong> <font size="2"  color="navy">Todos los derechos reservados.</font>
+                        	<strong><font size="2" color="navy">Copyright © <?= date('Y') ?></font> <a style="color:#FFFFFF" href="http://www.argoalmacenadora.com.mx/index.php"> Argo Almacenadora.</a> </strong> <font size="2"  color="navy">Todos los derechos reservados.</font>
                         	<div class="social-login-buttons">
 
 	                        	<!-- <a class="btn btn-link-2" href="#">
