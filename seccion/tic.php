@@ -80,6 +80,11 @@ if ( isset($_GET["bim"]) ){
 
 
 $fecha = $hoy ;
+
+if($bimestre_sel == 6){
+  $fecha = $fecha -1;
+}
+
 if ( isset($_GET["anio"]) ){
   if ( $instClass->validateDate( substr($_GET["anio"],0,4),'Y') ){
     $fecha = $_GET["anio"];

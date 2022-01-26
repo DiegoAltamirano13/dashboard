@@ -1003,7 +1003,7 @@ $('#myTab a[href="' + hash + '"]').tab('show');
 //ACTIVA FILTRO POR FECHA
 <?php if ( $fil_check == 'on' AND $obj_class->validateDate(substr($fecha,0,10)) AND $obj_class->validateDate(substr($fecha,11,10)) ){ ?>
   $('input[name="fil_fecha"]').attr("disabled", false);
-<?php } ?>|
+<?php } ?>
 $('input[name="fil_check"]').on("click", function (){
 
   if ($('input[name="fil_check"]').is(':checked')) {

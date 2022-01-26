@@ -348,12 +348,16 @@ $(".btn_fil").on("click", function(){
 <script src="../dist/js/demo.js"></script>
 <!-- Select2 -->
 <script src="../plugins/select2/select2.full.min.js"></script>
-<!-- Grafica Barras. -->
+<!-- Grafica Barras.
 <script src="../plugins/highcharts/highcharts.js"></script>
 <script src="../plugins/highcharts/modules/data.js"></script>
 <script src="../plugins/highcharts/modules/exporting.js"></script>
 <script src="../plugins/highcharts/modules/accessibility.js"></script>
 <script src="../plugins/colorSegment/multicolor_series.js"></script>
+-->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
 $(function () {
     Highcharts.setOptions({
@@ -495,18 +499,12 @@ $(function () {
         chart: {
             type: 'line',
             zoomType: 'x',
-            panning: true,
+            panning: false,
             panKey: 'shift'
           // zoomType : 'x'
         },
          title: {
             text: 'Inventario en Bodegas Directas y Habilitadas Corte Semanal (Toneladas Metricas) '
-        },
-
-        legend: {
-            y: -40,
-            borderWidth: 1,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
         },
         yAxis: {
             lineWidth: 2,
@@ -525,11 +523,6 @@ $(function () {
                 }
             }
         },
-        tooltip: {
-          shared: true,
-          valueSuffix: ' TONELADAS',
-          useHTML: true,
-        },
         lang: {
           printChart: 'Imprimir Grafica',
           downloadPNG: 'Descargar PNG',
@@ -543,11 +536,6 @@ $(function () {
             enabled: false
         },
         colors: ['#0073B7', '#D81B60'],
-        plotOptions: {
-          series: {
-            minPointLength:4
-          }
-        },
         xAxis: {
           //tickmarkPlacement: 'on',
           //gridLineWidth: 1,
@@ -560,12 +548,32 @@ $(function () {
           }
         },
         subtitle: {
-          text: ' ',
+          text: null,
+        },
+        legend: {
+          layout: 'vertical',
           align: 'right',
-          x: -10,
+          verticalAlign: 'middle',
+          itemMarginBottom: 15,
+          enabled:false
+        },
+        tooltip: {
+          shared: true,
+          valueSuffix: ' TONELADAS',
+          useHTML: true,
+        },
+        plotOptions: {
+          series: {
+            label: {
+              enabled: false
+            },
+            dataLabels: {
+              enabled: false
+            }
+          }
         },
         series:  [{
-        //  showInLegend:false,
+            showInLegend:false,
             name: 'REAL AÑO  <?php echo $anio; ?>',
             data: data1,
             color: 'red',
@@ -756,7 +764,12 @@ $(function () {
         colors: ['#0073B7', '#D81B60'],
         plotOptions: {
           series: {
-            minPointLength:4
+            label: {
+              enabled: false
+            },
+            dataLabels: {
+              enabled: false
+            }
           }
         },
         xAxis: {

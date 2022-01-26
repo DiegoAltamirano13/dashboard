@@ -239,7 +239,11 @@ $ModuloGestCal->exportar($descargarExcel, $fechaInicio, $fechaFin);
                       <td class="small" align="center"><?php echo $plazasDetalle[$x]["IID_SACP"] ?></td>
                       <td class="small" align="center"><?php echo $plazasDetalle[$x]["V_NOM_DEPTO"] ?></td>
                       <td class="small" align="center"><?php $fecha=$plazasDetalle[$x]["D_FEC_SOL"]; $format=date("d/m/Y", strtotime($fecha)); echo $format ?></td>
-                      <td class="small" align="center"><?php $fecha=$plazasDetalle[$x]["D_FEC_ACCION"]; $format=date("d/m/Y", strtotime($fecha)); echo $format ?></td>
+                      <td class="small" align="center"><?php if ($plazasDetalle[$x]["D_FEC_ACCION"] == "") {    }else {
+                                                                $fecha=$plazasDetalle[$x]["D_FEC_ACCION"];
+                                                                $format=date("d/m/Y", strtotime($fecha));
+                                                                echo $format;
+                                                                } ?></td>
                       <td class="small" align="center"><?php echo $plazasDetalle[$x]["DURACION"] ?></td>
                     </tr>
                      <?php } ?>
@@ -282,7 +286,7 @@ $ModuloGestCal->exportar($descargarExcel, $fechaInicio, $fechaFin);
               </div>
             </div>
             <div class="box-body">
-              <input type="submit" value="DETALLE POR PLAZA" onclick="visualizarDetalle(1);">
+              <input class="btn btn-primary" type="submit" value="DETALLE POR PLAZA" onclick="visualizarDetalle(1);">
               <div id="graf_sacp3" class="col-md-12" style="height:380px;"></div>
             </div>
           </div>
@@ -316,7 +320,7 @@ $ModuloGestCal->exportar($descargarExcel, $fechaInicio, $fechaFin);
               </div>
             </div>
             <div class="box-body">
-              <input type="submit" value="DETALLE POR PROCESO" onclick="visualizarDetalle(2);">
+              <input class="btn btn-primary" type="submit" value="DETALLE POR PROCESO" onclick="visualizarDetalle(2);">
               <div id="graf_sacp5" class="col-md-12" style="height:380px;"></div>
             </div>
           </div>
@@ -350,7 +354,7 @@ $ModuloGestCal->exportar($descargarExcel, $fechaInicio, $fechaFin);
               </div>
             </div>
             <div class="box-body">
-              <input type="submit" value="DETALLE POR CAPITULO" onclick="visualizarDetalle(3);">
+              <input class="btn btn-primary" type="submit" value="DETALLE POR CAPITULO" onclick="visualizarDetalle(3);">
               <div id="graf_sacp6" class="col-md-12" style="height:380px;"></div>
             </div>
           </div>
@@ -469,7 +473,7 @@ $ModuloGestCal->exportar($descargarExcel, $fechaInicio, $fechaFin);
               </div>
             </div>
             <div class="box-body">
-              <input type="submit" value="DETALLE POR PLAZA" onclick="visualizarDetalle(4);">
+              <input class="btn btn-primary" type="submit" value="DETALLE POR PLAZA" onclick="visualizarDetalle(4);">
               <div id="graf_sacp8" class="col-md-12" style="height:380px;"></div>
             </div>
           </div>
@@ -835,6 +839,7 @@ $(document).ready(function() {
 });
 </script>
 
+<?php if ($status == 2) { ?>
 <script>
 var data1 = [
   {
@@ -899,7 +904,8 @@ Highcharts.chart('graf_sacp3', {
     ]
 });
 </script>
-
+<?php } ?>
+<?php if ($status == 2) { ?>
 <script>                                                                        /*ABIERTOS GRAFICA # 4 DETALLE DE SACP ABIERTOS POR PLAZA*/
 <?php for ($i=0; $i <count($graficaAbiertosPlaza) ; $i++) {?>
   <?php if($graficaAbiertosPlaza[$i]["CERRADOS"]==null){
@@ -964,7 +970,8 @@ Highcharts.chart('graf_sacp3', {
   });
   <?php } ?>
 </script>
-
+<?php } ?>
+<?php if ($status == 2) { ?>
 <script>
 var data1 = [
   {
@@ -1026,7 +1033,8 @@ Highcharts.chart('graf_sacp5', {
     ]
 });
 </script>
-
+<?php } ?>
+<?php if ($status ==2) { ?>
 <script>                                                                        /*ABIERTOS GRAFICA # 11 DETALLE DE SACP ABIERTOS POR PLAZA*/
 <?php for ($i=0; $i <count($graficaAbiertosAreas) ; $i++) {?>
   <?php $graficaProcesoAb=$ModuloGestCal->grafica_proceso($fechaInicio, $fechaFin, $graficaAbiertosAreas[$i]["AREA"], $graficaAbiertosAreas[$i]["DEPTO"]); ?>
@@ -1085,7 +1093,8 @@ Highcharts.chart('graf_sacp5', {
   });
   <?php } ?>
 </script>
-
+<?php } ?>
+<?php if ($status ==2) { ?>
 <script>
 var data1 = [
   {
@@ -1147,7 +1156,8 @@ chart: {
     ]
 });
 </script>
-
+<?php } ?>
+<?php if ($status == 2) { ?>
 <script>                                                                        /*ABIERTOS GRAFICA # 12 DETALLE DE SACP ABIERTOS POR PLAZA*/
 <?php for ($i=0; $i <count($graficaAbiertosProceso) ; $i++) {?>
   <?php $graficaCapitulo=$ModuloGestCal->grafica_capitulo($fechaInicio, $fechaFin, $graficaAbiertosProceso[$i]["IID_PROCESO"]); ?>
@@ -1206,7 +1216,8 @@ chart: {
   });
   <?php } ?>
 </script>
-
+<?php } ?>
+<?php if ($status==2) { ?>
 <script type="text/javascript">                                                 /*ABIERTOS GRAFICA # 7 DETALLE DE SACP ABIERTOS TIEMPO TRANSCURRIDO ENTRE FECHA DE SOLICITUD Y FECHA DE PLAN DE ACCION*/
 
 $(document).ready(function() {
@@ -1249,7 +1260,8 @@ $(document).ready(function() {
     });
 });
 </script>
-
+<?php } ?>
+<?php if ($status == 3) { ?>
 <script>
 var data1 = [
   {
@@ -1313,7 +1325,7 @@ Highcharts.chart('graf_sacp8', {
 
 });
 </script>
-
+<?php } ?>
 <script>                                                                        /*CERRADOS GRAFICA # 9 DETALLE DE SACP CERRADOS POR PLAZA*/
 <?php for ($i=0; $i <count($graficaCerradosPlaza) ; $i++) {?>
   <?php if($graficaCerradosPlaza[$i]["ABIERTOS"]==null){

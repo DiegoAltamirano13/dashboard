@@ -372,7 +372,10 @@ class Sgc {
 
           switch ($id) {
             case 1:
-            $sql = "SELECT REPLACE(P.V_RAZON_SOCIAL, '(ARGO)') AS PLAZA,T.IID_SACP,SA.V_NOM_AREA, SD.V_NOM_DEPTO, to_char(T.D_FEC_SOL, 'yyyy-mm-dd') as d_fec_sol, to_char(T.D_FEC_ACCION, 'yyyy-mm-dd') as D_FEC_ACCION, TO_DATE(T.D_FEC_ACCION,'DD/MM/YYYY') - TO_DATE(T.D_FEC_SOL,'DD/MM/YYYY') AS DURACION
+            $sql = "SELECT REPLACE(P.V_RAZON_SOCIAL, '(ARGO)') AS PLAZA,T.IID_SACP,SA.V_NOM_AREA, SD.V_NOM_DEPTO,
+            to_char(T.D_FEC_SOL, 'yyyy-mm-dd') as d_fec_sol,
+            to_char(T.D_FEC_ACCION, 'yyyy-mm-dd') as D_FEC_ACCION,
+            TO_DATE(T.D_FEC_ACCION,'DD/MM/YYYY') - TO_DATE(T.D_FEC_SOL,'DD/MM/YYYY') AS DURACION
                     FROM SACP_SGC T, PLAZA P, SGC_AREAS SA, SGC_AREA_DEPTO SD
                     WHERE t.iid_sacp>0 and t.d_fec_sol is not null AND P.IID_PLAZA=T.IID_PLAZA
                     AND T.IID_AREA=SA.IID_AREA AND T.IID_DEPTO=SD.IID_DEPTO
@@ -387,10 +390,11 @@ class Sgc {
                     AND t.d_fec_sol between to_date('$fechaInicio', 'DD/MM/YYYY') and to_date('$fechaFin', 'DD/MM/YYYY')
                     AND T.IID_PLAZA=$plaza
                     AND T.IID_STATUS IN('CERRADO','REVISADO', 'REGISTRADO', 'PREREGISTRADO')
-                    ORDER BY P.V_RAZON_SOCIAL, DURACION";*/      
+                    ORDER BY P.V_RAZON_SOCIAL, DURACION";*/
               break;
               case 2:
-              $sql = "SELECT REPLACE(P.V_RAZON_SOCIAL, '(ARGO)') AS PLAZA,T.IID_SACP,SA.V_NOM_AREA, SD.V_NOM_DEPTO, to_char(T.D_FEC_VER, 'yyyy-mm-dd') as d_fec_ver, to_char(T.D_FEC_SOL, 'yyyy-mm-dd') as D_FEC_SOL, TO_DATE(T.D_FEC_VER,'DD/MM/YYYY') - TO_DATE(T.D_FEC_SOL,'DD/MM/YYYY') AS DURACION
+              $sql = "SELECT REPLACE(P.V_RAZON_SOCIAL, '(ARGO)') AS PLAZA,T.IID_SACP,SA.V_NOM_AREA, SD.V_NOM_DEPTO, to_char(T.D_FEC_VER, 'yyyy-mm-dd') as d_fec_ver,
+              to_char(T.D_FEC_SOL, 'yyyy-mm-dd') as D_FEC_SOL, TO_DATE(T.D_FEC_VER,'DD/MM/YYYY') - TO_DATE(T.D_FEC_SOL,'DD/MM/YYYY') AS DURACION
                       FROM SACP_SGC T, PLAZA P, SGC_AREAS SA, SGC_AREA_DEPTO SD
                       WHERE t.iid_sacp>0 and t.d_fec_sol is not null AND P.IID_PLAZA=T.IID_PLAZA
                       AND T.IID_AREA=SA.IID_AREA AND T.IID_DEPTO=SD.IID_DEPTO
@@ -400,7 +404,9 @@ class Sgc {
                       ORDER BY P.V_RAZON_SOCIAL, DURACION";
               break;
               case 3:
-              $sql = "SELECT REPLACE(P.V_RAZON_SOCIAL, '(ARGO)') AS PLAZA,T.IID_SACP,T.IID_SACP,SA.V_NOM_AREA, SD.V_NOM_DEPTO,to_char(T.D_FEC_ACCION, 'yyyy-mm-dd') as D_FEC_ACCION, to_char(T.D_FEC_SOL, 'yyyy-mm-dd') as d_fec_sol,TO_DATE(T.D_FEC_ACCION,'DD/MM/YYYY') - TO_DATE(T.D_FEC_SOL,'DD/MM/YYYY') AS DURACION
+              $sql = "SELECT REPLACE(P.V_RAZON_SOCIAL, '(ARGO)') AS PLAZA,T.IID_SACP,T.IID_SACP,SA.V_NOM_AREA, SD.V_NOM_DEPTO,
+              to_char(T.D_FEC_ACCION, 'yyyy-mm-dd') as D_FEC_ACCION,
+              to_char(T.D_FEC_SOL, 'yyyy-mm-dd') as d_fec_sol,TO_DATE(T.D_FEC_ACCION,'DD/MM/YYYY') - TO_DATE(T.D_FEC_SOL,'DD/MM/YYYY') AS DURACION
                       FROM SACP_SGC T, PLAZA P, SGC_AREAS SA, SGC_AREA_DEPTO SD
                       WHERE t.iid_sacp>0 and t.d_fec_sol is not null
                       AND P.IID_PLAZA=T.IID_PLAZA
@@ -412,6 +418,7 @@ class Sgc {
               break;
           }
 
+          #echo $sql;
           $stid = oci_parse($conn, $sql);
                   oci_execute($stid);
 
