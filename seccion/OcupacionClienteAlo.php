@@ -49,21 +49,8 @@ if ( isset($_GET["check"]) ){
   $fil_check = $_GET["check"];
 }
 
-$plaza = "ALL";
-if ( isset($_GET["plaza"]) ){
-  switch ($_GET["plaza"]) {
-    case 'CORPORATIVO': $plaza = $_GET["plaza"]; break;
-    case 'CÓRDOBA': $plaza = $_GET["plaza"]; break;
-    case 'MÉXICO': $plaza = $_GET["plaza"]; break;
-    case 'GOLFO': $plaza = $_GET["plaza"]; break;
-    case 'PENINSULA': $plaza = $_GET["plaza"]; break;
-    case 'PUEBLA': $plaza = $_GET["plaza"]; break;
-    case 'BAJIO': $plaza = $_GET["plaza"]; break;
-    case 'OCCIDENTE': $plaza = $_GET["plaza"]; break;
-    case 'NORESTE': $plaza = $_GET["plaza"]; break;
-    default: $plaza = "ALL"; break;
-  }
-}
+
+$plaza =$_SESSION['nomPlaza'];
 
 $fil_check = "ALL";
 if ( isset($_GET["check"]) ){
@@ -76,19 +63,19 @@ if (isset($_GET["almacen"])) {
 }
 
 //GRAFICA
-$grafica_pza_dañada = $obj_class->graficaDonut();
-$tabla30 = $obj_class->tabla30();
-$tabla60 = $obj_class->tabla60();
-$tabla90 = $obj_class->tabla90();
-$tabla120 = $obj_class->tabla120();
-$tabla150 = $obj_class->tabla150();
-$tablaViva = $obj_class->tablaViva();
-$tablaHANKOOK = $obj_class->tablaHANKOOK();
-$tablaHONDA = $obj_class->tablaHONDA();
-$tablaLINGLONG = $obj_class->tablaLINGLONG();
-$tablaLIUFENG = $obj_class->tablaLIUFENG();
-$tablaSAAA = $obj_class->tablaSAAA();
-$tablaSP = $obj_class->tablaSinProyecto();
+$grafica_pza_dañada = $obj_class->graficaDonut($plaza);
+$tabla30 = $obj_class->tabla30($plaza);
+$tabla60 = $obj_class->tabla60($plaza);
+$tabla90 = $obj_class->tabla90($plaza);
+$tabla120 = $obj_class->tabla120($plaza);
+$tabla150 = $obj_class->tabla150($plaza);
+$tablaViva = $obj_class->tablaViva($plaza);
+$tablaHANKOOK = $obj_class->tablaHANKOOK($plaza);
+$tablaHONDA = $obj_class->tablaHONDA($plaza);
+$tablaLINGLONG = $obj_class->tablaLINGLONG($plaza);
+$tablaLIUFENG = $obj_class->tablaLIUFENG($plaza);
+$tablaSAAA = $obj_class->tablaSAAA($plaza);
+$tablaSP = $obj_class->tablaSinProyecto($plaza);
 //$tabla_pza_dañada = $obj_class->tabla($plaza,$fecha,$fil_check);
 ?>
 <!-- ####################################### Incluir Plantilla Principal ##########################-->
@@ -157,7 +144,7 @@ div#response.display-block {
    <section class="content-header">
      <h1>
        Dashboard
-       <small>Tiempo de mercancia en almacen </small>
+       <small>Tiempo de mercancia en almacen  <?= $_SESSION["nomPlaza"] ?></small>
      </h1>
    </section>
    <!-- Main content -->

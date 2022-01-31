@@ -225,8 +225,17 @@ if( isset($_GET["fecha"]) ){
     $fecha = $fec_corte[0]["MES1"]."-".$fec_corte[0]["MES2"];
   }
 }
+
 /*----- GET PLAZA -----*/
 $plaza = "ALL";
+
+//if($_SESSION['area']==3){
+  $plaza=$_SESSION['nomPlaza'];
+//}else {
+  //$plaza = "ALL";
+//}
+
+/*$plaza = "ALL";
 if( isset($_GET["plaza"]) ){
   if( $_GET["plaza"] == "CORPORATIVO" || $_GET["plaza"] == "CÓRDOBA" || $_GET["plaza"] == "MÉXICO" || $_GET["plaza"] == "GOLFO" || $_GET["plaza"] == "PENINSULA" || $_GET["plaza"] == "PUEBLA" || $_GET["plaza"] == "BAJIO" || $_GET["plaza"] == "OCCIDENTE" || $_GET["plaza"] == "NORESTE" ){
     $plaza = $_GET["plaza"];
@@ -234,7 +243,7 @@ if( isset($_GET["plaza"]) ){
     $plaza = "ALL";
   }
 }
-//echo $plaza;
+//echo $plaza;*/
 
 
 $almacen = "ALL";
@@ -400,6 +409,8 @@ div#response.display-block {
 <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
   <section class="content-header">
     <h1>Dashboard<small>Gastos de Operaciones</small></h1>
+    <center><h4> PLAZA (<?php echo $_SESSION['nomPlaza']  ?>)</h4></center><!--FILTRO GENERAL -->
+
 
 <?php
       $anio_elegido = substr($fecha, -4);
@@ -692,8 +703,11 @@ div#response.display-block {
           <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Fecha:</span>
           <input type="text" class="form-control pull-right" name="nomFecha">
         </div>
+
         <!-- FILTRAR POR PLAZA -->
-        <div class="input-group">
+        <input id="nomPlaza" type="hidden" value=<?= $plaza ?>>
+        <?php //if($_SESSION['area']!=3){  ?>
+        <!--<div class="input-group">
           <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
           <select class="form-control select2" id="nomPlaza" style="width: 100%;">
             <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
@@ -704,14 +718,20 @@ div#response.display-block {
             <?php } ?>
           </select>
         </div>
+      <?php //} else{?>
+        <input id="nomPlaza" type="hidden" value=<?= $plaza ?>>-->
+      <?php //}?>
+
         <!--FILTRAR POR ALMACEN -->
         <div class="input-group">
           <span class="input-group-addon"><i class="fa fa-file-powerpoint-o"></i> Almacen:</span>
           <select class="form-control select2" style="width: 100%;" id="nomAlm">
             <option value="ALL" <?php if( $almacen == 'ALL'){echo "selected";} ?> >ALL</option>
             <?php
-            $plazas = $_GET["plaza"];
-            $selectAlmacen = $modelNomina->almacenSql($plazas);
+            $plazas=$plaza;
+            //$plazas = $_GET["plaza"];
+            $selectAlmacen = $modelNomina->almacenSql($_SESSION["nomPlaza"]);
+            #echo COUNT($selectAlmacen);
             for ($i=0; $i <count($selectAlmacen) ; $i++) { ?>
               <option value="<?=$selectAlmacen[$i]["IID_ALMACEN"]?>" <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>
             <?php } ?>

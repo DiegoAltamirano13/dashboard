@@ -1,15 +1,15 @@
-<?php
+<?php  
 /*
 * © Argo Almacenadora ®
 * Fecha: 30/11/2016
 * Developer: Jorge Tejeda J.
-* Proyecto: Dashboard
+* Proyecto: Dashboard 
 * Version:
 */
 session_start();
 /*inicia code solucion quita mensaje reenvio de form*/
 if( $_SERVER['REQUEST_METHOD'] == 'POST')
-{
+{ 
   header("location: ".$_SERVER["PHP_SELF"]." ");
 }
 /*termina code solucion quita mensaje reenvio de form*/
@@ -36,14 +36,14 @@ function autoload($clase){
   }
   spl_autoload_register('autoload');
 //////////////////////////// VALIDACION DEL MODULO ASIGNADO
-$modulos_valida = Perfil::modulos_valida($_SESSION['iid_empleado'], "51");
+$modulos_valida = Perfil::modulos_valida($_SESSION['iid_empleado'], "18");
 if($modulos_valida == 0)
-{
+{ 
   header('Location: index.php');
 }
 ///////////////////////////////////////////
 /*Class*/
-include_once "../class/RackAlo.php";
+include_once "../class/Rack.php";
 $objRack = new Rack();
 
 /**----------------------sessiones----------------------**/
@@ -55,17 +55,17 @@ if ( isset($_POST["rackId_plaza"]) )
 /*id_almacen*/
 if (  isset($_POST["rackId_almacen"]) )
   $_SESSION['rackId_almacen'] = $_POST['rackId_almacen'];
-  $id_almacen = @$_SESSION['rackId_almacen'];
+  $id_almacen = @$_SESSION['rackId_almacen']; 
 
 /*id_cliente*/
 if (  isset($_POST["rackId_cliente"]) )
   $_SESSION['rackId_cliente'] = $_POST['rackId_cliente'];
-  $id_cliente = @$_SESSION['rackId_cliente'];
+  $id_cliente = @$_SESSION['rackId_cliente']; 
 
 /*mercancia*/
 if (  isset($_POST["rackId_mercancia"]) )
   $_SESSION['rackId_mercancia'] = $_POST['rackId_mercancia'];
-  $mercancia = @$_SESSION['rackId_mercancia'];
+  $mercancia = @$_SESSION['rackId_mercancia']; 
 
 /*letraRack*/
 if (  isset($_POST["letraRack"]) )
@@ -79,7 +79,7 @@ if (  isset($_POST["letraRack"]) )
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="author" content="Jorge Tejeda Juan">
   <title>Argo Almacenadora | Dashboard</title>
-  <link rel="shortcut icon" href="../assets/ico/favicon.png">
+  <link rel="shortcut icon" href="../assets/ico/favicon.png"> 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -99,8 +99,8 @@ if (  isset($_POST["letraRack"]) )
     <!-- Add Button helper (this is optional) -->
   <link rel="stylesheet" type="text/css" href="../plugins/fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" />
     <!-- Add Thumbnail helper (this is optional) -->
-  <link rel="stylesheet" type="text/css" href="../plugins/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" />
-  <!-- Termina fancyBox SS files -->
+  <link rel="stylesheet" type="text/css" href="../plugins/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" /> 
+  <!-- Termina fancyBox SS files --> 
   <!-- jQuery 2.2.3 -->
   <link rel="stylesheet" href="../plugins/jquery-mobile/jquery.mobile.structure-1.4.5.min.css">
   <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -209,11 +209,11 @@ if (  isset($_POST["letraRack"]) )
     <!-- Content Header (Page header) -->
     <!-- Main content -->
     <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
+ 
 
-
-  <!-- ############################ INICIA SECCION FILTROS DISPONIBLES ############################# -->
+  <!-- ############################ INICIA SECCION FILTROS DISPONIBLES ############################# --> 
   <section>
-    <div class="box box-info">
+    <div class="box box-info">    
       <div class="box-header with-border">
         <h5 class="box-title"><i class="fa fa-search"></i> Filtros y Búsquedas de Mercancía</h5>
         <div class="box-tools pull-right">
@@ -230,7 +230,7 @@ if (  isset($_POST["letraRack"]) )
             <address>
               <select class="form-control select2" name="rackId_plaza" style='width: 100%;' onchange='this.form.submit()'>
               <option selected="true" disabled>Seleccione la Plaza</option>
-              <?php
+              <?php 
               $selectPlaza = $objRack->selectPlaza();
               for ($i=0; $i <count($selectPlaza) ; $i++) {
             ?>
@@ -285,7 +285,7 @@ if (  isset($_POST["letraRack"]) )
               if ( isset($id_almacen) && !empty($id_almacen) ){//if
                 $selectCliente = $objRack->selectCliente($id_plaza,$id_almacen);
                 if ($id_cliente == 'ALL'){ echo '<option selected value="ALL">ALL</option>';}else{echo '<option value="ALL">ALL</option>';}
-
+                
                 for ($i=0; $i <count($selectCliente) ; $i++) {// for
               ?>
               <option <?php if (@$id_cliente == $selectCliente[$i]["IID_NUM_CLIENTE"]) echo "selected"; ?> value="<?=$selectCliente[$i]["IID_NUM_CLIENTE"]?>">
@@ -301,7 +301,7 @@ if (  isset($_POST["letraRack"]) )
         </div>
         <!-- SELECT OPTION MERCANCIA -->
         <div class="col-md-3 col-sm-3 col-xs-12 invoice-col">
-      <form method="post">
+      <form method="post">          
             <strong><i class="fa fa-dropbox"></i> Mercancia:</strong>
             <address>
               <select class="form-control select2" name="rackId_mercancia" style="width: 100%;" onchange='this.form.submit()'>
@@ -326,7 +326,7 @@ if (  isset($_POST["letraRack"]) )
               if ( isset($mercancia) && !empty($mercancia) ){//if
                 $selectRack = $objRack->selectRack($id_almacen);
                 if ($letraRack == 'TODOS'){ echo '<option selected value="TODOS">TODOS</option>';}else{echo '<option value="TODOS">TODOS</option>';}
-
+                
                 for ($i=0; $i <count($selectRack) ; $i++) {// for
               ?>
               <option <?php if (@$letraRack == $selectRack[$i]["BATERIA"]) echo "selected"; ?> value="<?=$selectRack[$i]["BATERIA"]?>">
@@ -347,7 +347,7 @@ if (  isset($_POST["letraRack"]) )
               <input type="search" name="search" class="form-control search-derecha" id="search-basic" value="" />
                 <span class="input-group-btn">
               <span class="input-group-btn">
-                  <button type="button" class="btn btn-flat bg-blue search-btn"><i class="fa fa-search text-gray"></i></button>
+                  <button type="button" class="btn btn-flat bg-blue search-btn"><i class="fa fa-search text-gray"></i></button> 
               </span>
             </div>
 
@@ -430,8 +430,8 @@ if (  isset($_POST["letraRack"]) )
         <?php } ?>
 
 
-    </div>
-  </section>
+    </div> 
+  </section> 
   <!-- ########################### TERMINA SECCION FILTROS DISPONIBLES ########################### -->
 
 
@@ -440,20 +440,20 @@ if (  isset($_POST["letraRack"]) )
   <div class="row">
     <!-- =========== INICIA SECCION MERCANCIA IZQUIERDA (MERCANICA UBICADA-NO UBICADA) =========== -->
     <section class="col-lg-12 connectedSortable"><!-- col-lg-9 -->
-
+        
         <!-- INICIA SECCION MERCANCIA UBICADA -->
             <section>
               <div class="row">
                 <div class="col-xs-12">
                   <div class="box box-default box-solid"><!-- box -->
-                    <div class="box-header"><!-- box-header -->
+                    <div class="box-header"><!-- box-header -->  
                       <h3 class="box-title"><i class="fa fa-table"></i> Mercancía Ubicada en Rack </h3>
-
+              
                       <div class="box-tools">
                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                       </div>
-                    </div><!-- /.box-header -->
-
+                    </div><!-- /.box-header -->  
+              
                     <div class="box-body"><!-- box-body rack dibujo -->
 
                     <style type="text/css" media="screen">
@@ -482,7 +482,7 @@ if (  isset($_POST["letraRack"]) )
             max-height:100px;
             position:relative;
             background:#ECDAC6;
-          }
+          } 
                     </style>
 
                     <script type="text/javascript">
@@ -518,14 +518,14 @@ if (  isset($_POST["letraRack"]) )
 
                             }//.success
                         });
-          }
+          } 
           </script>
 
                     <div style="height: 600px; overflow: auto;"><!-- overflow #1 -->
 
                       <?php
                       $rackProfundidad = $objRack->rackProfundidad($id_almacen,$letraRack);
-                      for ($i=0; $i <count($rackProfundidad) ; $i++) {// for rackProfundidad
+                      for ($i=0; $i <count($rackProfundidad) ; $i++) {// for rackProfundidad 
                       ?>
 
                       <div class="table-responsive"><!-- table-responsive -->
@@ -536,31 +536,31 @@ if (  isset($_POST["letraRack"]) )
                             <tr><!-- ******* TR DEFINE RACK PROFUNDIDAD ******* -->
 
 <!-- ===================================================== CONSULTA DE COLUMNAS DENTRO DE DEL FOR ===================================================== -->
-              <?php
+              <?php 
               $rackColumna = $objRack->rackColumna($id_almacen,$rackProfundidad[$i]["RACK"],$rackProfundidad[$i]["PROFUNDIDAD"]);
               for ($a=0; $a <count($rackColumna) ; $a++) {// for columnas
               ?>
                           <td><!-- ******* TD DEFINE COLUMNAS ******* -->
-                          <small class="pull-right-container badge" style="background-color: <?=$rackProfundidad[$i]["COLOR"]?>;">COLUMNA <?=$rackColumna[$a]["COLUMNA"]?></small>
+                          <small class="pull-right-container badge" style="background-color: <?=$rackProfundidad[$i]["COLOR"]?>;">COLUMNA <?=$rackColumna[$a]["COLUMNA"]?></small> 
                           <table class="tablaRack" bgcolor="#00FF00" style=" border: 3px solid #255F98;"  border="0" width="250">
 
 <!-- ****************************************************** CONSULTA DE NIVEL DENTRO DE DEL FOR ****************************************************** -->
-              <?php
+              <?php 
               $rackNivel = $objRack->rackNivel($id_almacen,$rackProfundidad[$i]["RACK"],$rackProfundidad[$i]["PROFUNDIDAD"],$rackColumna[$a]["COLUMNA"]);
               for ($b=0; $b <count($rackNivel) ; $b++) {// for nivel
               ?>
               <tr><!-- TR DEFINE NIVEL -->
 
 <!-- /////////////////////////////////////////////////// CONSULTA DE POSICION DENTRO DE DEL FOR /////////////////////////////////////////////////// -->
-
-
+               
+              
               <?php
               $v_posicion = explode(",", substr($rackNivel[$b]["POSICION"],0,-1));
-              for ($c=0; $c <count($v_posicion) ; $c++) {
+              for ($c=0; $c <count($v_posicion) ; $c++) { 
               ?>
 
               <td title="Rack: <?=$rackNivel[$b]["RACK"]?> Nivel: <?=$rackNivel[$b]["NIVEL"]?> &#10; Posición: <?=$v_posicion[$c]?>  Profundidad: <?=$rackNivel[$b]["PROFUNDIDAD"]?>" style="border-bottom: 3px solid #054A8B;" valign="bottom" align="center"><!-- TD DEFINE POSICION -->
-
+                        
                           <img id="imgUrl<?=$rackNivel[$b]["RACK"].$rackNivel[$b]["COLUMNA"].$rackNivel[$b]["NIVEL"].$v_posicion[$c].$rackNivel[$b]["PROFUNDIDAD"]?>" >
 
                           </td><!-- /.TD DEFINE POSICION -->
@@ -573,12 +573,12 @@ if (  isset($_POST["letraRack"]) )
 
               </tr><!-- /.TR DEFINE NIVEL -->
               <?php }// /.for nivel ?>
-<!-- ****************************************************** /.CONSULTA DE NIVEL DENTRO DE DEL FOR ****************************************************** -->
+<!-- ****************************************************** /.CONSULTA DE NIVEL DENTRO DE DEL FOR ****************************************************** -->                            
 
                           </table>
                         </td><!-- ******* /.TD DEFINE COLUMNAS ******* -->
                         <?php }// /.for columnas ?>
-<!-- ===================================================== /.CONSULTA DE COLUMNAS DENTRO DE DEL FOR ===================================================== -->
+<!-- ===================================================== /.CONSULTA DE COLUMNAS DENTRO DE DEL FOR ===================================================== -->                       
 
 
                             </tr><!-- ******* TR DEFINE RACK PROFUNDIDAD ******* -->
@@ -606,14 +606,14 @@ if (  isset($_POST["letraRack"]) )
               <div class="row">
                 <div class="col-xs-12">
                   <div class="box box-default box-solid"><!-- box -->
-                    <div class="box-header"><!-- box-header -->
+                    <div class="box-header"><!-- box-header -->  
                       <h3 class="box-title"><i class="fa fa-dropbox"></i> Mercancía no Ubicada </h3>
-
+              
                       <div class="box-tools">
                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                       </div>
-                    </div><!-- /.box-header -->
-
+                    </div><!-- /.box-header -->  
+              
                     <div class="box-body"><!-- box-body rack dibujo -->
                     <div style="height: 600px; overflow: auto;"><!-- overflow #2 -->
 
@@ -622,7 +622,7 @@ if (  isset($_POST["letraRack"]) )
                       width: 65px;
                         height: 80px;
                         margin: 3px;
-                    }
+                    } 
                     </style>
 
                     <!-- incia li mercancia no ubicada -->
@@ -640,7 +640,7 @@ if (  isset($_POST["letraRack"]) )
                           $detalle = str_replace ("\r\n", "<\br>", $mercanciaNoUbi[$i]["V_DETALLE"]);
                           $detalle = str_replace("\"", '', $detalle);
                           ?>
-              <li>
+              <li>            
                 <a class="fancybox fancybox.iframe" href="rack_detubi.php?detArr=<?=$mercanciaNoUbi[$i]["ID_ARRIBO"]?>&p=<?=$id_plaza?>&c=<?=$id_cliente?>&a=<?=$id_almacen?>&m=<?=$mercancia?>">
                 <div id="imgUrl<?=$mercanciaNoUbi[$i]["ID_ARRIBO"]?>" class="v_noubi itemMer cajanoubi" data-info="no ubicado <?=strtolower($mercanciaNoUbi[$i]["ID_ARRIBO"].' '.$detalle)?>"></div></a>
                 <span style="font-size:10px;" class="label bg-gray itemMer"><?=$mercanciaNoUbi[$i]["ID_ARRIBO"]?></span>
@@ -650,11 +650,11 @@ if (  isset($_POST["letraRack"]) )
                         //span[<?=$i?>] = '<a class="itemDer" style="display: none;" href="#imgUrl<?=$mercanciaNoUbi[$i]["ID_ARRIBO"]?>" data-info="no ubicado <?=strtolower($mercanciaNoUbi[$i]["ID_ARRIBO"].' '.$detalle)?>"><span class="label label-warning">Arribo: <?=$mercanciaNoUbi[$i]["ID_ARRIBO"]?></span></a>';
                         </script>
                         <?php }// /.for mercanciaNoUbi ?>
-                        <!-- /.inicia for li mercancia no ubicada -->
+                        <!-- /.inicia for li mercancia no ubicada --> 
                         <script type="text/javascript">
-              //$(span.join('  ')).appendTo('#lis_span');
+              //$(span.join('  ')).appendTo('#lis_span');                         
                         </script>
-
+            
                         </ul><!-- /.users-list -->
                       </div>
                     </div>
@@ -668,8 +668,8 @@ if (  isset($_POST["letraRack"]) )
             </section>
             <!-- TERMINA SECCION MERCANCIA NO UBICADA -->
 
-
-
+            
+          
     </section><!-- /.col-lg-9 -->
     <!-- =========== TERMINA SECCION MERCANCIA IZQUIERDA (MERCANICA UBICADA-NO UBICADA) =========== -->
 
@@ -681,7 +681,7 @@ if (  isset($_POST["letraRack"]) )
       operacion();
       //busquedaJs();
 
-      /*COLOREA IMAGEN CON CLICK*/
+      /*COLOREA IMAGEN CON CLICK*/      
       $(".itemDer").click(function (){
         //$('.itemMer').css('background-color','inherit');//background img normal
         $( $(this).attr("href") ).css("background", "green");
@@ -695,12 +695,12 @@ if (  isset($_POST["letraRack"]) )
 
   </div>
   <!-- ############################## TERMINA SECCION IZQUIERDA DERECHA ############################## -->
-<?php }// /.if consulta posicion ?>
-
+<?php }// /.if consulta posicion ?> 
+      
 
     </section><!-- Termina la seccion de Todo el contenido principal -->
     <!-- /.content -->
-  </div><!-- Termina etiqueta content-wrapper principal -->
+  </div><!-- Termina etiqueta content-wrapper principal --> 
 <!-- ################################### Termina Contenido de la pagina ################################### -->
 
 
@@ -737,16 +737,16 @@ function busquedaJs(){
   var items = $('.itemMer'),
   itemDer = $('.itemDer'),
   input = $(".search-derecha").val();
-
+    
   // Search Listener
-  switch(true){
+  switch(true){ 
     case input === '':
       //$('.itemMer').css('background-color','inherit');//background img normal
       $(".titleCoin").css('display', 'none');//oculta titulo coincidencia
       //items.css('opacity', '1');
       items.show();
       operacion();
-      //itemDer.hide();
+      //itemDer.hide(); 
       break;
     default:
       //$('.itemMer').css('background-color','inherit');//background img normal
@@ -755,7 +755,7 @@ function busquedaJs(){
       items.css('display', 'none');
       items.filter('[data-info*="' + input.toLowerCase() + '"]').show();
 
-      //itemDer.hide();
+      //itemDer.hide(); 
            // itemDer.filter('[data-info*="' + input.toLowerCase() + '"]').show();
 
             //var coinEnc = $('.itemDer').filter(function(){ return $(this).css('display') == 'inline'; }).length ;
@@ -764,10 +764,10 @@ function busquedaJs(){
             operacion();
       break;
   }
+  
 
-
-
-}
+   
+} 
 /* ---------------------------------- termina script busqueda ---------------------------------- */
 
 function operacion(){
@@ -779,7 +779,7 @@ function operacion(){
 
   document.getElementById("valPosiciones").innerHTML = v_posicion;
   <?php if ($id_cliente == 'ALL'){ ?>
-  document.getElementById("valLibre").innerHTML = v_libre;
+  document.getElementById("valLibre").innerHTML = v_libre; 
   <?php } ?>
   document.getElementById("valOcupado").innerHTML = v_ocupado;
   document.getElementById("valNoUbi").innerHTML = v_noubi;
@@ -843,7 +843,7 @@ function operacion(){
           }
         }
       });
-
+ 
 
 
     });

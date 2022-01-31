@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
 * © Argo Almacenadora ®
 * Fecha: 28/12/2018
@@ -498,6 +498,9 @@ public function graficaAlmacenProyecto($plaza,$fecha,$fil_check,$proyecto)
 			INNER JOIN ALMACEN_CAPACIDAD ALC ON PLA.IID_ALMACEN = ALC.IID_ALMACEN AND ALC.IID_PLAZA = PLA.IID_PLAZA AND PLA.IID_PLAZA IN (".$in_plaza.")
 			GROUP BY PLA.IID_ALMACEN, PLA.V_NOMBRE ORDER BY PLA.IID_ALMACEN";
 			#echo $sql;
+			if($proyecto == 'BMW'){
+				#echo $sql;
+			}
 	$stid = oci_parse($conn,$sql);
 	oci_execute($stid);
 	while (($row = oci_fetch_assoc($stid))!= false) {

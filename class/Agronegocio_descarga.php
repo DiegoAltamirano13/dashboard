@@ -73,6 +73,14 @@ class Consulta_descarga extends Filtros_des
 					$sql_ton_descarga = "SELECT SUM(vista_otfc.det_t_netas) AS t_netas_orar06 FROM vista_dashboard_otfc vista_otfc
 							  WHERE vista_otfc.pla_r_social = '".$agro_plaza."' AND vista_otfc.det_status = 2 ".$historial.$almacen.$cliente;
 					break;
+				case 'ALL':
+						$sql_ton_descarga = "SELECT SUM(vista_otfc.det_t_netas) AS t_netas_orar06 FROM vista_dashboard_otfc vista_otfc
+								  WHERE  vista_otfc.det_status = 2 ".$historial.$almacen.$cliente;
+						break;
+				default:
+				$sql_ton_descarga = "SELECT SUM(vista_otfc.det_t_netas) AS t_netas_orar06 FROM vista_dashboard_otfc vista_otfc
+							WHERE vista_otfc.pla_r_social LIKE '%".$agro_plaza."%' AND vista_otfc.det_status = 2 ".$historial.$almacen.$cliente;
+				break;
 			}
 		}else{
 			$sql_ton_descarga = "SELECT * FROM
@@ -82,7 +90,7 @@ class Consulta_descarga extends Filtros_des
 							  WHERE vista_otfc.pla_r_social = 'OCCIDENTE (ARGO)' AND vista_otfc.det_status = 2 ".$historial." ) ";
 		}
 		/*----------TERMINA CONCATENACIÓN DEPENDIENDO SI ELIGIÓ PLAZA----------*/
-
+#echo $sql_ton_descarga;
 		$stid_widgets_ton = oci_parse($conn, $sql_ton_descarga);
 		oci_execute($stid_widgets_ton );
 
@@ -116,8 +124,18 @@ class Consulta_descarga extends Filtros_des
 										 FROM vista_dashboard_otfc vista_otfc WHERE vista_otfc.pla_r_social = '".$agro_plaza."' AND vista_otfc.det_status = 2 ".$historial.$almacen.$cliente."
 										 GROUP BY vista_otfc.id_plaza, vista_otfc.pla_siglas, vista_otfc.ume_ume, vista_otfc.otfc_id_ume, vista_otfc.otfc_factor";
 					break;
+				case 'ALL':
+					$sql_t_sacos_descarga = "SELECT vista_otfc.id_plaza AS id_plaza, vista_otfc.pla_siglas AS plaza_sig, vista_otfc.ume_ume AS ume, vista_otfc.otfc_id_ume AS id_ume, vista_otfc.otfc_factor AS factor, SUM(vista_otfc.det_bultos) AS bultos
+										 FROM vista_dashboard_otfc vista_otfc WHERE vista_otfc.det_status = 2 ".$historial.$almacen.$cliente."
+										 GROUP BY vista_otfc.id_plaza, vista_otfc.pla_siglas, vista_otfc.ume_ume, vista_otfc.otfc_id_ume, vista_otfc.otfc_factor";
+					break;
+				default:
+				$sql_t_sacos_descarga = "SELECT vista_otfc.id_plaza AS id_plaza, vista_otfc.pla_siglas AS plaza_sig, vista_otfc.ume_ume AS ume, vista_otfc.otfc_id_ume AS id_ume, vista_otfc.otfc_factor AS factor, SUM(vista_otfc.det_bultos) AS bultos
+									 FROM vista_dashboard_otfc vista_otfc WHERE vista_otfc.pla_r_social LIKE '%".$agro_plaza."%' AND vista_otfc.det_status = 2 ".$historial.$almacen.$cliente."
+									 GROUP BY vista_otfc.id_plaza, vista_otfc.pla_siglas, vista_otfc.ume_ume, vista_otfc.otfc_id_ume, vista_otfc.otfc_factor";
+				break;
 			}
-			#echo $historial;
+		#	echo $sql_t_sacos_descarga;
 
 			$stid_widgets_sacos = oci_parse($conn, $sql_t_sacos_descarga);
 			oci_execute($stid_widgets_sacos );
@@ -240,6 +258,30 @@ class Consulta_descarga extends Filtros_des
 											   AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy')  >=  '2021'
 											   AND vista_otfc.vh_reci_det_recibo is null ";
 				break;
+				case 'ALL':
+					$sql_select_almacen = "SELECT DISTINCT vista_otfc.alm_nom AS almacen, vista_otfc.alm_id_alm AS id_almacen, vista_otfc.id_plaza AS id_plaza
+											 FROM vista_dashboard_otfc vista_otfc
+											 WHERE vista_otfc.pla_r_social IS NOT NULL ".$historial ." UNION ALL
+												SELECT DISTINCT vista_otfc.alm_nom    AS almacen,
+																				vista_otfc.alm_id_alm AS id_almacen,
+																				vista_otfc.id_plaza   AS id_plaza
+													FROM vista_dashboard_otfc vista_otfc
+												 WHERE vista_otfc.pla_r_social IS NOT NULL ".$historial2 ."
+													 AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy')  >=  '2021'
+													 AND vista_otfc.vh_reci_det_recibo is null ";
+					break;
+				default:
+				$sql_select_almacen = "SELECT DISTINCT vista_otfc.alm_nom AS almacen, vista_otfc.alm_id_alm AS id_almacen, vista_otfc.id_plaza AS id_plaza
+									   FROM vista_dashboard_otfc vista_otfc
+									   WHERE vista_otfc.pla_r_social = '".$agro_plaza."' ".$historial ." UNION ALL
+											SELECT DISTINCT vista_otfc.alm_nom    AS almacen,
+											                vista_otfc.alm_id_alm AS id_almacen,
+											                vista_otfc.id_plaza   AS id_plaza
+											  FROM vista_dashboard_otfc vista_otfc
+											 WHERE vista_otfc.pla_r_social = '".$agro_plaza."' ".$historial2 ."
+											   AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy')  >=  '2021'
+											   AND vista_otfc.vh_reci_det_recibo is null ";
+        break;
 		}
 		################################################################################################################################################################################################################################
 		####################################################################################################diego altamirano suarez ####################################################################################################
@@ -374,17 +416,31 @@ class Consulta_status_descarga extends Filtros_des
 														 AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
 														 ".$historial3.$almacen.$cliente."
 														 AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
-														 AND VISTA_OTFC.vh_reci_det_recibo is NOT null ";/*
-														 UNION ALL
-														 ".$sql. " FROM vista_dashboard_otfc vista_otfc
-														 WHERE vista_otfc.pla_r_social = 'CÓRDOBA (ARGO)'
-														 	AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
-														 	".$historial3.$almacen.$cliente."
-														 	AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
-														 	AND VISTA_OTFC.vh_reci_det_recibo is NOT null
-														 */
+														 AND VISTA_OTFC.vh_reci_det_recibo is NOT null ";
 					}
 					break;
+					case  'ALL':
+						if ($par == true && $ofc == true && $fol == true){
+						$sql_con_descarga = $sql." FROM vista_dashboard_otfc vista_otfc
+												   	   WHERE vista_otfc.det_partida= '".$par."' AND vista_otfc.det_ref_otfc = '".$ofc."' AND vista_otfc.det_folio = '".$fol."' ";
+						}else{
+						$sql_con_descarga = $sql." FROM vista_dashboard_otfc vista_otfc
+												   WHERE vista_otfc.id_otfc_det = vista_otfc.id_otfc
+												   ".$historial.$almacen.$cliente."
+													 UNION ALL
+													 ".$sql. " FROM vista_dashboard_otfc vista_otfc
+														WHERE vista_otfc.id_otfc_det = vista_otfc.id_otfc
+															".$historial2.$almacen.$cliente."
+															AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
+															AND VISTA_OTFC.vh_reci_det_recibo is  null
+															UNION ALL
+															".$sql. " FROM vista_dashboard_otfc vista_otfc
+															WHERE vista_otfc.id_otfc_det = vista_otfc.id_otfc
+															 ".$historial3.$almacen.$cliente."
+															 AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
+															 AND VISTA_OTFC.vh_reci_det_recibo is NOT null ";
+						}
+						break;
 			}
 			#echo $historial2;
 	    #echo $sql_con_descarga;
@@ -456,6 +512,9 @@ class Consulta_status_descarga extends Filtros_des
 			case 17:
 				$tabla_sql = " op_in_movimientos ";
 				break;
+			default:
+			$tabla_sql = " op_in_movimientos ";
+			break;
 		}
 
 		$sql_movimiento_des = " SELECT to_char(mov.d_fecha_mvto, 'dd-mm-yyyy HH24:MI:SS') AS pre_registro
@@ -486,6 +545,9 @@ class Consulta_mov_descarga
 				$tabla_sql = " op_in_movimientos ";
 				break;
 			case 17:
+				$tabla_sql = " op_in_movimientos ";
+				break;
+			default:			
 				$tabla_sql = " op_in_movimientos ";
 				break;
 		}

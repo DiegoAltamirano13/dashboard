@@ -366,21 +366,14 @@ if ( isset($_GET["check"]) ){
   $fil_check = $_GET["check"];
 }
 
-$plaza = "ALL";
-if ( isset($_GET["plaza"]) ){
-  switch ($_GET["plaza"]) {
-    case 'CORPORATIVO': $plaza = $_GET["plaza"]; break;
-    case 'CÓRDOBA': $plaza = $_GET["plaza"]; break;
-    case 'MÉXICO': $plaza = $_GET["plaza"]; break;
-    case 'GOLFO': $plaza = $_GET["plaza"]; break;
-    case 'PENINSULA': $plaza = $_GET["plaza"]; break;
-    case 'PUEBLA': $plaza = $_GET["plaza"]; break;
-    case 'BAJIO': $plaza = $_GET["plaza"]; break;
-    case 'OCCIDENTE': $plaza = $_GET["plaza"]; break;
-    case 'NORESTE': $plaza = $_GET["plaza"]; break;
-    default: $plaza = "ALL"; break;
-  }
+
+if ( $_SESSION['area']==3 ){
+  $plaza = $_SESSION['nomPlaza'];
+}else {
+  $plaza = "ALL";
 }
+
+$plaza=$_SESSION['nomPlaza'];
 
 $fil_check = "ALL";
 if ( isset($_GET["check"]) ){
@@ -473,6 +466,8 @@ div#response.display-block {
       <h1>
         Dashboard
         <small>Calculo Ocupación </small>
+        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       </h1>
     </section>
     <!-- Main content -->
@@ -745,8 +740,12 @@ div#response.display-block {
             <input type="text" class="form-control pull-right" name="fil_fecha" disabled value="<?= $fecha ?>">
             <span class="input-group-addon"> <input type="checkbox" name="fil_check" <?php if( $fil_check == 'on' ){ echo "checked";} ?> > </span>
           </div>
+
           <!-- FILTRAR POR PLAZA -->
-          <div class="input-group">
+          <input id="fil_plaza" type="hidden" value=<?= $plaza ?>>
+
+          <?php if($_SESSION['area']!=3){  ?>
+          <!--<div class="input-group">
             <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
             <select class="form-control select2" id="fil_plaza" style="width: 100%;">
               <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
@@ -757,13 +756,18 @@ div#response.display-block {
               <?php } ?>
             </select>
           </div>
+        <?php } else{?>
+          <input id="fil_plaza" type="hidden" value=<?= $plaza ?>>-->
+        <?php }?>
+
           <!-- FILTRAR POR ALMACEN -->
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-file-powerpoint-o"></i> Almacen:</span>
             <select class="form-control select2" style="width: 100%;" id="nomAlm">
               <option value="ALL" <?php if( $almacen == 'ALL'){echo "selected";} ?> >ALL</option>
               <?php
-              $plazas = $_GET["plaza"];
+              $plazas=$plaza;
+              //$plazas = $_GET["plaza"];
               $selectAlmacen = $obj_class->almacenSql($plazas);
               for ($i=0; $i <count($selectAlmacen) ; $i++) { ?>
                 <option value="<?=$selectAlmacen[$i]["IID_ALMACEN"]?>" <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>
@@ -1255,7 +1259,7 @@ $(function () {
             type: 'line'
         },
          title: {
-           //text: 'OCUPACIÓN SEMANAL DE PLAZA <?php echo $plaza; ?> <?php if($almacen != 'ALL' and $cliente == 'ALL') {$nombreAlmacen = $obj_class->almacenNombre($plaza,$almacen); echo "DEL ALMACEN ".$nombreAlmacen[0]["V_NOMBRE"]; } else {$nombre_cliente = $obj_class->clienteNombre($cliente); echo " DEL CLIENTE ".$nombre_cliente[0]["V_RAZON_SOCIAL"]; } ?>'
+           /*text: 'OCUPACIÓN SEMANAL DE PLAZA <?php //echo $plaza; ?> <?php //if($almacen != 'ALL' and $cliente == 'ALL') {$nombreAlmacen = $obj_class->almacenNombre($plaza,$almacen); echo "DEL ALMACEN ".$nombreAlmacen[0]["V_NOMBRE"]; } else {$nombre_cliente = $obj_class->clienteNombre($cliente); echo " DEL CLIENTE ".$nombre_cliente[0]["V_RAZON_SOCIAL"]; } ?>'*/
             text: 'OCUPACIÓN MENSUAL <?php if ($plaza != 'ALL' && $almacen == 'ALL') {echo "PLAZA ".$plaza;} elseif ($almacen != 'ALL' and $plaza != 'ALL' and $cliente == 'ALL') {
                     $nombreAlmacen = $obj_class->almacenNombre($plaza,$almacen); echo "ALMACEN ".$nombreAlmacen[0]["V_NOMBRE"];
                   }elseif($cliente != 'ALL') {

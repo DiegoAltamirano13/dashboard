@@ -9,7 +9,7 @@
 include_once '../libs/conOra.php';
 class NominaPagada{
 	/*====================== GRAFICA DE NOMINA PAGADA ======================*/
-public function tabla_toneladas($fecha){
+public function tabla_toneladas($plaza,$fecha){
     $mesIni = substr($fecha, 3, 2);
     $anioIni = substr($fecha, 6,4);
     $mesFin = substr($fecha, 14, 2);
@@ -31,8 +31,19 @@ public function tabla_toneladas($fecha){
 		#echo $fecha_re;
 
     #echo $fecha_re."</br>".$fecha_re2;
-		    $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 ";
-
+		   # $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 ";
+       switch($plaza){
+        		 //case 'CORPORATIVO': $in_plaza = 2; break;
+        		 case 'CÓRDOBA': $in_plaza = 3; break;
+        		 case 'MÉXICO': $in_plaza = 4; break;
+        		 case 'GOLFO': $in_plaza = 5; break;
+        		 case 'PENINSULA': $in_plaza = 6; break;
+        		 case 'PUEBLA': $in_plaza = 7; break;
+        		 case 'BAJIO': $in_plaza = 8; break;
+        		 case 'OCCIDENTE': $in_plaza = 17; break;
+        		 case 'NORESTE': $in_plaza = 18; break;
+        		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+        	 }
 
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -90,6 +101,7 @@ public function tabla_toneladas($fecha){
                               AND AZ.S_AREA = (SELECT MIN(S.S_AREA) FROM ALMACEN_AREAS S WHERE S.IID_ALMACEN = AZ.IID_ALMACEN AND S.V_CVE_SIDEFI IS NULL)
                               and a.iid_almacen in (1211, 1205, 1209, 1210, 1370, 1223, 1208, 1468, 1660)
                               and a.iid_almacen not in (1554, 1657)
+                              and a.iid_plaza in ($in_plaza)
                               union all
                               select a.v_nombre,
                                      a.iid_almacen,
@@ -136,6 +148,7 @@ public function tabla_toneladas($fecha){
                                     and az.V_CVE_SIDEFI  is NULL
                                     and a.iid_almacen in (1211, 1205, 1209, 1210, 1370, 1223, 1208, 1468, 1660)
                                     and a.iid_almacen not in (1554, 1657)
+                                    and a.iid_plaza in ($in_plaza)
                                     AND AZ.S_AREA = (SELECT MIN(S.S_AREA) FROM ALMACEN_AREAS S WHERE S.IID_ALMACEN = AZ.IID_ALMACEN AND S.V_CVE_SIDEFI IS NULL)
                               UNION ALL
                                     select a.v_nombre,
@@ -178,6 +191,7 @@ public function tabla_toneladas($fecha){
                                            and az.i_status = 1
                                            and az.V_CVE_SIDEFI  is NULL
                                            and a.iid_almacen not in (1554, 1657)
+                                           and a.iid_plaza in ($in_plaza)
                                            AND AZ.S_AREA = (SELECT MIN(S.S_AREA) FROM ALMACEN_AREAS S WHERE S.IID_ALMACEN = AZ.IID_ALMACEN AND S.V_CVE_SIDEFI IS NULL)
                                union all
                                     select  a.v_nombre,
@@ -228,7 +242,7 @@ public function tabla_toneladas($fecha){
                                             and a.iid_almacen not in (1554, 1657)) X
                                             GROUP BY V_NOMBRE, X.IID_ALMACEN) U
                                               INNER JOIN ALMACEN_AREAS Z ON U.IID_ALMACEN = Z.IID_ALMACEN AND Z.V_CVE_SIDEFI IS NULL
-                                              INNER JOIN ALMACEN_AREAS_ESPACIOS Y ON Z.IID_ALMACEN = Y.IID_ALMACEN AND Y.S_AREA = Z.S_AREA
+                                              INNER JOIN ALMACEN_AREAS_ESPACIOS Y ON Z.IID_ALMACEN = Y.IID_ALMACEN AND Y.S_AREA = Z.S_AREA                                            
                                             GROUP BY U.IID_ALMACEN, U.V_NOMBRE,U.TOTAL_SACOS, U.TOTAL_SUPER_SACOS";
 				$stid = oci_parse($conn, $sql);
 				oci_execute($stid);

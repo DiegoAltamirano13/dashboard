@@ -73,6 +73,14 @@ class Consulta_carga extends Filtros
 					$sql_ton_carga = "SELECT SUM(vista_ofc.det_t_netas) AS t_netas_orar06
 							  FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social = '".$agro_plaza."' AND vista_ofc.det_status = 2 ".$historial.$almacen.$cliente;
 					break;
+				case 'ALL':
+						$sql_ton_carga = "SELECT SUM(vista_ofc.det_t_netas) AS t_netas_orar06
+								  FROM vista_dashboard_ofc vista_ofc WHERE  vista_ofc.det_status = 2 ".$historial.$almacen.$cliente;
+						break;
+				default:
+						$sql_ton_carga = "SELECT SUM(vista_ofc.det_t_netas) AS t_netas_orar06
+								  FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social = '%".$agro_plaza."%' AND  vista_ofc.det_status = 2 ".$historial.$almacen.$cliente;
+						break;
 			}
 		}else{
 			$sql_ton_carga = "SELECT * FROM
@@ -118,6 +126,18 @@ class Consulta_carga extends Filtros
             							  WHERE vista_ofc.pla_r_social = '".$agro_plaza."' AND vista_ofc.det_status = 2 ".$historial.$almacen.$cliente."
 										  GROUP BY vista_ofc.id_plaza, vista_ofc.pla_siglas, vista_ofc.ume, vista_ofc.id_um, vista_ofc.factor";
 					break;
+				case 'ALL':
+						$sql_t_sacos_carga = "SELECT vista_ofc.id_plaza AS id_plaza, vista_ofc.pla_siglas AS plaza_sig, vista_ofc.ume AS ume, vista_ofc.id_um AS id_ume, vista_ofc.factor 	AS factor, SUM(vista_ofc.det_bultos) AS bultos
+											  FROM vista_dashboard_ofc vista_ofc
+	            							  WHERE vista_ofc.det_status = 2 ".$historial.$almacen.$cliente."
+											  GROUP BY vista_ofc.id_plaza, vista_ofc.pla_siglas, vista_ofc.ume, vista_ofc.id_um, vista_ofc.factor";
+						break;
+				default:
+								$sql_t_sacos_carga = "SELECT vista_ofc.id_plaza AS id_plaza, vista_ofc.pla_siglas AS plaza_sig, vista_ofc.ume AS ume, vista_ofc.id_um AS id_ume, vista_ofc.factor 	AS factor, SUM(vista_ofc.det_bultos) AS bultos
+													  FROM vista_dashboard_ofc vista_ofc
+			            							  WHERE vista_ofc.pla_r_social = '%".$agro_plaza."%' vista_ofc.det_status = 2 ".$historial.$almacen.$cliente."
+													  GROUP BY vista_ofc.id_plaza, vista_ofc.pla_siglas, vista_ofc.ume, vista_ofc.id_um, vista_ofc.factor";
+								break;
 			}
 
 			$stid_widgets_sacos = oci_parse($conn, $sql_t_sacos_carga);
@@ -237,6 +257,24 @@ class Consulta_carga extends Filtros
 						SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
 												FROM vista_dashboard_ofc vista_ofc
 						WHERE  vista_ofc.pla_r_social = '".$agro_plaza."' ".$historial2 ."  AND vista_ofc.ofc_salida_fecha IS NULL AND TO_CHAR(VISTA_OFC.det_fecha_salida, 'YYYY' ) > 2021";
+				break;
+				case 'ALL':
+					$sql_select_almacen = " SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
+							FROM vista_dashboard_ofc vista_ofc
+							WHERE  vista_ofc.pla_r_social IS NOT NULL ".$historial."
+							UNION ALL
+							SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
+													FROM vista_dashboard_ofc vista_ofc
+							WHERE  vista_ofc.pla_r_social IS NOT NULL ".$historial2 ."  AND vista_ofc.ofc_salida_fecha IS NULL AND TO_CHAR(VISTA_OFC.det_fecha_salida, 'YYYY' ) > 2021";
+					break;
+				default:
+				$sql_select_almacen = " SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
+						FROM vista_dashboard_ofc vista_ofc
+						WHERE  vista_ofc.pla_r_social LIKE '%".$agro_plaza."%' ".$historial."
+						UNION ALL
+						SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
+												FROM vista_dashboard_ofc vista_ofc
+						WHERE  vista_ofc.pla_r_social LIKE '%".$agro_plaza."%' ".$historial2 ."  AND vista_ofc.ofc_salida_fecha IS NULL AND TO_CHAR(VISTA_OFC.det_fecha_salida, 'YYYY' ) > 2021";
 				break;
 		}
 
@@ -433,13 +471,40 @@ class Consulta_status_carga extends Filtros
 											  UNION ALL ".$sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social = '".$agro_plaza."' AND vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial3.$almacen.$cliente."
 																											 AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
 																											 AND vista_ofc.ofc_salida_fecha is not null";
-
-											 /*UNION ALL ".$sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social = '".$agro_plaza."' AND vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial3.$almacen.$cliente."
-																	AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
-																	AND vista_ofc.ofc_salida_fecha is not null*/
-						#ORDER BY vista_ofc.det_fecha_salida
 					}
 					break;
+					case  'ALL':
+						if ($par == true && $ofc == true && $fol == true){
+							$sql_con_carga = $sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.det_partida= ".$par." AND vista_ofc.det_ref_ofc = '".$ofc."' AND vista_ofc.det_folio = ".$fol." ";
+						}else{
+							$sql_con_carga = $sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial.$almacen.$cliente." UNION ALL
+							".$sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial2.$almacen.$cliente."
+												 AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
+												 AND vista_ofc.ofc_salida_fecha is null
+												 UNION ALL ".$sql."  FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial3.$almacen.$cliente."
+																		AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
+																		AND vista_ofc.ofc_salida_fecha is not null
+												  UNION ALL ".$sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial3.$almacen.$cliente."
+																												 AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
+																												 AND vista_ofc.ofc_salida_fecha is not null";
+						}
+						break;
+						default:
+						if ($par == true && $ofc == true && $fol == true){
+							$sql_con_carga = $sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.det_partida= ".$par." AND vista_ofc.det_ref_ofc = '".$ofc."' AND vista_ofc.det_folio = ".$fol." ";
+						}else{
+							$sql_con_carga = $sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social LIKE '%".$agro_plaza."%' AND vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial.$almacen.$cliente." UNION ALL
+							".$sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social LIKE '%".$agro_plaza."%' AND vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial2.$almacen.$cliente."
+												 AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
+												 AND vista_ofc.ofc_salida_fecha is null
+												 UNION ALL ".$sql."  FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social LIKE '%".$agro_plaza."%' AND vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial3.$almacen.$cliente."
+																		AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
+																		AND vista_ofc.ofc_salida_fecha is not null
+													UNION ALL ".$sql." FROM vista_dashboard_ofc vista_ofc WHERE vista_ofc.pla_r_social LIKE '%".$agro_plaza."%' AND vista_ofc.id_ofc_det = vista_ofc.id_ofc ".$historial3.$almacen.$cliente."
+																												 AND TO_CHAR(vista_ofc.det_fecha_salida, 'yyyy') >= '2021'
+																												 AND vista_ofc.ofc_salida_fecha is not null";
+						}
+							break;
 			}
 
 			#echo $sql_con_carga;

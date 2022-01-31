@@ -35,9 +35,34 @@ if($modulos_valida == 0)
 $time = time();
 date_default_timezone_set("America/Mexico_City");
 
+/* INICIA RECUPERACION DE VALORES DEL FILTRO INDEX */
+
+if (empty($_SESSION['counter']))
+  $_SESSION['counter'] = 1;
+else
+  $_SESSION['counter']++;
+
+$agro_plaza = $_SESSION["agro_plaza"];
+  if ( $_SESSION['counter'] == 1 )  {
+    //if($_SESSION['area']==3){
+      $agro_plaza = $_SESSION["agro_plaza"];
+    //}else {
+      //$_SESSION["agro_plaza"] = "CÓRDOBA (ARGO)";
+      //$agro_plaza = $_SESSION["agro_plaza"];
+    //}
+  }else{
+    if( isset($_POST["agro_plaza"]))
+    $_SESSION["agro_plaza"] = $_POST["agro_plaza"];
+    $agro_plaza = $_SESSION["agro_plaza"];
+  }
+
+  //$agro_plaza = $_SESSION["agro_plaza"];
+
+/* TERMINA RECUPERACION DE VALORES DEL FILTRO INDEX*/
+
 //----------------INICIA SESSIONES PARA AGRONEGOCIOS----------------//
 /*SESSION PARA PLAZA AGRONEGOCIO*/
-if (empty($_SESSION['counter']))
+/*if (empty($_SESSION['counter']))
   $_SESSION['counter'] = 1;
 else
   $_SESSION['counter']++;
@@ -49,7 +74,7 @@ if ( $_SESSION['counter'] == 1 )  {
   if( isset($_POST["agro_plaza"]))
   $_SESSION["agro_plaza"] = $_POST["agro_plaza"];
   $agro_plaza = $_SESSION["agro_plaza"];
-}
+}*/
 
 /*SESSION PARA EL HISTORIAL AGRONEGOCIO*/
 if ($_SESSION["agro_historial"]==false){
@@ -124,6 +149,8 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
 
         Dashboard
         <small>Agronegocios</small>
+        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       </h1>
     </section>
     <!-- Main content -->
@@ -219,13 +246,15 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
           <input type="hidden" name="destroySession" value="1">
           <?php
            ?>
-          <div class="content_text_btn6"><button type='submit' class='click_btn_text6 btn btn-link'><i class="ion-arrow-left-a"></i> Regresar</button></div>
+          <!--<div class="content_text_btn6"><button type='submit' class='click_btn_text6 btn btn-link'><i class="ion-arrow-left-a"></i> Regresar</button></div>-->
         </form>
         </li>
         <?php } ?>
         <li>
           <div class="btn-group">
-           <button type='button' class='content_text_btn7 btn btn-link dropdown-toggle' data-toggle="dropdown"><i class="fa fa-cube"></i> Filtrar por Plaza</button>
+            <?php //if ($_SESSION['area']!=3){?>
+              <!--<button type='button' class='content_text_btn7 btn btn-link dropdown-toggle' data-toggle="dropdown"><i class="fa fa-cube"></i> Filtrar por Plaza</button>-->
+            <?php //} ?>
             <ul class="dropdown-menu" role="menu">
             <form method="post">
               <input type="hidden" name="agro_almacen" value="">
@@ -243,8 +272,13 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
             <ul class="dropdown-menu" role="menu">
             <?php
             if ($agro_almacen == true) { echo '<li><a><form method="POST"><input type="hidden" name="agro_cliente" value=""><button type="submit" name="agro_almacen" value="" class="click_btn_text8 btn btn-link">ALL</button></form></a></li>';}
-            $filtro_almacen_descarga = $obj_agro_descarga->select_almacen($agro_plaza);
+            //echo '<li><a><form method="POST"><input type="hidden" name="agro_cliente" value=""><button type="submit" name="agro_almacen" value="all" class="click_btn_text8 btn btn-link">ALL</button></form></a></li>';
+            $agro_plaza = $_SESSION['nomPlaza'];
+            $filtro_almacen_descarga = $obj_agro_descarga->select_almacen($_SESSION['nomPlaza']);
+            #echo count($filtro_almacen_descarga)." ".$agro_plaza;
             for ($i=0; $i <count($filtro_almacen_descarga) ; $i++) {
+              //echo '<li><a><form method="POST"><input type="hidden" name="agro_cliente" value=""><button type="submit" name="agro_almacen" value="all" class="click_btn_text8 btn btn-link">ALL</button></form></a></li>';
+
               echo '<li><a><form method="POST"><input type="hidden" name="agro_cliente" value=""><button type="submit" name="agro_almacen" value="'.$filtro_almacen_descarga[$i]["ALMACEN"].'" class="click_btn_text8 btn btn-link">'.$filtro_almacen_descarga[$i]["ALMACEN"].'</button></form></a></li>';
             }
             ?>
@@ -256,6 +290,7 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
            <button type='button' class='content_text_btn9 btn btn-link dropdown-toggle' data-toggle="dropdown"><i class="fa fa-briefcase"></i> Filtrar por Cliente</button>
             <ul class="dropdown-menu" role="menu">
             <?php
+
             if ($agro_cliente == true){echo '<li><a><form method="POST"><button type="submit" name="agro_cliente" value="" class="click_btn_text9 btn btn-link">ALL</button></form></a></li>';}
             $filtro_almacen_descarga = $obj_agro_descarga->select_cliente($agro_plaza,$agro_almacen);
             for ($i=0; $i <count($filtro_almacen_descarga) ; $i++) {
@@ -854,14 +889,13 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
           #unset($_SESSION['fec_ini_agro']);
           #unset($_SESSION['fec_fin_agro']);
            ?>
-          <div class="content_text_btn1"><button type='submit' class='click_btn_text1 btn btn-link'><i class="ion-arrow-left-a"></i> Regresar</button></div>
+          <!--<div class="content_text_btn1"><button type='submit' class='click_btn_text1 btn btn-link'><i class="ion-arrow-left-a"></i> Regresar</button></div>-->
         </form>
         </li>
         <?php } ?>
         <li>
           <div class="btn-group">
-           <button type='button' class='content_text_btn2 btn btn-link dropdown-toggle' data-toggle="dropdown"><i class="fa fa-cube"></i> Filtrar por Plaza</button>
-            <ul class="dropdown-menu" role="menu">
+           <ul class="dropdown-menu" role="menu">
             <form method="post">
               <input type="hidden" name="agro_almacen" value="">
               <input type="hidden" name="agro_cliente" value="">

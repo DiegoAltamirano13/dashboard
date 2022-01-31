@@ -45,14 +45,8 @@ if( isset($_GET["fecha"]) ){
   }
 }
 /*----- GET PLAZA -----*/
-$plaza = "ALL";
-if( isset($_GET["plaza"]) ){
-  if( $_GET["plaza"] == "CORPORATIVO" || $_GET["plaza"] == "CÓRDOBA" || $_GET["plaza"] == "MÉXICO" || $_GET["plaza"] == "GOLFO" || $_GET["plaza"] == "PENINSULA" || $_GET["plaza"] == "PUEBLA" || $_GET["plaza"] == "BAJIO" || $_GET["plaza"] == "OCCIDENTE" || $_GET["plaza"] == "NORESTE" ){
-    $plaza = $_GET["plaza"];
-  }else{
-    $plaza = "ALL";
-  }
-}
+$plaza=$_SESSION["nomPlaza"];
+
 //echo $plaza;
 
 
@@ -143,7 +137,10 @@ $tabla_toneladas = $modelNomina->graficaMensual($plaza, $fil_habilitado,$fecha);
 <!-- ########################################## Incia Contenido de la pagina ########################################## -->
 <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
   <section class="content-header">
-    <h1>Dashboard<small>CONTENEDORES PENDIENTES/ASIGNADOS AUTOMOTIVE LOGISTIC</small></h1>
+    <h1>Dashboard<small>CONTENEDORES PENDIENTES/ASIGNADOS AUTOMOTIVE LOGISTIC</small>
+      <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+      <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+    </h1>
   </section>
 
   <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
@@ -231,7 +228,8 @@ $tabla_toneladas = $modelNomina->graficaMensual($plaza, $fil_habilitado,$fecha);
           <input type="text" class="form-control pull-right" name="nomFecha">
         </div>
         <!-- FILTRAR POR PLAZA -->
-        <div class="input-group">
+        <input type="hidden" id="nomPlaza" value="<?=$plaza?>">
+        <!--<div class="input-group">
           <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
           <select class="form-control select2" id="nomPlaza" style="width: 100%;">
             <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
@@ -241,7 +239,7 @@ $tabla_toneladas = $modelNomina->graficaMensual($plaza, $fil_habilitado,$fecha);
               <option value="<?=$select_plaza[$i]["PLAZA"]?>" <?php if( $select_plaza[$i]["PLAZA"] == $plaza){echo "selected";} ?>> <?=$select_plaza[$i]["PLAZA"]?> </option>
             <?php } ?>
           </select>
-        </div>
+        </div>-->
         <div class="input-group">
           <span class="input-group-addon"> <input type="checkbox" name="fil_habilitado" <?php if( $fil_habilitado == 'on' ){ echo "checked";} ?> > ASIGNADOS</span>
         </div>

@@ -869,7 +869,7 @@ class RotacionPersonal
 				LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
                                                  AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO ".$and_fecha2."
 				WHERE RCAN.FECHA_CANCELACION IS NULL ".$and_plaza.$and_contrato.$and_depto.$and_area.$and_fecha." AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074) AND PER.IID_NUMNOMINA <> 2 ";
-			#echo $sql;
+			#	echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 
@@ -938,8 +938,7 @@ class RotacionPersonal
 				AND CAN.N_MOTIVO_CANCELA NOT IN (1 )
 				AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5 ".$and_plaza.$and_contrato.$and_depto.$and_area.$and_fecha.$and_habilitado." AND PER.IID_NUMNOMINA <> 2 ";
 
-
-			#	echo $sql;
+				#echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 
@@ -1050,7 +1049,7 @@ class RotacionPersonal
 													 AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$andFecha."', 'mm/yyyy')))
 													 AND RCAN.FECHA_CANCELACION IS NULL
 													 AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
-													 AND PER.IID_NUMNOMINA <> 2
+													 AND PER.IID_NUMNOMINA <> 2 
 												 ) as ACTIVO
 													 FROM RH_MESES_GRAFICAS pla
 													 GROUP BY PLA.N_MES, PLA.MES

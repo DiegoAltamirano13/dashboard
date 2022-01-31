@@ -968,7 +968,6 @@ $('.clickInfo').on('click', function() {
     for ($a=0; $a <4 ; $a++) {
       $var = array();
       $fecha_new = $fecha - (3-$a);
-      #echo $pre." ".$fecha_new." ".$promotor." ".$plaza." ";
       $ventaRealAnio = $insObj_VentaPromotor->ventaReal($pre,$fecha_new,$promotor,$plaza);
       for ($i=0; $i < count($ventaRealAnio) ; $i++) {
         $var[] = $ventaRealAnio[$i]["FACTURADO_TOTAL"];

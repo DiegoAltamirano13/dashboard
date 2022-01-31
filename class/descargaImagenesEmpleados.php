@@ -30,7 +30,7 @@ class descargaImagenes
                   if (ftp_get($conn_id, $local_file.$cuatro, $content[$i], FTP_BINARY)) { //Descargar archivos
                                  //echo "Se descargo el archivo!!\n revisa ". $local_file.$cuatro."\n";
                   } else {
-                                 //echo "Ha ocurrido un error al guardar\n";
+                                 echo "Ha ocurrido un error al guardar\n";
                   }
   }
   ftp_close($conn_id);
@@ -57,7 +57,7 @@ class descargaImagenes
 	                  if (ftp_get($conn_id, $local_file.$cuatro, $content[$i], FTP_BINARY)) { //Descargar archivos
 	                                 //echo "Se descargo el archivo!!\n revisa ". $local_file.$cuatro."\n";
 	                  } else {
-	                                 //echo "Ha ocurrido un error al guardar\n";
+	                                 echo "Ha ocurrido un error al guardar\n";
 	                  }
 	  }
 	  ftp_close($conn_id);

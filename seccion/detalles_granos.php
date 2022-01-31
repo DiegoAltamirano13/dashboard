@@ -45,14 +45,21 @@ if( isset($_GET["fecha"]) ){
   }
 }
 /*----- GET PLAZA -----*/
-$plaza = "ALL";
+if($_SESSION['area']==3){
+  $plaza=$_SESSION['nomPlaza'];
+}else {
+  $plaza = "ALL";
+}
+
+$plaza=$_SESSION['nomPlaza'];
+/*
 if( isset($_GET["plaza"]) ){
   if( $_GET["plaza"] == "CORPORATIVO" || $_GET["plaza"] == "CÓRDOBA" || $_GET["plaza"] == "MÉXICO" || $_GET["plaza"] == "GOLFO" || $_GET["plaza"] == "PENINSULA" || $_GET["plaza"] == "PUEBLA" || $_GET["plaza"] == "BAJIO" || $_GET["plaza"] == "OCCIDENTE" || $_GET["plaza"] == "NORESTE" ){
     $plaza = $_GET["plaza"];
   }else{
     $plaza = "ALL";
   }
-}
+}*/
 //echo $plaza;
 
 
@@ -132,17 +139,17 @@ if (isset($_GET["fil_habilitado"])) {
   $fil_habilitado = $_GET["fil_habilitado"];
 }
 
-$tabla_toneladas = $modelNomina->tabla_toneladas($fecha, $almacen, $tenedor);
+$tabla_toneladas = $modelNomina->tabla_toneladas($plaza, $fecha, $almacen, $tenedor);
 
-$tabla_toneladas2 = $modelNomina->tabla_toneladas2($fecha,$almacen, $tenedor);
-$tabla_toneladas3 = $modelNomina->tabla_toneladas3($fecha,$almacen, $tenedor);
-$tabla_toneladas4 = $modelNomina->tabla_toneladas4($fecha,$almacen, $tenedor);
+$tabla_toneladas2 = $modelNomina->tabla_toneladas2($plaza,$fecha,$almacen, $tenedor);
+$tabla_toneladas3 = $modelNomina->tabla_toneladas3($plaza,$fecha,$almacen, $tenedor);
+$tabla_toneladas4 = $modelNomina->tabla_toneladas4($plaza, $fecha,$almacen, $tenedor);
 
 
-$tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
+$tabla_toneladas5 = $modelNomina->tabla_toneladas5($plaza, $fecha);
 
-$grafica_tenedor = $modelNomina->graficas_tenedor($fecha,$almacen, $tenedor);
-$grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
+$grafica_tenedor = $modelNomina->graficas_tenedor($plaza, $fecha,$almacen, $tenedor);
+$grafica_merca = $modelNomina->graficas_merca($plaza, $fecha, $almacen, $tenedor);
 
 //$selectAlmacen = $modelNomina->almacenSql($plaza);
 ?>
@@ -157,7 +164,10 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
 <!-- ########################################## Incia Contenido de la pagina ########################################## -->
 <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
   <section class="content-header">
-    <h1>Dashboard<small>RESUMEN GENERAL DE GRANOS</small></h1>
+    <h1>Dashboard<small>RESUMEN GENERAL DE GRANOS</small>
+      <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+      <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+    </h1>
   </section>
 
   <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
@@ -214,7 +224,9 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
             <input type="text" class="form-control pull-right" name="nomFecha">
           </div>
 
-          <div class="input-group">
+          <input id="nomPlaza" type="hidden" value=<?= $plaza ?>>
+          <?php if($_SESSION['area']!=3){ ?>
+          <!--<div class="input-group">
             <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
             <select class="form-control select2" id="nomPlaza" style="width: 100%;">
               <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
@@ -224,14 +236,18 @@ $grafica_merca = $modelNomina->graficas_merca($fecha, $almacen, $tenedor);
                 <option value="<?=$select_plaza[$i]["PLAZA"]?>" <?php if( $select_plaza[$i]["PLAZA"] == $plaza){echo "selected";} ?>> <?=$select_plaza[$i]["PLAZA"]?> </option>
               <?php } ?>
             </select>
-          </div>
+          </div>-->
+        <?php } else{?>
+          <!--<input id="nomPlaza" type="hidden" value=<?= $plaza ?>>-->
+        <?php }?>
 
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-file-powerpoint-o"></i> Almacen:</span>
             <select class="form-control select2" style="width: 100%;" id="nomAlm">
               <option value="ALL" <?php if( $almacen == 'ALL'){echo "selected";} ?> >ALL</option>
               <?php
-              $plazas = $_GET["plaza"];
+              $plazas=$_SESSION["nomPlaza"];
+              //$plazas = $_GET["plaza"];
               $selectAlmacen = $modelNomina->almacenSql($plazas);
               for ($i=0; $i <count($selectAlmacen) ; $i++) { ?>
                 <option value="<?=$selectAlmacen[$i]["IID_ALMACEN"]?>" <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>

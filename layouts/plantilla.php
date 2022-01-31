@@ -100,7 +100,7 @@ $class_active = $_SESSION['modulo_actual'];
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>RG</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>ARGO</span>
+      <span class="logo-lg"><i class="fa fa-home" aria-hidden="true"></i><b> Admin</b>ARGO</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" <?php if($_SESSION['modulo_actual']==0){ echo 'data-intro="Botón para ocultar menú da navegación lateral"'; } ?> >

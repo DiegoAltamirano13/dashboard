@@ -517,7 +517,7 @@ class Rack
 									 AND ubi.iid_plaza = ".$id_plaza." AND ubi.iid_almacen = ".$id_almacen." ".$and_cliente." ".$datalink." ";
 		}
 
-	 #echo $sql;
+	#	echo $sql;
 
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);

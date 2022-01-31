@@ -351,10 +351,9 @@ $(".btn_fil").on("click", function(){
 <!-- Select2 -->
 <script src="../plugins/select2/select2.full.min.js"></script>
 <!-- Grafica Barras. -->
-<script src="../plugins/highcharts/highcharts.js"></script>
-<script src="../plugins/highcharts/modules/data.js"></script>
-<script src="../plugins/highcharts/modules/exporting.js"></script>
-<script src="../plugins/highcharts/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="../plugins/colorSegment/multicolor_series.js"></script>
 <script type="text/javascript">
 $(function () {

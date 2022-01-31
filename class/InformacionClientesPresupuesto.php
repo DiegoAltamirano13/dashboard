@@ -673,8 +673,6 @@ class VentaAlmacen
             GROUP BY to_char(mov.d_fecha_movto,'yyyy') ,to_char(mov.d_fecha_movto,'mm')
             ) GROUP BY nom_mes, mes ORDER BY mes";
 
-						#echo $sql;
-
 					$stid = oci_parse($conn, $sql);
 					oci_execute($stid);
 

@@ -15,9 +15,10 @@
 
           $curs = oci_new_cursor($conn);
           $promotor = "ALL";
-          $p_codes = "";
+           $p_codes = "";
+          //echo $pre.' '.$fecha.' '.$promotor.' '.$plaza;
+          #$stid = oci_parse($conn, "begin PCK_DASHBOARD.enviar_mail_granos(:nombresilo, :p_code); end;");
           $stid = oci_parse($conn, "begin PCK_DASHBOARD.ENVIAR_MAIL_GRANOS(:silonombre, :cd_n , :fecha, :tipo_grano, :financiera,  :p_code); end;");
-
       		oci_bind_by_name($stid, ':silonombre', $valor_nombre); //3
       		oci_bind_by_name($stid, ':cd_n', $num_cd); //2019
       		oci_bind_by_name($stid, ':fecha', $fechas); // ALL
@@ -29,6 +30,7 @@
           oci_free_statement($stid);
           oci_free_statement($curs);
           oci_close($conn);
+          #echo $silonombre+ " "+ $cd_n + "  "+ $fecha;
           echo $p_codes;
-          
+  //  };
  ?>

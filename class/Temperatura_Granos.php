@@ -221,33 +221,6 @@ class Temperatura_Granos
 
 	}
 	/****************************GRAFICA SEMANA*******************************/
-	// ************************** VENTA REAL **************************  //
-	function envioMails($silonombre, $cd_n, $fecha)
-	{
-		$conn = conexion::conectar();
-
-		$res_array = array();
-
-		$curs = oci_new_cursor($conn);
-		$promotor = "ALL";
-		//echo $pre.' '.$fecha.' '.$promotor.' '.$plaza;
-		$stid = oci_parse($conn, "begin PCK_DASHBOARD.ENVIAR_MAIL_GRANOS(:silonombre, :cd_n , :fecha); end;");
-		oci_bind_by_name($stid, ':silonombre', $silonombre); //3
-		oci_bind_by_name($stid, ':cd_n', $cd_n); //2019
-		oci_bind_by_name($stid, ':fecha', $fecha); // ALL
-		oci_execute($stid);
-		oci_execute($curs);  // Ejecutar el REF CURSOR como un ide de sentencia normal
-		while (($row = oci_fetch_array($curs, OCI_ASSOC+OCI_RETURN_NULLS)) != false) {
-				$res_array[]=$row;
-		}
-
-		oci_free_statement($stid);
-		oci_free_statement($curs);
-		oci_close($conn);
-		return $res_array;
-
-	}
-	// ************************** /.VENTA REAL **************************  //
 	public function graficaDetallesGranos($plaza,$fecha,$almacen,$silo,$fil_check)
 	{
 		$conn = conexion::conectar();
@@ -1078,11 +1051,12 @@ class Temperatura_Granos
  	 }
 		$sql = "SELECT DISTINCT(AL.IID_ALMACEN), AL.V_NOMBRE
 						FROM ALMACEN AL
-            INNER JOIN OP_IN_TEMPERATURA_SILOS ALC ON AL.IID_PLAZA = ALC.IID_PLAZA AND AL.IID_ALMACEN = ALC.IID_ALMACEN
-						WHERE AL.IID_PLAZA = ".$in_plaza." AND AL.IID_ALMACEN NOT IN (9998, 9999) ORDER BY AL.IID_ALMACEN";
+            INNER JOIN op_in_gr_silos_temp ALC ON AL.IID_PLAZA = ALC.IID_PLAZA AND AL.IID_ALMACEN = ALC.IID_ALMACEN
+						WHERE AL.IID_PLAZA IN ( $in_plaza) AND AL.IID_ALMACEN NOT IN (9998, 9999) ORDER BY AL.IID_ALMACEN";
+			#			echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
-		#echo $sql;
+
 		while (($row = oci_fetch_assoc($stid)) != false)
 		{
 			$res_array[]= $row;

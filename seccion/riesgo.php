@@ -1,7 +1,7 @@
- <?php|
-//BY   JTJ 28/12/2018
+<?php
+//BY JTJ 28/12/2018
 
-if( $_SERVER['REQUEST_METHOD'] == 'POST' )3en
+if( $_SERVER['REQUEST_METHOD'] == 'POST' )
 {
   header("location:dias_descansados.php");
   //return;

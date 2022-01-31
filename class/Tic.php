@@ -79,11 +79,7 @@ class Tic
 				(SELECT  COUNT(distinct pro.iid_proyecto) AS todos
 				FROM ss_proyecto pro
 				INNER JOIN vista_dashboard_sistemas_empleado das ON das.IID_PROYECTO = pro.iid_proyecto $andUser $andFecha
-				WHERE pro.iid_status IN (1,2,3,4) ),
-				(SELECT  COUNT(distinct pro.iid_proyecto) AS proceso
-				FROM ss_proyecto pro
-				INNER JOIN vista_dashboard_sistemas_empleado das ON das.IID_PROYECTO = pro.iid_proyecto $andUser $andFecha
-				WHERE pro.d_fecha_fin_real is null)";
+				WHERE pro.iid_status IN (1,2,3,4) )";
 
 #echo $sql;
 

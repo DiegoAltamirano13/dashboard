@@ -491,7 +491,6 @@ class NominaPagada
 								AND M.IID_PLAZA IN ($in_plaza)
 								$andFec2
 					ORDER BY M.C_ANIO";
-					#echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 

@@ -36,9 +36,19 @@ $objRack = new Rack();
 
 /**----------------------sessiones----------------------**/
 /*id_plaza*/
-if ( isset($_POST["rackId_plaza"]) )
-	$_SESSION['rackId_plaza'] = $_POST['rackId_plaza'];
-	$id_plaza = @$_SESSION['rackId_plaza'];
+$plaza = $_SESSION["nomPlaza"];
+switch($plaza){
+ 		 //case 'CORPORATIVO': $in_plaza = 2; break;
+ 		 case 'CÓRDOBA': $id_plaza = 3; break;
+ 		 case 'MÉXICO': $id_plaza = 4; break;
+ 		 case 'GOLFO': $id_plaza = 5; break;
+ 		 case 'PENINSULA': $id_plaza = 6; break;
+ 		 case 'PUEBLA': $id_plaza = 7; break;
+ 		 case 'BAJIO': $id_plaza = 8; break;
+ 		 case 'OCCIDENTE': $id_plaza = 17; break;
+ 		 case 'NORESTE': $id_plaza = 18; break;
+ 		 default: $id_plaza = "40"; break;
+ 	 }
 
 /*id_almacen*/
 if (  isset($_POST["rackId_almacen"]) )
@@ -90,6 +100,9 @@ if (  isset($_POST["letraRack"]) )
     <!-- Content Header (Page header) -->
     <!-- Main content -->
     <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
+      <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+      <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+
 
 
 	<!-- ############################ INICIA SECCION FILTROS DISPONIBLES ############################# -->
@@ -106,8 +119,16 @@ if (  isset($_POST["letraRack"]) )
 
 
 	    	<!-- SELECT OPTION PLAZA -->
-	    	<div class="col-md-2 col-sm-2 col-xs-12 invoice-col">
+        <input type="hidden" name="rackId_plaza" value="<?=$id_plaza?>">
+        <input type="hidden" name="rackId_almacen" value="">
+        <input type="hidden" name="rackId_cliente" value="">
+        <input type="hidden" name="rackId_mercancia" value="">
+        <input type="hidden" name="letraRack" value="">
+
+        <?php //if($_SESSION['area']!=3){ ?>
+	    	<!--<div class="col-md-2 col-sm-2 col-xs-12 invoice-col">
 	    	<form method="post">
+
 		        <strong><i class="fa fa-cube"></i> Plaza:</strong>
 		        <address>
 		          <select class="form-control select2" name="rackId_plaza" style='width: 100%;' onchange='this.form.submit()'>
@@ -128,8 +149,10 @@ if (  isset($_POST["letraRack"]) )
 		          <input type="hidden" name="rackId_mercancia" value="">
 		          <input type="hidden" name="letraRack" value="">
 		        </address>
-		    </form>
-		    </div>
+        </form>
+      </div>-->
+        <?php //} ?>
+
 		    <!-- SELECT OPTION ALMACEN -->
 	    	<div class="col-md-2 col-sm-2 col-xs-12 invoice-col">
 	    	<form method="post">
@@ -165,7 +188,7 @@ if (  isset($_POST["letraRack"]) )
 		          <option selected="true" disabled>Seleccione el Cliente</option>
 		          <?php
 		          if ( isset($id_almacen) && !empty($id_almacen) ){//if
-		          	$selectCliente = $objRack->selectCliente($id_plaza,$id_almacen);
+		          	$selectCliente = $objRack->selectCliente($id_almacen);
 		          	if ($id_cliente == 'ALL'){ echo '<option selected value="ALL">ALL</option>';}else{echo '<option value="ALL">ALL</option>';}
 
 		          	for ($i=0; $i <count($selectCliente) ; $i++) {// for

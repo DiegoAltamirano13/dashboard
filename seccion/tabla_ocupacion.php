@@ -41,7 +41,7 @@ if( isset($_GET["fecha"]) ){
     $fecha = $_GET["fecha"];
 }
 
-$tabla_toneladas = $modelNomina->tabla_toneladas($fecha);
+$tabla_toneladas = $modelNomina->tabla_toneladas($_SESSION['nomPlaza'], $fecha);
 //$selectAlmacen = $modelNomina->almacenSql($plaza);
 ?>
 <!-- ####################################### Incluir Plantilla Principal ##########################-->

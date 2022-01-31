@@ -184,7 +184,7 @@ public function tabla_toneladas($plaza, $almacen, $proyecto, $fecha, $contenedor
 			}
 
 			$conn = conexion::conectar();
-			$res_array = array(); 
+			$res_array = array();
 					$sql ="SELECT t.calidad, sum (t.SALDO) as canti_cal
 								from vista_wms_inventario t,
 								     cliente c,
@@ -309,7 +309,9 @@ public function sql($option,$depto,$plaza){
 					   and t.arribo = ce.iid_arribo
 					   and t.s_area = ar.s_area
 					   and a.iid_almacen = ar.iid_almacen
-						 and t.iid_plaza = $in_plaza AND a.IID_ALMACEN NOT IN (9998, 9999) ORDER BY a.IID_ALMACEN";
+						 and t.iid_plaza in($in_plaza) AND a.IID_ALMACEN NOT IN (9998, 9999) ORDER BY a.IID_ALMACEN";
+
+					#	 echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 		#echo $sql;

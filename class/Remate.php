@@ -80,7 +80,8 @@ class Remate extends Concatena
 				INNER JOIN almacen alm ON alm.iid_almacen = remates.iid_almacen
 				INNER JOIN CLIENTE C ON C.IID_NUM_CLIENTE = remates.iid_num_cliente
 				WHERE remates.n_status = 12 ".$and_plaza.$and_almacen."
-				)";				
+				)";
+
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 

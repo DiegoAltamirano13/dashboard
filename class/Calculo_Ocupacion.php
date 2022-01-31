@@ -47,7 +47,7 @@ class Calculo_Ocupacion
 				$mes = substr($fecha, 3,2);
 				$anio = substr($fecha,6,4);
 				$no_semana_inf = date("W", mktime(0,0,0,$mes,$dia,$anio));
-				#echo $no_semana_inf;
+			#	echo $no_semana_inf;
 
 				//echo $no_semana;
 			}
@@ -95,6 +95,9 @@ class Calculo_Ocupacion
 					$andcliente
 				 GROUP BY P.MES, P.N_MES
 				 ORDER BY P.N_MES";
+
+				 #echo $sql;
+				 /**/
 
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
@@ -237,7 +240,7 @@ class Calculo_Ocupacion
 				$mes = substr($fecha, 3,2);
 				$anio = substr($fecha,6,4);
 				$no_semana_inf = date("W", mktime(0,0,0,$mes,$dia,$anio));
-				#echo $no_semana_inf;
+				//echo $no_semana. " ". $no_semana_inf;
 			}
 		$in_plaza = "2,3,4,5,6,7,8,17,18";
 		switch ($plaza){
@@ -634,7 +637,7 @@ class Calculo_Ocupacion
 		        WHERE PLA.IID_PLAZA IN (2,3,4,5,6,7,8,17,18)
 		        GROUP BY PLA.IID_PLAZA, PLA.V_RAZON_SOCIAL ORDER BY PLA.IID_PLAZA";
 
-			 #echo $sql;
+			# echo $sql;
 
 				$stid = oci_parse($conn,$sql);
 				oci_execute($stid);
@@ -792,9 +795,8 @@ class Calculo_Ocupacion
  		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
  	 }
 		$sql = "SELECT DISTINCT(AL.IID_ALMACEN), AL.V_NOMBRE
-						FROM ALMACEN AL
-            INNER JOIN ALMACEN_CAPACIDAD ALC ON AL.IID_PLAZA = ALC.IID_PLAZA AND AL.IID_ALMACEN = ALC.IID_ALMACEN
-						WHERE AL.IID_PLAZA = ".$in_plaza." AND AL.IID_ALMACEN NOT IN (9998, 9999) ORDER BY AL.IID_ALMACEN";
+						FROM ALMACEN AL            
+						WHERE AL.IID_PLAZA IN ($in_plaza) AND AL.IID_ALMACEN NOT IN (9998, 9999) AND S_STATUS =1 ORDER BY AL.IID_ALMACEN";
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 		#echo $sql;

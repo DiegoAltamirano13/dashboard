@@ -126,7 +126,7 @@ class VentaPromotor
 		$res_array = array();
 
 		$curs = oci_new_cursor($conn);
-		
+
 		$stid = oci_parse($conn, "begin PCK_DASHBOARD.CUR_VTA_VS_PRESUPUESTO(:n_tipo,:n_anio,:v_id_promotor,:n_id_plaza,:cur_posicion); end;");
 		oci_bind_by_name($stid, ':n_tipo', $pre);
 		oci_bind_by_name($stid, ':n_anio', $fecha);
@@ -209,7 +209,6 @@ class VentaPromotor
 				INNER JOIN plaza pla On pla.iid_plaza = fac.iid_plaza
 				WHERE fac.status = 7 AND mov.n_status = 2 AND mov.n_tipo_movto IN (1,3,4)
 				AND al.s_tipo_almacen in (2,6) AND fac.observacion <> 'GASTOS NOTARIALES POR NOTIFICACION DE REMATE'
-				AND FAC.OBSERVACION <> 'VENTA DE 13,559 PIEZAS Y JUEGOS DE CALENTADORES SOLARES; EN EL ESTADO EN QUE SE ENCUENTRAN'
 				AND to_char(mov.d_fecha_movto, 'yyyy') = ".$fecha." AND to_char(mov.d_fecha_movto,'mm') = '".$mes."'
 				".$andPromotor.$andPlaza."
 				GROUP BY cli.v_razon_social,fac.iid_num_cliente, al.iid_almacen, al.v_nombre,pla.iid_plaza, pla.v_razon_social, pro.iid_promotor, pro.iid_empleado, pro.v_nombre, pro.v_apellido_pat, pro.v_apellido_mat, to_char(mov.d_fecha_movto,'yyyy') ,to_char(mov.d_fecha_movto,'mm')
@@ -241,11 +240,10 @@ class VentaPromotor
 	            AND to_char(mov.d_fecha_movto, 'yyyy') = ".$fecha."
 	            AND to_char(mov.d_fecha_movto,'mm') = '".$mes."'  AND pro.iid_promotor IN (173,187,196,189,184,195)
 	            AND al.s_tipo_almacen in (2,6) AND fac.observacion <> 'GASTOS NOTARIALES POR NOTIFICACION DE REMATE' /*add*/
-							AND FAC.OBSERVACION <> 'VENTA DE 13,559 PIEZAS Y JUEGOS DE CALENTADORES SOLARES; EN EL ESTADO EN QUE SE ENCUENTRAN'
 	            GROUP BY fac.iid_num_cliente, cli.v_razon_social, al.iid_almacen, al.v_nombre, pla.iid_plaza, pla.v_razon_social, pro.iid_promotor, pro.iid_empleado, pro.v_nombre, pro.v_apellido_pat, pro.v_apellido_mat, to_char(mov.d_fecha_movto,'yyyy') ,to_char(mov.d_fecha_movto,'mm' )
         		) ";
 
-        if ( $plaza == "ALL" AND $promotor == "ALL"  ){
+        		if ( $plaza == "ALL" AND $promotor == "ALL"  ){
 					$sql_res = $sql_res1." UNION ".$sql_res2;
 				}else{
 					$sql_res = $sql_res1;
@@ -289,7 +287,6 @@ class VentaPromotor
 				INNER JOIN plaza pla On pla.iid_plaza = fac.iid_plaza
 				WHERE fac.status = 7 AND mov.n_status = 2 AND mov.n_tipo_movto IN (1,3,4)
 				AND al.s_tipo_almacen in (2,6) AND fac.observacion <> 'GASTOS NOTARIALES POR NOTIFICACION DE REMATE'
-				AND FAC.OBSERVACION <> 'VENTA DE 13,559 PIEZAS Y JUEGOS DE CALENTADORES SOLARES; EN EL ESTADO EN QUE SE ENCUENTRAN'
 				AND to_char(mov.d_fecha_movto, 'yyyy') = ".$fecha." AND to_char(mov.d_fecha_movto,'mm') = '".$mes."' ".$andPlaza."
 				GROUP BY cli.v_razon_social,fac.iid_num_cliente, al.iid_almacen, al.v_nombre,pla.iid_plaza, pla.v_razon_social, pro.iid_promotor, pro.iid_empleado, pro.v_nombre, pro.v_apellido_pat, pro.v_apellido_mat, to_char(mov.d_fecha_movto,'yyyy') ,to_char(mov.d_fecha_movto,'mm')
 				 )
@@ -319,9 +316,8 @@ class VentaPromotor
 	            INNER JOIN plaza pla On pla.iid_plaza = fac.iid_plaza
 	            WHERE fac.status = 7 AND mov.n_status = 2 AND mov.n_tipo_movto IN (1,3,4)
 	            AND to_char(mov.d_fecha_movto, 'yyyy') = ".$fecha."
-	            AND to_char(mov.d_fecha_movto,'mm') = '".$mes."' AND pro.iid_promotor IN (173,172,187,196,189,184,195) ".$andPlaza."
+	            AND to_char(mov.d_fecha_movto,'mm') = '".$mes."' AND pro.iid_promotor IN (173,187,196,189,184,195) ".$andPlaza."
 	            AND al.s_tipo_almacen in (2,6) AND fac.observacion <> 'GASTOS NOTARIALES POR NOTIFICACION DE REMATE' /*add*/
-							AND FAC.OBSERVACION <> 'VENTA DE 13,559 PIEZAS Y JUEGOS DE CALENTADORES SOLARES; EN EL ESTADO EN QUE SE ENCUENTRAN'
 	            GROUP BY fac.iid_num_cliente, cli.v_razon_social, al.iid_almacen, al.v_nombre, pla.iid_plaza, pla.v_razon_social, pro.iid_promotor, pro.iid_empleado, pro.v_nombre, pro.v_apellido_pat, pro.v_apellido_mat, to_char(mov.d_fecha_movto,'yyyy') ,to_char(mov.d_fecha_movto,'mm' ) ) ";
 		}
 

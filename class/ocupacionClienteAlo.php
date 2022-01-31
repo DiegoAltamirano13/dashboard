@@ -2,10 +2,22 @@
 include_once '../libs/conOra.php';
 class OcupacionCliente
 {
-public function graficaDonut(){
+public function graficaDonut($plaza){
   $conn = conexion::conectar();
   $res_array = array();
 
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
     $sql = "SELECT (COUNT(V_TRANSLADO)/
 (SELECT COUNT(V_TRANSLADO)
 AS ENTRE_0_30
@@ -18,6 +30,7 @@ FROM (SELECT NVL(REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ), 'NO PROYECTO') AS 
  AND (NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'ERD' AND K.VID_FACTURA = T.VID_FACTURA), 0) -
            NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
    AND Y.I_SAL_CERO = 1
+   AND Y.IID_PLAZA IN ($andPlaza)
 GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO
 ))) * 100
 AS ENTRE_0_30,
@@ -31,6 +44,7 @@ FROM (SELECT NVL(REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ), 'NO PROYECTO') AS 
  AND (NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'ERD' AND K.VID_FACTURA = T.VID_FACTURA), 0) -
            NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
    AND Y.I_SAL_CERO = 1
+   AND Y.IID_PLAZA IN ($andPlaza)
 GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO
 ) GROUP BY V_TRANSLADO ";
 
@@ -53,10 +67,21 @@ GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.
 }
 
 
-public function tabla30(){
+public function tabla30($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -84,6 +109,7 @@ public function tabla30(){
        AND (NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'ERD' AND K.VID_FACTURA = T.VID_FACTURA), 0) -
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
+         AND Y.IID_PLAZA IN ($andPlaza)
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'ALINK'
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
@@ -103,10 +129,21 @@ public function tabla30(){
            return $res_array;
 }
 
-public function tabla60(){
+public function tabla60($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -135,6 +172,7 @@ public function tabla60(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'BMW'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -153,10 +191,21 @@ public function tabla60(){
            return $res_array;
 }
 
-public function tabla90(){
+public function tabla90($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -185,6 +234,7 @@ public function tabla90(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'DICASTAL'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -204,10 +254,21 @@ public function tabla90(){
 }
 
 
-public function tabla120(){
+public function tabla120($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -236,6 +297,7 @@ public function tabla120(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'FCA'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -254,10 +316,21 @@ public function tabla120(){
            return $res_array;
 }
 
-public function tabla150(){
+public function tabla150($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -286,6 +359,7 @@ public function tabla150(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'FORD'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -305,10 +379,21 @@ public function tabla150(){
 }
 
 
-public function tablaViva(){
+public function tablaViva($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -337,6 +422,7 @@ public function tablaViva(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'HANDS'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -356,10 +442,21 @@ public function tablaViva(){
 }
 
 
-public function tablaHANKOOK(){
+public function tablaHANKOOK($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -388,6 +485,7 @@ public function tablaHANKOOK(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'HANKOOK'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -407,10 +505,21 @@ public function tablaHANKOOK(){
 }
 
 
-public function tablaHONDA(){
+public function tablaHONDA($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -439,6 +548,7 @@ public function tablaHONDA(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'HONDA'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -457,10 +567,21 @@ public function tablaHONDA(){
            return $res_array;
 }
 
-public function tablaLINGLONG(){
+public function tablaLINGLONG($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -489,6 +610,7 @@ public function tablaLINGLONG(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'LING-LONG'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -508,10 +630,21 @@ public function tablaLINGLONG(){
 }
 
 
-public function tablaLIUFENG(){
+public function tablaLIUFENG($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -540,6 +673,7 @@ public function tablaLIUFENG(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'LIUFENG'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -558,10 +692,21 @@ public function tablaLIUFENG(){
            return $res_array;
 }
 
-public function tablaSAAA(){
+public function tablaSAAA($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -590,6 +735,7 @@ public function tablaSAAA(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
          AND REPLACE(VE.V_TRANSLADO, '/CUARENTENA', '' ) = 'SAAA'
+         AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);
@@ -609,10 +755,21 @@ public function tablaSAAA(){
 }
 
 
-public function tablaSinProyecto(){
+public function tablaSinProyecto($plaza){
   $conn = conexion::conectar();
   $res_array = array();
-
+  switch ($plaza) {
+      //case 'CORPORATIVO': $andPlaza = "2"; break;
+      case 'CÓRDOBA': $andPlaza = "3"; break;
+      case 'MÉXICO': $andPlaza = "4"; break;
+      case 'GOLFO': $andPlaza = "5"; break;
+      case 'PENINSULA': $andPlaza = "6"; break;
+      case 'PUEBLA': $andPlaza = "7"; break;
+      case 'BAJIO': $andPlaza = "8"; break;
+      case 'OCCIDENTE': $andPlaza = "17"; break;
+      case 'NORESTE': $andPlaza = "18"; break;
+      default: $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 "; break;
+  }
   $sql = "SELECT T.VID_RECIBO,
        Y.VID_CERTIFICADO,
        Z.V_DESCRIPCION,
@@ -641,6 +798,7 @@ public function tablaSinProyecto(){
                  NVL((SELECT SUM(K.C_CANTIDAD_UME) FROM OP_IN_MOVIMIENTOS K WHERE K.VID_RECIBO = T.VID_RECIBO AND K.V_TIPO_MOVTO = 'SOS' AND K.VID_FACTURA = T.VID_FACTURA), 0))> 0
          AND Y.I_SAL_CERO = 1
             AND (VE.V_TRANSLADO IS NULL OR VE.V_TRANSLADO = 'CUARENTENA')
+            AND Y.IID_PLAZA IN ($andPlaza)
       GROUP BY T.VID_RECIBO, Y.VID_CERTIFICADO, Z.V_DESCRIPCION, Y.D_PLAZO_DEP_INI, T.VID_FACTURA, VE.V_TRANSLADO";
 
            $stid = oci_parse($conn, $sql);

@@ -1116,7 +1116,7 @@ function almacenSql($plaza){
 						 ORDER BY IID_ALMACEN";
 	 }
 	 else {
-	 		$sql = "SELECT IID_ALMACEN, V_NOMBRE FROM ALMACEN WHERE IID_PLAZA = $in_plaza AND IID_ALMACEN NOT IN (9998, 9999) ORDER BY IID_ALMACEN";
+	 		$sql = "SELECT IID_ALMACEN, V_NOMBRE FROM ALMACEN WHERE IID_PLAZA in( $in_plaza) AND IID_ALMACEN NOT IN (9998, 9999) ORDER BY IID_ALMACEN";
 	 }
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);

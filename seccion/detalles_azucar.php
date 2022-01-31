@@ -295,7 +295,6 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           </tr>
                           <?php $peñuelan = $peñuelan + $tabla_toneladas7[$x]["CANTIDADN"];
                                 $peñuelas = $peñuelas + $tabla_toneladas7[$x]["CANTIDADS"];} ?>
-                                
                           <tr style="background: #57FF65">
                             <td class="small"></td>
                             <td class="small"></td>
@@ -439,7 +438,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                             <tr style="background: #57FF65; display:none;">
                                               <td class="small"></td>
                                               <td class="small"></td>
-                                              <td class="small">Total Toneladas IMPULSORA AZUCARERA CHINA.</td>
+                                              <td class="small">Total Toneladas SUCROLIQ, S.A.P.I. DE C.V.</td>
                                               <td class="small"><?php
                                                                 echo number_format($chinaAzucarN/1000, 2);?></td>
                                               <td class="small"><?php

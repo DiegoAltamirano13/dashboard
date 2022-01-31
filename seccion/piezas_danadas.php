@@ -154,13 +154,7 @@ if ( isset($_GET["check"]) ){
 
 /*----- GET PLAZA -----*/
 $plaza = "ALL";
-if( isset($_GET["plaza"]) ){
-  if( $_GET["plaza"] != 'ALL' ){
-    $plaza = $_GET["plaza"];
-  }else{
-    $plaza = "ALL";
-  }
-}
+$plaza = $_SESSION['nomPlaza'];
 
 $fil_check = "ALL";
 if ( isset($_GET["check"]) ){

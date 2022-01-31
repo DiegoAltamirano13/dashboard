@@ -42,10 +42,12 @@ class Rack
 		$res_array = array();
 
 		//$sql = "SELECT a.iid_almacen, a.iid_plaza, a.v_nombre, a.v_iniciales FROM almacen a WHERE a.iid_plaza =  $id_plaza AND a.s_status = 1 ORDER BY a.v_nombre";
-
+		if ($id_plaza = '40') {
+			$id_plaza = '3,4,5,6,7,8,17,18';
+		}
 		$sql = "SELECT  distinct t.iid_almacen as iid_almacen, a.iid_plaza, a.v_nombre, a.v_iniciales
 		from op_in_clientes_wms t, almacen a
-		where t.iid_plaza = $id_plaza and t.iid_almacen = a.iid_almacen";
+		where t.iid_plaza in ($id_plaza) and t.iid_almacen = a.iid_almacen";
 
 		//$sql = "SELECT a.iid_almacen, a.iid_plaza, a.v_nombre, a.v_iniciales FROM almacen a WHERE a.iid_plaza =  $id_plaza AND a.s_status = 1 ORDER BY a.v_nombre";
 
@@ -66,7 +68,7 @@ class Rack
 
 
 	/* ================== INICIA FUNCION PARA SELECT OPTION CLIENTE ================== */
-	public function selectCliente($id_plaza,$id_almacen)
+	public function selectCliente($id_almacen)
 	{
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -90,13 +92,13 @@ class Rack
 							from op_in_clientes_wms t, op_in_recibo_deposito r, cliente c
 							where t.iid_num_cliente = r.iid_num_cliente
 									and c.iid_num_cliente = t.iid_num_cliente
-									and  r.i_sal_cero = 1 and t.iid_plaza = $id_plaza  and t.iid_almacen = $id_almacen
+									and  r.i_sal_cero = 1  and t.iid_almacen = $id_almacen
 							union
 							select distinct t.iid_num_cliente as iid_num_cliente, c.v_razon_social, c.v_nombre_corto
 							from op_in_clientes_wms".$datalink." t, op_in_recibo_deposito".$datalink." r, cliente c
 							where t.iid_num_cliente = r.iid_num_cliente
 									and c.iid_num_cliente = t.iid_num_cliente
-									and  r.i_sal_cero = 1 and t.iid_plaza = $id_plaza  and t.iid_almacen = $id_almacen";
+									and  r.i_sal_cero = 1  and t.iid_almacen = $id_almacen";
 
 		/*$sql = "SELECT wms.iid_num_cliente  , cli.v_razon_social, cli.v_nombre_corto
 						FROM op_in_clientes_wms wms
@@ -636,7 +638,7 @@ public function selectPiso($id_almacen)
 				FROM vista_arribo_detalle_ubi ubi
 				INNER JOIN VISTA_WMS_INVENTARIO sal ON sal.recibo = ubi.vid_recibo AND sal.mercancia = ubi.vid_num_parte_padre AND sal.ubicacion = ubi.v_ubicacion
 				INNER JOIN OP_IN_MOVIMIENTOS movs ON SAL.recibo = MOVS.VID_RECIBO and sal.mercancia = movs.vid_num_parte and movs.v_tipo_movto = 'ERD'
-				WHERE ubi.v_ubicacion = '".$ubicacion."' AND ubi.iid_plaza = ".$id_plaza." AND ubi.iid_almacen = ".$id_almacen." ".$and_cliente." ".$datalink."
+				WHERE ubi.v_ubicacion = '".$ubicacion."'  AND ubi.iid_almacen = ".$id_almacen." ".$and_cliente." ".$datalink."
 				GROUP BY   ubi.iid_num_cliente,
 		                ubi.v_cliente,
 		                ubi.v_cliente_corto,
@@ -688,7 +690,7 @@ public function selectPiso($id_almacen)
 			        FROM vista_arribo_detalle_ubi ubi
 							INNER JOIN VISTA_WMS_INVENTARIO sal ON sal.recibo = ubi.vid_recibo AND sal.mercancia = ubi.vid_num_parte_padre AND sal.ubicacion = ubi.v_ubicacion
 							INNER JOIN OP_IN_MOVIMIENTOS movs ON SAL.recibo = MOVS.VID_RECIBO and sal.mercancia = movs.vid_num_parte and movs.v_tipo_movto = 'ERD'
-				    WHERE ubi.v_ubicacion = '".$ubicacion."' AND ubi.iid_plaza = ".$id_plaza." AND ubi.iid_almacen = ".$id_almacen." ".$and_cliente." ".$datalink."
+				    WHERE ubi.v_ubicacion = '".$ubicacion."' AND ubi.iid_almacen = ".$id_almacen." ".$and_cliente." ".$datalink."
 						GROUP BY  ubi.iid_num_cliente,
 			                ubi.v_cliente,
 			                ubi.v_cliente_corto,
@@ -709,6 +711,7 @@ public function selectPiso($id_almacen)
 											sal.proyecto,
 											sal.calidad,
 											MOVS.VID_FACTURA";
+
 		}
 
 	#	echo $sql;

@@ -368,21 +368,13 @@ if ( isset($_GET["check"]) ){
     $fil_check = $_GET["check"];
 }
 
-$plaza = "ALL";
-if ( isset($_GET["plaza"]) ){
-    switch ($_GET["plaza"]) {
-      case 'CORPORATIVO': $plaza = $_GET["plaza"]; break;
-      case 'CÓRDOBA': $plaza = $_GET["plaza"]; break;
-      case 'MÉXICO': $plaza = $_GET["plaza"]; break;
-      case 'GOLFO': $plaza = $_GET["plaza"]; break;
-      case 'PENINSULA': $plaza = $_GET["plaza"]; break;
-      case 'PUEBLA': $plaza = $_GET["plaza"]; break;
-      case 'BAJIO': $plaza = $_GET["plaza"]; break;
-      case 'OCCIDENTE': $plaza = $_GET["plaza"]; break;
-      case 'NORESTE': $plaza = $_GET["plaza"]; break;
-      default: $plaza = "ALL"; break;
-    }
+if($_SESSION['area']==3){
+  $plaza=$_SESSION['nomPlaza'];
+}else {
+  $plaza = "ALL";
 }
+
+$plaza=$_SESSION["nomPlaza"];
 
 $silo = "ALL";
 if ( isset($_GET["silo"]) ){
@@ -477,6 +469,8 @@ div#response.display-block {
       <h1>
         Dashboard
         <small>Temperatura Granos </small>
+        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       </h1>
     </section>
     <!-- Main content -->
@@ -485,7 +479,9 @@ div#response.display-block {
             <tr>
               <td  class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Fecha</td>
               <td  class="col-md-1"></td>
-              <td  class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Plaza</td>
+              <?php if($_SESSION['area']!=3){ ?>
+              <!--<td  class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Plaza</td>-->
+            <?php } ?>
               <td  class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Almacen</td>
               <td  class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Silo</td>
               <td  class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></td>
@@ -499,6 +495,10 @@ div#response.display-block {
                   <span class="input-group-addon"> <input  type="checkbox" name="fil_check" <?php if( $fil_check == 'on' ){ echo "checked";} ?> > </span>
                 </div>
               </td>
+
+              <input id="fil_plaza" type="hidden" value=<?= $plaza ?>>
+
+              <!--<?php if($_SESSION['area']!=3){ ?>
               <td>
                   <select class="form-control select2" id="fil_plaza" style="width: 100%;">
                     <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
@@ -509,15 +509,21 @@ div#response.display-block {
                     <?php } ?>
                   </select>
               </td>
-              <td>
+            <?php } else{?>
+              <input id="fil_plaza" type="hidden" value=<?= $plaza ?>>
+            <?php }?>-->
 
-                  <select class="form-control select2" style="width: 100%;" id="nomAlm">
+              <td>
+                <select class="form-control select2" style="width: 100%;" id="nomAlm">
                     <option value="ALL" <?php if( $almacen == 'ALL'){echo "selected";} ?> >ALL</option>
                     <?php
-                    $plazas = $_GET["plaza"];
-                    $selectAlmacen = $obj_class->almacenSql($plazas);
+                    //$plazas=$plaza;
+                  ##  $plazas = $_GET["plaza"];
+                    $plaza = $_SESSION["nomPlaza"];
+                    $selectAlmacen = $obj_class->almacenSql($plaza);
+                    #echo COUNT($selectAlmacen)."  ".$plaza;
                     for ($i=0; $i <count($selectAlmacen) ; $i++) { ?>
-                      <option value="<?=$selectAlmacen[$i]["IID_ALMACEN"]?>" <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>
+                      <option value='<?=$selectAlmacen[$i]["IID_ALMACEN"]?>' <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>
                     <?php } ?>
                   </select>
               </td>

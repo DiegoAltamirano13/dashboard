@@ -216,8 +216,19 @@ class Consulta_carga extends Filtros
 						FROM vista_dashboard_ofc vista_ofc
 						WHERE  vista_ofc.pla_r_social = '".$agro_plaza."' ".$historial;
 				break;
+			case 'ALL':
+				$sql_select_almacen = " SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
+						FROM vista_dashboard_ofc vista_ofc
+						WHERE vista_ofc.alm_nom IS NOT NULL ".$historial;
+				break;
+			default:
+			$sql_select_almacen = " SELECT DISTINCT vista_ofc.alm_nom AS almacen, vista_ofc.alm_id_alm AS id_almacen, vista_ofc.id_plaza AS id_plaza
+					FROM vista_dashboard_ofc vista_ofc
+					WHERE  vista_ofc.pla_r_social = '".$agro_plaza."' ".$historial;
+			break;
 		}
 
+	#	echo $sql_select_almacen;
 		// Preparar la sentencia
 		$stid_sel_almacen = oci_parse($conn, $sql_select_almacen);
 		oci_execute($stid_sel_almacen);

@@ -44,13 +44,20 @@ $obj_info_otros_manufac   = new Op_in_otros_info();
 //SESIONES PARA INFORMACION GENERAL
 //$select_manufac_global_plaza = array(3,0,0,6,0,0,0,18,23);
 /////////////////////// GUARDA AL VALOR DE LAS PLAZAS A CONECTAR EN UNA SESSION
-if ($_SESSION['select_manufac_global_plaza'] == false){
+
+if($_SESSION['nomPlaza'] == "BAJIO" || $_SESSION['nomPlaza'] == "ALL"){
   $_SESSION['select_manufac_global_plaza'] = array(0,0,0,0,0,8,0,0,0);
-  $select_manufac_global_plaza = $_SESSION['select_manufac_global_plaza'];
-}else{
-  if(isset($_POST['select_manufac_global_plaza']))
-  $_SESSION['select_manufac_global_plaza'] = $_POST['select_manufac_global_plaza'];
-  $select_manufac_global_plaza = $_SESSION['select_manufac_global_plaza'];
+
+  if ($_SESSION['select_manufac_global_plaza'] == false){
+    $_SESSION['select_manufac_global_plaza'] = array(0,0,0,0,0,8,0,0,0);
+    $select_manufac_global_plaza = $_SESSION['select_manufac_global_plaza'];
+  }else{
+    if(isset($_POST['select_manufac_global_plaza']))
+    $_SESSION['select_manufac_global_plaza'] = $_POST['select_manufac_global_plaza'];
+    $select_manufac_global_plaza = $_SESSION['select_manufac_global_plaza'];
+  }
+}else {
+  $_SESSION['select_manufac_global_plaza'] = array(0,0,0,0,0,0,0,0,0);
 }
 /////////////////////// GUARDA AL VALOR DEL DIA EN UNA SESSION
 if ($_SESSION['dia_manufac'] == false){
@@ -112,9 +119,10 @@ if(isset($_POST['fec_fin_per_manufac']))
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-
         Dashboard
         <small>Efectividad Carga Y Descarga </small>
+        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       </h1>
 
       <ol class="breadcrumb">
@@ -138,11 +146,11 @@ if(isset($_POST['fec_fin_per_manufac']))
             <button type="submit" class="btn btn-link"><i class="fa fa-calendar"></i>  Fecha personalizada</button>
           </a>
         </li>
-        <?php if ($plaza_manufac==false){ ?>
-        <li>
+        <?php //if ($plaza_manufac==false && $_SESSION['area']!=3){ ?>
+        <!--<li>
           <button type='button' class='btn btn-link' data-toggle="modal" data-target="#modal_sel_plaza_glo"><i class="fa fa-toggle-on"></i>  Selección de plazas</button>
-        </li>
-        <?php } ?>
+        </li>-->
+        <?php //} ?>
       </ol>
 
     </section>
@@ -450,7 +458,7 @@ if(isset($_POST['fec_fin_per_manufac']))
               <span class="info-box-text">Otros</span>
                 <span class="info-box-number">
                   <h3 id="widgets_otros">5</h3>
-                  <h3 id="widgets_otros"></h3>
+                  <!--<h3 id="widgets_otros"></h3>-->
                 </span>
                <!--  <span class="progress-description"><b>Otros</b></span> -->
               </div>
@@ -1258,7 +1266,7 @@ if(isset($_POST['fec_fin_per_manufac']))
 
 
 <!-- ****************************** INICIA SECCION POR PLAZA SELECCIONADA DE OPERACIONES MANUFACTURA ****************************** -->
-<?php if ($plaza_manufac == true){ ?><!-- reduce las conecciones al seleccionar una plaza -->
+<?php if ($plaza_manufac == false){ ?><!-- reduce las conecciones al seleccionar una plaza -->
 
 
 <!-- ############################ INICIA SECCION PARA CARGAS ############################# -->
@@ -1269,7 +1277,7 @@ if(isset($_POST['fec_fin_per_manufac']))
   <div class="row">
 
   <!-- ######### INICIA SECCION PARA GRAFICA DE BARRAS EN CARGAS ########## -->
-    <div class="col-md-7">
+    <div class="col-md-7" style="display: none">
       <div class="box box-info">
         <div class="box-header with-border">
           <h3 class="box-title">Grafica de Cargas <code><?= $titulo_fec_manufac ?></code></h3>
@@ -1287,7 +1295,7 @@ if(isset($_POST['fec_fin_per_manufac']))
   <!-- ######### TERMINA SECCION PARA GRAFICA DE BARRAS EN CARGAS ########## -->
 
   <!-- ######### INICIA SECCION PARA GRAFICA DE DONA EN CARGAS EFECTIVIDAD ########## -->
-    <div class="col-md-5">
+    <div class="col-md-5" style="display: none">
       <div class="box box-info">
         <div class="box-header with-border">
           <h3 class="box-title"></h3>
@@ -1311,7 +1319,7 @@ if(isset($_POST['fec_fin_per_manufac']))
 
 <!-- ######### INICIA SECCION TABLA CARGAS INFO ########## -->
 <section >
-  <div class="box box-info">
+  <div class="box box-info" style="display: none">
     <div class="box-header with-border">
       <p class="box-card">
         <ul class="nav nav-tabs" id="myTab_manufac_carga">
@@ -1805,7 +1813,7 @@ if(isset($_POST['fec_fin_per_manufac']))
   <div class="row">
 
   <!-- ######### INICIA SECCION PARA GRAFICA DE BARRAS EN DESCARGAS ########## -->
-    <div class="col-md-7">
+    <div class="col-md-7" style="display: none">
       <div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title">Grafica de Descargas <code><?= $titulo_fec_manufac ?></code></h3>
@@ -1823,7 +1831,7 @@ if(isset($_POST['fec_fin_per_manufac']))
   <!-- ######### TERMINA SECCION PARA GRAFICA DE BARRAS EN DESCARGAS ########## -->
 
   <!-- ######### INICIA SECCION PARA GRAFICA DE DONA EN DESCARGAS EFECTIVIDAD ########## -->
-    <div class="col-md-5">
+    <div class="col-md-5" style="display: none">
       <div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title"></h3>
@@ -1847,7 +1855,7 @@ if(isset($_POST['fec_fin_per_manufac']))
 
 <!-- ######### INICIA SECCION TABLA DESCARGAS INFO ########## -->
 <section >
-  <div class="box box-success">
+  <div class="box box-success" style="display:none">
     <div class="box-header with-border">
       <p class="box-card">
         <ul class="nav nav-tabs" id="myTab_manufac_descarga">

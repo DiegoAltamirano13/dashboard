@@ -20,7 +20,7 @@ class Op_in_car_des_info
 	// -_-_-_-_-_-_-_-_- INICIA METODO PARA INFORMACION CARGAS(SALIDAS) 1 -_-_-_-_-_-_-_-_-
 	public function car_des_info($plaza_manufac,$dia_manufac,$fec_ini_per_manufac,$fec_fin_per_manufac,$select_manufac_global_plaza)
 	{
-		/* CONCATENACION AND SQL */
+		/* CONCATENACION AND SQL */	
 		if ($dia_manufac == true){
 			switch (true) {
 				case ( $fec_ini_per_manufac == true ) && ( $fec_fin_per_manufac == true ):

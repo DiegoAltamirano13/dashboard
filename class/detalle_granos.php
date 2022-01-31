@@ -9,7 +9,7 @@
 include_once '../libs/conOra.php';
 class NominaPagada{
 	/*====================== GRAFICA DE NOMINA PAGADA ======================*/
-public function tabla_toneladas($fecha){
+public function tabla_toneladas($plaza, $fecha){
     $mesIni = substr($fecha, 3, 2);
     $anioIni = substr($fecha, 6,4);
     $mesFin = substr($fecha, 14, 2);
@@ -24,7 +24,18 @@ public function tabla_toneladas($fecha){
 
 		$fecha_re = date('d/m/Y', strtotime($fecha_re));
 		#echo $fecha_re;
-
+    switch($plaza){
+     		 //case 'CORPORATIVO': $in_plaza = 2; break;
+     		 case 'CÓRDOBA': $in_plaza = 3; break;
+     		 case 'MÉXICO': $in_plaza = 4; break;
+     		 case 'GOLFO': $in_plaza = 5; break;
+     		 case 'PENINSULA': $in_plaza = 6; break;
+     		 case 'PUEBLA': $in_plaza = 7; break;
+     		 case 'BAJIO': $in_plaza = 8; break;
+     		 case 'OCCIDENTE': $in_plaza = 17; break;
+     		 case 'NORESTE': $in_plaza = 18; break;
+     		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+     	 }
 
 		    $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 ";
 
@@ -67,6 +78,7 @@ public function tabla_toneladas($fecha){
 		        and (t.vid_certificado is not null or (t.vid_certificado is null and t.i_administrativo = 1))
             and s.iid_num_cliente <> 1261
             AND t.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
+            and a.iid_plaza in ($in_plaza)
 					  union all
 					  select a.v_nombre,
 										t.iid_num_cliente as cliente,
@@ -109,6 +121,7 @@ public function tabla_toneladas($fecha){
 					        and (r.vid_certificado is not null or (r.vid_certificado is null and r.i_administrativo = 1))
                   and c.iid_num_cliente <> 1261
                   AND r.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
+                  and a.iid_plaza in ($in_plaza)
 					)
 					GROUP BY V_NOMBRE, V_RAZON_SOCIAL, V_PARTE_ALTERNATIVA, CLIENTE
 					ORDER BY CLIENTE, V_PARTE_ALTERNATIVA";
@@ -124,7 +137,7 @@ public function tabla_toneladas($fecha){
 				return $res_array;
 	}
 /*========================graficas_tenedor ============================*/
-public function graficas_tenedor($fecha, $almacen, $tenedor){
+public function graficas_tenedor($plaza,$fecha, $almacen, $tenedor){
     $mesIni = substr($fecha, 3, 2);
     $anioIni = substr($fecha, 6,4);
     $mesFin = substr($fecha, 14, 2);
@@ -139,7 +152,18 @@ public function graficas_tenedor($fecha, $almacen, $tenedor){
 
 		$fecha_re = date('d/m/Y', strtotime($fecha_re));
 		#echo $fecha_re;
-
+    switch($plaza){
+     		 //case 'CORPORATIVO': $in_plaza = 2; break;
+     		 case 'CÓRDOBA': $in_plaza = 3; break;
+     		 case 'MÉXICO': $in_plaza = 4; break;
+     		 case 'GOLFO': $in_plaza = 5; break;
+     		 case 'PENINSULA': $in_plaza = 6; break;
+     		 case 'PUEBLA': $in_plaza = 7; break;
+     		 case 'BAJIO': $in_plaza = 8; break;
+     		 case 'OCCIDENTE': $in_plaza = 17; break;
+     		 case 'NORESTE': $in_plaza = 18; break;
+     		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+     	 }
     $filtro_tenedor = "";
     if ($tenedor != "ALL") {
       if ($tenedor == 0) {
@@ -154,9 +178,6 @@ public function graficas_tenedor($fecha, $almacen, $tenedor){
     if ($almacen != "ALL") {
       $filtro_almacen = " AND t.iid_almacen = $almacen";
     }
-
-		    $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 ";
-
 
 		$conn = conexion::conectar();
 		$res_array = array();
@@ -196,6 +217,7 @@ public function graficas_tenedor($fecha, $almacen, $tenedor){
             AND t.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
             and t.vid_recibo = cs.v_id_recibo(+)
             and cs.v_afavor_de = inf.nid_inst_financ(+)
+            and a.iid_plaza in ($in_plaza)
             $filtro_tenedor
             $filtro_almacen
 					  union all
@@ -237,6 +259,7 @@ public function graficas_tenedor($fecha, $almacen, $tenedor){
                   AND r.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
                   and t.Vid_Recibo = CS.V_ID_RECIBO(+)
                   and cs.v_afavor_de = inf.nid_inst_financ(+)
+                  and a.iid_plaza in ($in_plaza)
                   $filtro_tenedor
                   $filtro_almacen
 					)";
@@ -252,7 +275,7 @@ public function graficas_tenedor($fecha, $almacen, $tenedor){
 				return $res_array;
 	}
 /*========================graficas_mercaNCIA ============================*/
-public function graficas_merca($fecha, $almacen, $tenedor){
+public function graficas_merca($plaza, $fecha, $almacen, $tenedor){
     $mesIni = substr($fecha, 3, 2);
     $anioIni = substr($fecha, 6,4);
     $mesFin = substr($fecha, 14, 2);
@@ -267,9 +290,19 @@ public function graficas_merca($fecha, $almacen, $tenedor){
 
 		$fecha_re = date('d/m/Y', strtotime($fecha_re));
 		#echo $fecha_re;
+    switch($plaza){
+     		 //case 'CORPORATIVO': $in_plaza = 2; break;
+     		 case 'CÓRDOBA': $in_plaza = 3; break;
+     		 case 'MÉXICO': $in_plaza = 4; break;
+     		 case 'GOLFO': $in_plaza = 5; break;
+     		 case 'PENINSULA': $in_plaza = 6; break;
+     		 case 'PUEBLA': $in_plaza = 7; break;
+     		 case 'BAJIO': $in_plaza = 8; break;
+     		 case 'OCCIDENTE': $in_plaza = 17; break;
+     		 case 'NORESTE': $in_plaza = 18; break;
+     		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+     	 }
 
-
-		    $andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 ";
 
     $filtro_almacen = "";
     if($almacen != "ALL"){
@@ -317,6 +350,7 @@ public function graficas_merca($fecha, $almacen, $tenedor){
             AND t.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
             and t.vid_recibo = cs.v_id_recibo(+)
             and cs.v_afavor_de = inf.nid_inst_financ(+)
+            and a.iid_plaza in ($in_plaza)
             $filtro_almacen
             $filtro_tenedor
 					  union all
@@ -351,6 +385,7 @@ public function graficas_merca($fecha, $almacen, $tenedor){
                   AND r.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
                   and t.Vid_Recibo = CS.V_ID_RECIBO(+)
                   and cs.v_afavor_de = inf.nid_inst_financ(+)
+                  and a.iid_plaza in ($in_plaza)
                   $filtro_almacen
                   $filtro_tenedor
 					) GROUP BY MERCH
@@ -472,7 +507,7 @@ public function filtro_inst_finan($fecha){
 				return $res_array;
 	}
 /*=====================================================================*/
-public function tabla_toneladas2($fecha, $almacen, $tenedor){
+public function tabla_toneladas2($plaza, $fecha, $almacen, $tenedor){
   $mesIni = substr($fecha, 3, 2);
   $anioIni = substr($fecha, 6,4);
   $mesFin = substr($fecha, 14, 2);
@@ -486,7 +521,18 @@ public function tabla_toneladas2($fecha, $almacen, $tenedor){
   $fecha_re = date('Y-m-d', strtotime($fecha_re." -1 day"));
 
   $fecha_re = date('d/m/Y', strtotime($fecha_re));
-
+  switch($plaza){
+   		 //case 'CORPORATIVO': $in_plaza = 2; break;
+   		 case 'CÓRDOBA': $in_plaza = 3; break;
+   		 case 'MÉXICO': $in_plaza = 4; break;
+   		 case 'GOLFO': $in_plaza = 5; break;
+   		 case 'PENINSULA': $in_plaza = 6; break;
+   		 case 'PUEBLA': $in_plaza = 7; break;
+   		 case 'BAJIO': $in_plaza = 8; break;
+   		 case 'OCCIDENTE': $in_plaza = 17; break;
+   		 case 'NORESTE': $in_plaza = 18; break;
+   		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+   	 }
   $filtro_almacen = "";
   if ($almacen != "ALL") {
     $filtro_almacen = " AND T.IID_ALMACEN = $almacen";
@@ -553,6 +599,7 @@ public function tabla_toneladas2($fecha, $almacen, $tenedor){
           AND t.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
           and t.vid_recibo = cs.v_id_recibo(+)
           and cs.v_afavor_de = inf.nid_inst_financ(+)
+          and a.iid_plaza in ($in_plaza)
           $filtro_almacen
           $filtro_tenedor
           union all
@@ -603,10 +650,12 @@ public function tabla_toneladas2($fecha, $almacen, $tenedor){
                 AND r.vid_recibo NOT IN ('200803099990100422', '200903099990100173')
                 and t.vid_recibo = cs.v_id_recibo(+)
                 and cs.v_afavor_de = inf.nid_inst_financ(+)
+                and a.iid_plaza in ($in_plaza)
                 $filtro_almacen
                 $filtro_tenedor
         )GROUP BY V_NOMBRE, V_RAZON_SOCIAL, PARTE, CLIENTE, NINF
         ORDER BY CLIENTE, PARTE";
+      #  echo $sql;
       $stid = oci_parse($conn, $sql);
       oci_execute($stid);
       #echo $sql;
@@ -619,7 +668,7 @@ public function tabla_toneladas2($fecha, $almacen, $tenedor){
       return $res_array;
 }
 /*========================TABLA TONELADAS 3 =============================*/
-public function tabla_toneladas3($fecha, $almacen, $tenedor){
+public function tabla_toneladas3($plaza, $fecha, $almacen, $tenedor){
   $mesIni = substr($fecha, 3, 2);
   $anioIni = substr($fecha, 6,4);
   $mesFin = substr($fecha, 14, 2);
@@ -633,7 +682,18 @@ public function tabla_toneladas3($fecha, $almacen, $tenedor){
   $fecha_re = date('Y-m-d', strtotime($fecha_re." -1 day"));
 
   $fecha_re = date('d/m/Y', strtotime($fecha_re));
-
+  switch($plaza){
+   		 //case 'CORPORATIVO': $in_plaza = 2; break;
+   		 case 'CÓRDOBA': $in_plaza = 3; break;
+   		 case 'MÉXICO': $in_plaza = 4; break;
+   		 case 'GOLFO': $in_plaza = 5; break;
+   		 case 'PENINSULA': $in_plaza = 6; break;
+   		 case 'PUEBLA': $in_plaza = 7; break;
+   		 case 'BAJIO': $in_plaza = 8; break;
+   		 case 'OCCIDENTE': $in_plaza = 17; break;
+   		 case 'NORESTE': $in_plaza = 18; break;
+   		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+   	 }
   $filtro_almacen = "";
   if ($almacen != "ALL") {
     $filtro_almacen = " AND T.IID_ALMACEN = $almacen";
@@ -693,6 +753,7 @@ public function tabla_toneladas3($fecha, $almacen, $tenedor){
           and t.iid_almacen <> 9999
           and t.vid_recibo = cs.v_id_recibo(+)
           and cs.v_afavor_de = inf.nid_inst_financ(+)
+          and a.iid_plaza in ($in_plaza)
           $filtro_almacen
           $filtro_tenedor
           union all
@@ -743,6 +804,7 @@ public function tabla_toneladas3($fecha, $almacen, $tenedor){
                 and c.iid_num_cliente <> 1261
                 and t.vid_recibo = cs.v_id_recibo(+)
                 and cs.v_afavor_de = inf.nid_inst_financ(+)
+                and a.iid_plaza in ($in_plaza)
                 $filtro_almacen
                 $filtro_tenedor
         )
@@ -760,7 +822,7 @@ public function tabla_toneladas3($fecha, $almacen, $tenedor){
       return $res_array;
 }
 /*========================TABLA TONELADAS 4 =============================*/
-public function tabla_toneladas4($fecha, $almacen, $tenedor){
+public function tabla_toneladas4($plaza, $fecha, $almacen, $tenedor){
   $mesIni = substr($fecha, 3, 2);
   $anioIni = substr($fecha, 6,4);
   $mesFin = substr($fecha, 14, 2);
@@ -779,6 +841,18 @@ public function tabla_toneladas4($fecha, $almacen, $tenedor){
   if ($almacen != "ALL") {
     $filtro_almacen = " AND T.IID_ALMACEN = $almacen";
   }
+  switch($plaza){
+ 		 //case 'CORPORATIVO': $in_plaza = 2; break;
+ 		 case 'CÓRDOBA': $in_plaza = 3; break;
+ 		 case 'MÉXICO': $in_plaza = 4; break;
+ 		 case 'GOLFO': $in_plaza = 5; break;
+ 		 case 'PENINSULA': $in_plaza = 6; break;
+ 		 case 'PUEBLA': $in_plaza = 7; break;
+ 		 case 'BAJIO': $in_plaza = 8; break;
+ 		 case 'OCCIDENTE': $in_plaza = 17; break;
+ 		 case 'NORESTE': $in_plaza = 18; break;
+ 		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+ 	 }
 
   $filtro_tenedor = "";
   if ($tenedor != "ALL") {
@@ -834,6 +908,7 @@ public function tabla_toneladas4($fecha, $almacen, $tenedor){
           and t.iid_almacen <> 9999
           and t.vid_recibo = cs.v_id_recibo(+)
           and cs.v_afavor_de = inf.nid_inst_financ(+)
+          and a.iid_plaza in ($in_plaza)
           $filtro_almacen
           $filtro_tenedor
           union all
@@ -884,6 +959,7 @@ public function tabla_toneladas4($fecha, $almacen, $tenedor){
                 and c.iid_num_cliente <> 1261
                 and t.vid_recibo = cs.v_id_recibo(+)
                 and cs.v_afavor_de = inf.nid_inst_financ(+)
+                and a.iid_plaza in ($in_plaza)
                 $filtro_almacen
                 $filtro_tenedor
         )
@@ -901,7 +977,7 @@ public function tabla_toneladas4($fecha, $almacen, $tenedor){
       return $res_array;
 }
 	/*========================TABLA TONELADAS 5 =============================*/
-public function tabla_toneladas5($fecha){
+public function tabla_toneladas5($plaza, $fecha){
 	$fecha_inicial = substr($fecha, 11, 10);
 	$mesFin = substr($fecha, 14, 2);
 	$anioFin = substr($fecha,17, 5);
@@ -918,7 +994,18 @@ public function tabla_toneladas5($fecha){
 	#echo $fecha_re2."<br />";
 
 			$andPlaza = "3, 4, 5, 6, 7, 8, 17, 18 ";
-
+      switch($plaza){
+       		 //case 'CORPORATIVO': $in_plaza = 2; break;
+       		 case 'CÓRDOBA': $in_plaza = 3; break;
+       		 case 'MÉXICO': $in_plaza = 4; break;
+       		 case 'GOLFO': $in_plaza = 5; break;
+       		 case 'PENINSULA': $in_plaza = 6; break;
+       		 case 'PUEBLA': $in_plaza = 7; break;
+       		 case 'BAJIO': $in_plaza = 8; break;
+       		 case 'OCCIDENTE': $in_plaza = 17; break;
+       		 case 'NORESTE': $in_plaza = 18; break;
+       		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
+       	 }
 
 	$conn = conexion::conectar();
 	$res_array = array();
@@ -958,6 +1045,7 @@ public function tabla_toneladas5($fecha){
 					and (q.vid_num_parte=u.vid_num_parte and u.v_parte_alternativa like '%ZAFRA%')
 					and q.iid_um=v.iid_ume
 					and (t.vid_certificado is not null or (t.vid_certificado is null and t.i_administrativo = 1))
+          and a.iid_plaza in ($in_plaza)
 					union all
 					select a.v_nombre,
 									t.iid_num_cliente as cliente,
@@ -998,6 +1086,7 @@ public function tabla_toneladas5($fecha){
 										and u.v_parte_alternativa like '%ZAFRA%')
 								and q.iid_um=v.iid_ume
 								and (r.vid_certificado is not null or (r.vid_certificado is null and r.i_administrativo = 1))
+                and a.iid_plaza in ($in_plaza)
 				)
 				GROUP BY V_NOMBRE, V_RAZON_SOCIAL, V_PARTE_ALTERNATIVA, CLIENTE
 				ORDER BY V_PARTE_ALTERNATIVA";
@@ -1074,7 +1163,7 @@ public function tabla_toneladas5($fecha){
  		 case 'NORESTE': $in_plaza = 18; break;
  		 default: $in_plaza = "3,4,5,6,7,8,17,18"; break;
  	 }
-		$sql = "SELECT IID_ALMACEN, V_NOMBRE FROM ALMACEN WHERE IID_PLAZA = $in_plaza AND IID_ALMACEN NOT IN (9998, 9999) ORDER BY IID_ALMACEN";
+		$sql = "SELECT IID_ALMACEN, V_NOMBRE FROM ALMACEN WHERE IID_PLAZA = $in_plaza AND IID_ALMACEN NOT IN (9998, 9999) AND ALMACEN.S_STATUS = 1 ORDER BY IID_ALMACEN";
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 		#echo $sql;

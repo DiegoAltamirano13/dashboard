@@ -50,12 +50,15 @@ if( isset($_GET["fecha"]) ){
   }
 }
 /*----- GET PLAZA -----*/
-$plaza = "ALL";
-if( isset($_GET["plaza"]) ){
-    $plaza = $_GET["plaza"];
-}else{
-  $plaza = "ALL";
-}
+//if($_SESSION['area']==3){
+  //$plaza = $_SESSION['nomPlaza'];
+//}else {
+  //$plaza = "ALL";
+//}
+
+
+  $plaza = $_SESSION['nomPlaza'];
+
 
 
 $almacen = "ALL";
@@ -109,7 +112,11 @@ $tabla_toneladas6 = $modelNomina->tabla_toneladas($plaza, $almacen, $proyecto, $
 <!-- ########################################## Incia Contenido de la pagina ########################################## -->
 <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
   <section class="content-header">
-    <h1>Dashboard<small>RESUMEN GENERAL MERCANCIA(ALO)</small></h1>
+    <h1>Dashboard<small>RESUMEN GENERAL MERCANCIA(ALO)</small>
+      <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
+      <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+
+    </h1>
   </section>
 
   <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
@@ -218,7 +225,9 @@ $tabla_toneladas6 = $modelNomina->tabla_toneladas($plaza, $almacen, $proyecto, $
         </div>
 
         <!-- FILTRAR POR PLAZA -->
-        <div class="input-group">
+        <input id="nomPlaza" type="hidden" value=<?= $plaza ?>>
+        <?php if($_SESSION['area']!=3){ ?>
+        <!--<div class="input-group">
           <span class="input-group-addon"><i class="fa fa-cubes"></i> Plaza:</span>
           <select class="form-control select2" id="nomPlaza" style="width: 100%;">
             <option value="ALL" <?php if( $plaza == 'ALL'){echo "selected";} ?> >ALL</option>
@@ -229,13 +238,18 @@ $tabla_toneladas6 = $modelNomina->tabla_toneladas($plaza, $almacen, $proyecto, $
             <?php } ?>
           </select>
         </div>
+      <?php } else{?>
+        <input id="nomPlaza" type="hidden" value=<?= $plaza ?>>-->
+      <?php }?>
+
         <!--FILTRAR POR ALMACEN -->
         <div class="input-group">
           <span class="input-group-addon"><i class="fa fa-home"></i> Almacen:</span>
           <select class="form-control select2" style="width: 100%;" id="nomAlm">
             <option value="ALL" <?php if( $almacen == 'ALL'){echo "selected";} ?> >ALL</option>
             <?php
-            $plazas = $_GET["plaza"];
+              $plazas=$plaza;
+            //$plazas = $_GET["plaza"];
             $selectAlmacen = $modelNomina->almacenSql($plazas);
             for ($i=0; $i <count($selectAlmacen) ; $i++) { ?>
               <option value="<?=$selectAlmacen[$i]["IID_ALMACEN"]?>" <?php if($selectAlmacen[$i]["IID_ALMACEN"] == $almacen){echo "selected";} ?>><?=$selectAlmacen[$i]["V_NOMBRE"]?> </option>
