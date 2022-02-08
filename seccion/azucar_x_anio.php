@@ -551,11 +551,9 @@ $(function () {
           text: null,
         },
         legend: {
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle',
-          itemMarginBottom: 15,
-          enabled:false
+          y: -40,
+          borderWidth: 1,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
         },
         tooltip: {
           shared: true,
@@ -572,8 +570,7 @@ $(function () {
             }
           }
         },
-        series:  [{
-            showInLegend:false,
+        series:  [{            
             name: 'REAL AÑO  <?php echo $anio; ?>',
             data: data1,
             color: 'red',

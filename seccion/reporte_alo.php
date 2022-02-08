@@ -112,10 +112,8 @@ $tabla_toneladas6 = $modelNomina->tabla_toneladas($plaza, $almacen, $proyecto, $
 <!-- ########################################## Incia Contenido de la pagina ########################################## -->
 <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
   <section class="content-header">
-    <h1>Dashboard<small>RESUMEN GENERAL MERCANCIA(ALO)</small>
-      <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-      <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
-
+    <h1>Dashboard<small>RESUMEN GENERAL MERCANCIA(ALO)</small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
+      <?php //echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
     </h1>
   </section>
 

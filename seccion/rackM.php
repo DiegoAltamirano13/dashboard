@@ -208,10 +208,12 @@ if (  isset($_POST["letraRack"]) )
  <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
     <!-- Content Header (Page header) -->
     <!-- Main content -->
-    <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
-      <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-      <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
-
+    <section class="content-header"><!-- Inicia la seccion de Todo el contenido principal -->
+      <h1>
+        Dashboard<small>UBICACION MERCANCIA</small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
+      </h1>
+      <?php //echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+    </section><br>
 
   <!-- ############################ INICIA SECCION FILTROS DISPONIBLES ############################# -->
   <section>

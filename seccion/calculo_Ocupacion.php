@@ -465,9 +465,8 @@ div#response.display-block {
     <section class="content-header">
       <h1>
         Dashboard
-        <small>Calculo Ocupación </small>
-        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+        <small>Calculo Ocupación </small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
+        <?php //echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       </h1>
     </section>
     <!-- Main content -->

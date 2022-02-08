@@ -48,7 +48,7 @@ if ($pcode == 1 or $pcode == 2){
           FROM      se_usuarios users
                     INNER JOIN ss_permisos_modulos perm ON perm.iid_empleado = users.iid_empleado
                     INNER JOIN no_personal personal ON personal.iid_empleado = users.iid_empleado AND personal.iid_empleado = perm.iid_empleado
-                    INNER JOIN rh_personal_contrato contrato ON users.iid_empleado=contrato.iid_empleado
+                    INNER JOIN rh_personal_contrato contrato ON users.iid_empleado=contrato.iid_empleado and personal.iid_contrato = contrato.iid_rcontrato
                     INNER JOIN plaza p on contrato.iid_plaza=p.iid_plaza
           WHERE     users.vid_usuario = '".$userName."' AND
                     personal.s_status = 1

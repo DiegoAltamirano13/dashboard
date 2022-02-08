@@ -361,58 +361,47 @@ class Consulta_status_descarga extends Filtros_des
 
 		if ($agro_plaza == true){
 			switch ($agro_plaza) {
-				case 'CÓRDOBA (ARGO)':
+				case 'CÓRDOBA':
 					if ($par == true && $ofc == true && $fol == true){
 						$sql_con_descarga = $sql." FROM vista_dashboard_otfc vista_otfc
 											   	   WHERE vista_otfc.det_partida= '".$par."' AND vista_otfc.det_ref_otfc = '".$ofc."' AND vista_otfc.det_folio = '".$fol."' ";
 					}else{
 						$sql_con_descarga = $sql." FROM vista_dashboard_otfc vista_otfc
-											   WHERE vista_otfc.pla_r_social = '".$agro_plaza."' AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
+											   WHERE vista_otfc.id_plaza = 3 AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
 											   ".$historial.$almacen.$cliente." UNION ALL
 											    ".$sql. " FROM vista_dashboard_otfc vista_otfc
-													 WHERE vista_otfc.pla_r_social = 'CÓRDOBA (ARGO)'
+													 WHERE vista_otfc.id_plaza = 3
 													   AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
 													   ".$historial2.$almacen.$cliente."
 													   AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
 													   AND VISTA_OTFC.vh_reci_det_recibo is  null
 														 UNION ALL
  	 												 ".$sql. " FROM vista_dashboard_otfc vista_otfc
- 	 													WHERE vista_otfc.pla_r_social = 'CÓRDOBA (ARGO)'
+ 	 													WHERE vista_otfc.id_plaza = 3
  	 														AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
  	 														".$historial3.$almacen.$cliente."
  	 														AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
  	 														AND VISTA_OTFC.vh_reci_det_recibo is NOT null ";
-
-														 /*UNION ALL
- 	 												 ".$sql. " FROM vista_dashboard_otfc vista_otfc
- 	 													WHERE vista_otfc.pla_r_social = 'CÓRDOBA (ARGO)'
- 	 														AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
- 	 														".$historial3.$almacen.$cliente."
- 	 														AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
- 	 														AND VISTA_OTFC.vh_reci_det_recibo is NOT null  */
-
-													//ORDER BY vista_otfc.det_fecha_envio DESC
-													//AND TO_CHAR(vista_otfc.det_fecha_envio, 'dd-mm-yyyy') < '30-03-2021'
 					}
 				break;
-				case  'OCCIDENTE (ARGO)':
+				case  'OCCIDENTE':
 					if ($par == true && $ofc == true && $fol == true){
 					$sql_con_descarga = $sql." FROM vista_dashboard_otfc vista_otfc
 											   	   WHERE vista_otfc.det_partida= '".$par."' AND vista_otfc.det_ref_otfc = '".$ofc."' AND vista_otfc.det_folio = '".$fol."' ";
 					}else{
 					$sql_con_descarga = $sql." FROM vista_dashboard_otfc vista_otfc
-											   WHERE vista_otfc.pla_r_social = '".$agro_plaza."' AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
+											   WHERE vista_otfc.id_plaza = 17 AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
 											   ".$historial.$almacen.$cliente."
 												 UNION ALL
 												 ".$sql. " FROM vista_dashboard_otfc vista_otfc
-													WHERE vista_otfc.pla_r_social = 'CÓRDOBA (ARGO)'
+													WHERE vista_otfc.id_plaza = 17
 														AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
 														".$historial2.$almacen.$cliente."
 														AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
 														AND VISTA_OTFC.vh_reci_det_recibo is  null
 														UNION ALL
 														".$sql. " FROM vista_dashboard_otfc vista_otfc
-														WHERE vista_otfc.pla_r_social = 'CÓRDOBA (ARGO)'
+														WHERE vista_otfc.id_plaza = 17
 														 AND vista_otfc.id_otfc_det = vista_otfc.id_otfc
 														 ".$historial3.$almacen.$cliente."
 														 AND TO_CHAR(vista_otfc.det_fecha_envio, 'yyyy') = '2021'
@@ -444,6 +433,8 @@ class Consulta_status_descarga extends Filtros_des
 			}
 			#echo $historial2;
 	    #echo $sql_con_descarga;
+			#echo $agro_plaza;
+			#echo $sql_con_descarga;
 
 			$stid_con_descarga = oci_parse($conn, $sql_con_descarga);
 			oci_execute($stid_con_descarga);
@@ -547,7 +538,7 @@ class Consulta_mov_descarga
 			case 17:
 				$tabla_sql = " op_in_movimientos ";
 				break;
-			default:			
+			default:
 				$tabla_sql = " op_in_movimientos ";
 				break;
 		}

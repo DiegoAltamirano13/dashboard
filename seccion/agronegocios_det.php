@@ -231,10 +231,10 @@ if ( $tipo_op == 'ofc')
                                     break;
 
                                   default:
-                                  // $dif_reg_bas = (strtotime($detalle_ofc[$i]["R_VEHICULO"])-strtotime($detalle_ofc[$i]["BASCULA_VEHICULO"]) )/60;
-                                  // $dif_reg_bas = abs($dif_reg_bas); $dif_reg_bas = round($dif_reg_bas,1);
+
                                   $fechaInicio = $detalle_ofc[$i]["R_VEHICULO"];
                                   $fechaFin = $detalle_ofc[$i]["BASCULA_VEHICULO"];
+                                #  echo $fechaInicio."   ".$fechaFin;
                                   $dif_reg_bas = $obj_agro_carga->tiempoTranscurridoFechas($fechaInicio,$fechaFin);
                                   /** INICIA CODE OFC PARA VER SI LA FECHA INI ES MAYOR O MENOR A LA DE FIN **/
                                   if( strtotime($fechaInicio) > strtotime($fechaFin) ){$fecha_t_v=false;}else{$fecha_t_v=true;}
@@ -586,6 +586,8 @@ if ( $tipo_op == 'otfc')
 
 
          <?php
+         #echo $agro_plaza;
+         $agro_plaza = $_SESSION["nomPlaza"];
          $detalle_otfc = $obj_det_descarga->consulta_descarga_status($agro_plaza,$par,$ofc,$fol);
           for ($i=0; $i <count($detalle_otfc) ; $i++) {//Inicia for para traer los registros otfc finalizado
           $plaza_mov_des = $detalle_otfc[$i]["ID_PLAZA"];

@@ -374,9 +374,7 @@ div#response.display-block {
  <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
-        Dashboard
-        <small>Calculo Ocupación </small>
+      <h1>Dashboard<small>Calculo Ocupación </small><small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
       </h1>
     </section>
     <!-- Main content -->

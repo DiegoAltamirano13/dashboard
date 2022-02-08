@@ -17,6 +17,7 @@ session_start();
     session_destroy();
     header('Location: ../index.php');
   }
+
 //objeto conexion a base de datos
 include_once '../libs/conOra.php';
 $conn   = conexion::conectar();
@@ -146,11 +147,7 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-
-        Dashboard
-        <small>Agronegocios</small>
-        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+        Dashboard<small>Agronegocios</small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
       </h1>
     </section>
     <!-- Main content -->
@@ -496,6 +493,7 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
             </thead>
             <tbody>
             <?php
+            //echo $agro_plaza.$_SESSION['nomPlaza'];
             $consulta_descarga_status = $obj_agro_descarga_status->consulta_descarga_status($agro_plaza,$par,$ofc,$fol);
             for ($i=0; $i <count($consulta_descarga_status) ; $i++) {
             $plaza_mov_des = $consulta_descarga_status[$i]["ID_PLAZA"];
@@ -795,18 +793,25 @@ $obj_agro_descarga_status = new Consulta_status_descarga($agro_plaza,$agro_histo
             <?php
             for ($i=0; $i <count($consulta_descarga_status) ; $i++) {
             $plaza_mov_des = $consulta_descarga_status[$i]["ID_PLAZA"];
+            //$vid_recibo_des = $consulta_descarga_status[$i]["RECIBO_DET"];
             $vid_recibo_des = $consulta_descarga_status[$i]["RECIBO_DET"];
             $vid_movto_des = $consulta_descarga_status[$i]["MOV_ID_VEHICULO"].$consulta_descarga_status[$i]["MOV_BULTO"];
             $consulta_descarga_mov = $obj_agro_descarga_status->consulta_descarga_mov($plaza_mov_des,$vid_recibo_des,$vid_movto_des);
+            #VAR_DUMP($consulta_descarga_mov);
+            //$consulta_descarga_mov = $obj_agro_descarga_status->consulta_descarga_mov($plaza_mov_des,$vid_recibo_des,$vid_movto_des);
+            //echo $consulta_descarga_status[$i]["TERMINA_DESCARGA"];
+            //$consulta_descarga_mov = $consulta_descarga_status[$i]["TERMINA_DESCARGA"];
             if ($consulta_descarga_mov == true){
             $descargas_finalizadas[$i] = $i;
 
             /////calculo de tiempo
+            //$fechaInicio = $consulta_descarga_status[$i]["R_VEHICULO"];
             $fechaInicio = $consulta_descarga_status[$i]["R_VEHICULO"];
             $fechaFin = $consulta_descarga_mov;
             $total_tiempo_otfc = $obj_agro_carga->tiempoTranscurridoFechas($fechaInicio,$fechaFin);
 
             $dif_min_descarga = $obj_agro_carga->dif_minutos($fechaFin,$fechaInicio);
+
             if ($dif_min_descarga>80){
               $color_td = "text-red";
             }else{

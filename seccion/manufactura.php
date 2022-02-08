@@ -153,7 +153,7 @@ $contador_descargas=0;
  <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>Dashboard<small>Manufactura</small></h1>
+      <h1>Dashboard<small>Manufactura</small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small></h1>
 
       <ol class="breadcrumb">
         <li>
@@ -424,8 +424,7 @@ $contador_descargas=0;
 <!-- ######################################## Inicio de Widgets ######################################### -->
     <section><!-- Inicia la seccion de los Widgets -->
       <div class="row">
-        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+        <?php //echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       <h4 align="center" class="box-title text-light-blue"><i class="fa fa-truck"></i> OPERACIONES MANUFACTURA <?= $plaza_manufac ?> <code><?=$titulo_fec_manufac?></code></h4>
       <hr>
 

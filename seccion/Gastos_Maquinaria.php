@@ -408,8 +408,8 @@ div#response.display-block {
 <!-- ########################################## Incia Contenido de la pagina ########################################## -->
 <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
   <section class="content-header">
-    <h1>Dashboard<small>Gastos de Operaciones</small></h1>
-    <center><h4> PLAZA (<?php echo $_SESSION['nomPlaza']  ?>)</h4></center><!--FILTRO GENERAL -->
+    <h1>Dashboard<small>Gastos de Operaciones</small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small></h1><br>
+    <!--<center><h4> PLAZA (<?php //echo $_SESSION['nomPlaza']  ?>)</h4></center><!--FILTRO GENERAL -->
 
 
 <?php

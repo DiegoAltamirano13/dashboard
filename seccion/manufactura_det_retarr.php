@@ -217,6 +217,8 @@ if($modulos_valida == 0 AND $modulos_valida2 == 0 AND $modulos_valida3 == 0)
                                   // $dif_reg_bas = abs($dif_reg_bas); $dif_reg_bas = round($dif_reg_bas,1);
                                   $fechaInicio = $info_retarr_cargasEnc[$i]["REGISTRADO"];
                                   $fechaFin = $info_retarr_cargasEnc[$i]["LLEGA"];
+                                   //$info_retarr_cargasEnc[$i]["INICIA"];
+                                  //echo $fechaInicio."  ".$fechaFin;
                                   $dif_reg_bas = $obj_det_ret_arr->tiempoTranscurridoFechas($fechaInicio,$fechaFin);
                                   /** INICIA CODE OFC PARA VER SI LA FECHA INI ES MAYOR O MENOR A LA DE FIN **/
                                   if( strtotime($fechaInicio) > strtotime($fechaFin) ){$fecha_t_v=false;}else{$fecha_t_v=true;}
@@ -266,7 +268,7 @@ if($modulos_valida == 0 AND $modulos_valida2 == 0 AND $modulos_valida3 == 0)
                                     }else{
                                       echo '<span class="bg-green">' ;
                                     }
-                                      echo '<i class="fa fa-clock-o"></i> Vehiculo Enrampado: <code>'.$info_retarr_cargasEnc[$i]["INICIA"].'</code>' ;
+                                      echo '<i class="fa fa-clock-o"></i> Vehiculo Enrampado: <code>'.$info_retarr_cargasEnc[$i]["LLEGA"].'</code>' ;
                                       echo '</span> ' ;
                                     echo '</li>' ;
                                     break;
@@ -337,7 +339,7 @@ if($modulos_valida == 0 AND $modulos_valida2 == 0 AND $modulos_valida3 == 0)
                                     }else{
                                       echo '<span class="bg-green">' ;
                                     }
-                                      echo '<i class="fa fa-clock-o"></i> Inicia Carga: <code>'.$info_retarr_cargasEnc[$i]["FIN"].'</code>' ;
+                                      echo '<i class="fa fa-clock-o"></i> Inicia Carga: <code>'.$info_retarr_cargasEnc[$i]["INICIA"].'</code>' ;
                                       echo '</span> ' ;
                                     echo '</li>' ;
                                     break;
@@ -406,7 +408,7 @@ if($modulos_valida == 0 AND $modulos_valida2 == 0 AND $modulos_valida3 == 0)
                                     }else{
                                       echo '<span class="bg-green">' ;
                                     }
-                                      echo '<i class="fa fa-clock-o"></i> Finaliza Carga: <code>'.$info_retarr_cargasEnc[$i]["DESPACHO"].'</code>' ;
+                                      echo '<i class="fa fa-clock-o"></i> Finaliza Carga: <code>'.$info_retarr_cargasEnc[$i]["FIN"].'</code>' ;
                                       echo '</span> ' ;
                                     echo '</li>' ;
                                     break;

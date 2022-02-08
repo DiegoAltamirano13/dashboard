@@ -118,11 +118,8 @@ if(isset($_POST['fec_fin_per_manufac']))
  <div class="content-wrapper"><!-- Inicia etiqueta content-wrapper principal -->
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
-        Dashboard
-        <small>Efectividad Carga Y Descarga </small>
-        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+      <h1>Dashboard<small>Efectividad Carga Y Descarga </small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
+        <?php //echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       </h1>
 
       <ol class="breadcrumb">

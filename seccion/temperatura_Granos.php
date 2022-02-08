@@ -467,10 +467,7 @@ div#response.display-block {
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>Temperatura Granos </small>
-        <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
-        <?php echo "<center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
+        Dashboard<small>TEMPERATURA GRANOS</small> <small>PLAZA ( <?php echo $_SESSION['nomPlaza'] ?> )</small>
       </h1>
     </section>
     <!-- Main content -->
