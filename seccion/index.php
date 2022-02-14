@@ -679,6 +679,23 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                 </div>
                 <?php } ?>
                 <!-- TERMINA BOTON ROTACIÓN DE PERSONAL -->
+                <!-- INICIA BOTON ROTACIÓN DE PERSONAL DETALLE GRAL -->
+                <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 57); if($modulos_valida > 0){ ?>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div style="background-color:#D9EDF7" class="info-box">
+                    <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/rotacion_personal.png" alt="Icono Modulo"></span>
+                    <div class="info-box-content">
+                      <span class=" info-box-number">
+                        <h4>Rotación de Personal (Detalle Gral.)</h4>
+                      </span>
+                    </div>
+                    <a class="click_modal_cargando" href="rotacion_personal_gral.php">
+                    <button class="btn bg-gray  btn-block" data-intro="Botón para entrar al Dashboard Rotación de Personal (Dettalle Gral.)">Entrar <i class="fa fa-arrow-circle-right"></i></button>
+                    </a>
+                  </div>
+                </div>
+                <?php } ?>
+                <!-- TERMINA BOTON ROTACIÓN DE PERSONAL DETALLE GRAL -->
                 <!-- INICIA BOTON NOMINA PAGADA -->
                 <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 20); if($modulos_valida > 0){ ?>
                 <div class="col-md-3 col-sm-6 col-xs-12">

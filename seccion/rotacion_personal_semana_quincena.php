@@ -1268,7 +1268,7 @@ $(function () {
 
     $('#graf_barSemanal').highcharts({
         chart: {
-            type: 'column'
+            type: 'line'
         },
          title: {
             text: 'ROTACIÓN DE PERSONAL (SEMANAL)'
@@ -1531,7 +1531,7 @@ $(function () {
       ];
       $('#grafPerAlm').highcharts({
         chart:{
-          type: 'column'
+          type: 'line'
         },
         title:{
           text: 'ROTACION DE PERSONAL POR ALMACEN DE PLAZA <?php echo $plaza; ?>'
@@ -2071,7 +2071,7 @@ $(function(){
   ];
   $('#graf_perMSemanal').highcharts({
     chart:{
-      type:'column'
+      type:'line'
     },
     title:{
       text:'ROTACIÓN ANUAL GENERAL (SEMANAL).'
@@ -2139,16 +2139,16 @@ $(function(){
     },
     series:[{
       name:'% ROTACION DE PERSONAL GENERAL',
-      type: 'column',
+      type: 'line',
       data: data1,
       color: "yellow",
     },{
       name:'% ROTACIÓN DE PERSONAL ADMINISTRATIVO',
-      type: 'column',
+      type: 'line',
       data: data2,
     },{
       name:'% ROTACIÓN DE PERSONAL OPERATIVO',
-      type: 'column',
+      type: 'line',
       data: data3,
     }/*,{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-1;} else { echo substr($fecha, 6, 5)-1;} ?>',

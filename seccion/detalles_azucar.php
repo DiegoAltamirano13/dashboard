@@ -251,6 +251,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <tr>
                             <!--<th class="small" bgcolor="#2a7a1a"><font color="white">ID</font></th>-->
                             <th class="small" bgcolor="#2a7a1a"><font color="white">NOMBRE</font></th>
+                            <th class="small" bgcolor="#2a7a1a"><font color="white">AREA</font></th>
                             <th class="small" bgcolor="#2a7a1a"><font color="white">RAZON SOCIAL</font></th>
                             <th class="small" bgcolor="#2a7a1a"><font color="white">ZAFRA</font></th>
                             <th class="small" bgcolor="#2a7a1a"><font color="white">N</font></th>
@@ -263,6 +264,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <tr>
                             <!--<td class="small">CL</td>-->
                             <td class="small"><?= $tabla_toneladas6[$i]["V_NOMBRE"] ?></td>
+                            <td class="small"><?= $tabla_toneladas6[$i]["S_AREA"] ?></td>
                             <td class="small"><?= $tabla_toneladas6[$i]["V_RAZON_SOCIAL"] ?></td>
                             <td class="small"><?= $tabla_toneladas6[$i]["V_PARTE_ALTERNATIVA"] ?></td>
                             <td class="small"><?= number_format($tabla_toneladas6[$i]["CANTIDADN"]/1000, 2) ?></td>
@@ -272,6 +274,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <?php $atoyaquillon = $atoyaquillon + $tabla_toneladas6[$i]["CANTIDADN"];
                                 $atoyaquillos = $atoyaquillos + $tabla_toneladas6[$i]["CANTIDADS"];} ?>
                           <tr style="background: #57FF65">
+                            <td class="small"></td>
                             <td class="small"></td>
                             <td class="small"></td>
                             <td class="small">Total Toneladas Atoyaquillo</td>
@@ -287,6 +290,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
 
                             <!--<td class="small">CL</td>-->
                             <td class="small"><?= $tabla_toneladas7[$x]["V_NOMBRE"] ?></td>
+                            <td class="small"><?= $tabla_toneladas7[$x]["S_AREA"] ?></td>
                             <td class="small"><?= $tabla_toneladas7[$x]["V_RAZON_SOCIAL"] ?></td>
                             <td class="small"><?= $tabla_toneladas7[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                             <td class="small"><?= number_format($tabla_toneladas7[$x]["CANTIDADN"]/1000, 2) ?></td>
@@ -296,6 +300,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <?php $peñuelan = $peñuelan + $tabla_toneladas7[$x]["CANTIDADN"];
                                 $peñuelas = $peñuelas + $tabla_toneladas7[$x]["CANTIDADS"];} ?>
                           <tr style="background: #57FF65">
+                            <td class="small"></td>
                             <td class="small"></td>
                             <td class="small"></td>
                             <td class="small">Total Toneladas Peñuela</td>
@@ -311,6 +316,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
 
                             <!--<td class="small">CL</td>-->
                             <td class="small"><?= $tabla_toneladas7[$x]["V_NOMBRE"] ?></td>
+                            <td class="small"><?= $tabla_toneladas7[$x]["S_AREA"] ?></td>
                             <td class="small"><?= $tabla_toneladas7[$x]["V_RAZON_SOCIAL"] ?></td>
                             <td class="small"><?= $tabla_toneladas7[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                             <td class="small"><?= /*number_format($tabla_toneladas7[$x]["CANTIDADN"]/1000, 2) */ 0.00?></td>
@@ -323,6 +329,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <tr style="background: #57FF65">
                             <td class="small"></td>
                             <td class="small"></td>
+                            <td class="small"></td>
                             <td class="small">Total Toneladas La Gloria </td>
                             <td class="small"><?php
                                               echo number_format($peroten/1000, 2);?></td>
@@ -332,6 +339,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                               echo number_format(($peroten+$perotes)/1000, 2);?></td>
                           </tr>
                           <tr style="background: #00bb2d">
+                            <td class="small"></td>
                             <td class="small"></td>
                             <td class="small"></td>
                             <td class="small">Total Bodegas Directas</td>
@@ -346,6 +354,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <?php $tropn = 0; $trops = 0; for ($x=0; $x < count($tabla_toneladas7 = $modelNomina->tabla_toneladas6($fecha, 1554)) ; $x++) {?>
                                 <tr>
                                   <td class="small"><?= $tabla_toneladas7[$x]["V_NOMBRE"] ?></td>
+                                  <td class="small"><?= $tabla_toneladas7[$x]["S_AREA"] ?></td>
                                   <td class="small"><?= $tabla_toneladas7[$x]["V_RAZON_SOCIAL"] ?></td>
                                   <td class="small"><?= $tabla_toneladas7[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                                   <td class="small"><?= number_format($tabla_toneladas7[$x]["CANTIDADN"]/1000, 2) ?></td>
@@ -358,6 +367,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                 <?php $margaritan = 0; $margaritas = 0; for ($x=0; $x < count($tabla_toneladas7 = $modelNomina->tabla_toneladas6($fecha, 1735)) ; $x++) {?>
                                       <tr>
                                         <td class="small"><?= $tabla_toneladas7[$x]["V_NOMBRE"] ?></td>
+                                        <td class="small"><?= $tabla_toneladas7[$x]["S_AREA"] ?></td>
                                         <td class="small"><?= $tabla_toneladas7[$x]["V_RAZON_SOCIAL"] ?></td>
                                         <td class="small"><?= $tabla_toneladas7[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                                         <td class="small"><?= number_format($tabla_toneladas7[$x]["CANTIDADN"]/1000, 2) ?></td>
@@ -367,6 +377,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                 <?php $margaritan = $margaritan + $tabla_toneladas7[$x]["CANTIDADN"];
                                       $margaritas = $margaritas + $tabla_toneladas7[$x]["CANTIDADS"];} ?>
                                       <tr style="background: #57FF65; display:none;">
+                                        <td class="small"></td>
                                         <td class="small"></td>
                                         <td class="small"></td>
                                         <td class="small">Total Toneladas Tropico</td>
@@ -381,6 +392,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <?php $laglorian = 0; $laglorias = 0; for ($x=0; $x < count($tabla_toneladas7 = $modelNomina->tabla_toneladas6($fecha, 1657)) ; $x++) {?>
                                 <tr>
                                   <td class="small"><?= $tabla_toneladas7[$x]["V_NOMBRE"] ?></td>
+                                  <td class="small"><?= $tabla_toneladas7[$x]["S_AREA"] ?></td>
                                   <td class="small"><?= $tabla_toneladas7[$x]["V_RAZON_SOCIAL"] ?></td>
                                   <td class="small"><?= $tabla_toneladas7[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                                   <td class="small"><?= number_format($tabla_toneladas7[$x]["CANTIDADN"]/1000, 2) ?></td>
@@ -390,6 +402,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           <?php $laglorian = $laglorian + $tabla_toneladas7[$x]["CANTIDADN"];
                                 $laglorias = $laglorias + $tabla_toneladas7[$x]["CANTIDADS"];} ?>
                                 <tr style="background: #57FF65; display:none;">
+                                  <td class="small"></td>
                                   <td class="small"></td>
                                   <td class="small"></td>
                                   <td class="small">Total Toneladas La Gloria</td>
@@ -404,6 +417,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                 <?php $sucroliqN = 0; $sucroliqS = 0; for ($x=0; $x < count($tabla_toneladas8 = $modelNomina->tabla_toneladas6($fecha, 1749)) ; $x++) {?>
                                       <tr>
                                         <td class="small"><?= $tabla_toneladas8[$x]["V_NOMBRE"] ?></td>
+                                        <td class="small"><?= $tabla_toneladas8[$x]["S_AREA"] ?></td>
                                         <td class="small"><?= $tabla_toneladas8[$x]["V_RAZON_SOCIAL"] ?></td>
                                         <td class="small"><?= $tabla_toneladas8[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                                         <td class="small"><?= number_format($tabla_toneladas8[$x]["CANTIDADN"]/1000, 2) ?></td>
@@ -413,6 +427,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                 <?php $sucroliqN = $sucroliqN + $tabla_toneladas8[$x]["CANTIDADN"];
                                       $sucroliqS = $sucroliqS + $tabla_toneladas8[$x]["CANTIDADS"];} ?>
                                       <tr style="background: #57FF65; display:none;">
+                                        <td class="small"></td>
                                         <td class="small"></td>
                                         <td class="small"></td>
                                         <td class="small">Total Toneladas SUCROLIQ, S.A.P.I. DE C.V.</td>
@@ -427,6 +442,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                       <?php $chinaAzucarN = 0; $chinaAzucarS = 0; for ($x=0; $x < count($tabla_toneladas9 = $modelNomina->tabla_toneladas6($fecha, 1586)) ; $x++) {?>
                                             <tr>
                                               <td class="small"><?= $tabla_toneladas9[$x]["V_NOMBRE"] ?></td>
+                                              <td class="small"><?= $tabla_toneladas9[$x]["S_AREA"] ?></td>
                                               <td class="small"><?= $tabla_toneladas9[$x]["V_RAZON_SOCIAL"] ?></td>
                                               <td class="small"><?= $tabla_toneladas9[$x]["V_PARTE_ALTERNATIVA"] ?></td>
                                               <td class="small"><?= number_format($tabla_toneladas9[$x]["CANTIDADN"]/1000, 2) ?></td>
@@ -436,6 +452,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                       <?php $chinaAzucarN = $chinaAzucarN + $tabla_toneladas9[$x]["CANTIDADN"];
                                             $chinaAzucarS = $chinaAzucarS + $tabla_toneladas9[$x]["CANTIDADS"];} ?>
                                             <tr style="background: #57FF65; display:none;">
+                                              <td class="small"></td>
                                               <td class="small"></td>
                                               <td class="small"></td>
                                               <td class="small">Total Toneladas SUCROLIQ, S.A.P.I. DE C.V.</td>
@@ -451,6 +468,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                                 <tr style="background: #00bb2d;">
                                   <td class="small"></td>
                                   <td class="small"></td>
+                                  <td class="small"></td>
                                   <td class="small">Total Bodegas Habilitadas</td>
                                   <td class="small"><?php
                                                     echo number_format(($laglorian+$tropn + $margaritan + $sucroliqN+ $chinaAzucarN)/1000, 2);?></td>
@@ -464,7 +482,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                         </tbody>
                         <tfoot style="background-color: #000000; color:#ffffff ">
                            <tr>
-                               <th colspan="3" style="text-align:right">Total Toneladas:</th>
+                               <th colspan="4" style="text-align:right">Total Toneladas:</th>
                                <th><?php echo number_format(($atoyaquillon + $peñuelan + $peroten + $laglorian+$tropn+$margaritan + $sucroliqN+$chinaAzucarN)/1000, 2); ?></th>
                                <th><?php echo number_format(($atoyaquillos + $peñuelas + $perotes + $laglorias+$trops+$margaritas + $sucroliqS+$chinaAzucarS)/1000, 2); ?></th>
                                <th><?php echo number_format(($atoyaquillon + $peñuelan + $peroten + $laglorian +$atoyaquillos + $peñuelas + $perotes + $laglorias +$tropn +$trops+$margaritas+$margaritan + $sucroliqN + $sucroliqS+$chinaAzucarN+$chinaAzucarS)/1000, 2); ?></th>
@@ -494,6 +512,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                       <thead>
                         <tr>
                           <th class="small" bgcolor="#2a7a1a"><font color="white">CLIENTE</font></th>
+                          <th class="small" bgcolor="#2a7a1a"><font color="white">ALMANCE/AREA</font></th>
                           <th class="small" bgcolor="#2a7a1a"><font color="white">ZAFRA TEMPORADA</font></th>
                           <th class="small" bgcolor="#2a7a1a"><font color="white"><?php
                                                                                 $fecha_inicial = substr($fecha, 11, 10);
@@ -519,6 +538,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                           for ($i=0; $i < count($tabla_toneladas3) ; $i++) { ?>
                         <tr>
                           <td class="small"><?= $tabla_toneladas3[$i]["V_RAZON_SOCIAL"] ?></td>
+                          <td class="small"><?= $tabla_toneladas3[$i]["S_AREA"] ?></td>
                           <td class="small"><?= $tabla_toneladas3[$i]["V_PARTE_ALTERNATIVA"] ?></td>
                           <td class="small"><?= number_format($tabla_toneladas3[$i]["CDS_N_MES2"]/1000, 2) ?></td>
                           <td class="small"><?= number_format($tabla_toneladas3[$i]["CDS_N_MES1"]/1000, 2) ?></td>
@@ -528,7 +548,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                       </tbody>
                       <tfoot style="background-color: #000000; color:#ffffff ">
                          <tr>
-                             <th colspan="2" style="text-align:right">Total Toneladas:</th>
+                             <th colspan="3" style="text-align:right">Total Toneladas:</th>
                              <th></th>
                              <th></th>
                              <th></th>
@@ -559,6 +579,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                         <tr>
                           <th class="small" bgcolor="#2a7a1a"><font color="white">NOMBRE</font></th>
                           <th class="small" bgcolor="#2a7a1a"><font color="white">RAZON SOCIAL</font></th>
+                          <th class="small" bgcolor="#2a7a1a"><font color="white">AREA</font></th>
                           <th class="small" bgcolor="#2a7a1a"><font color="white">ZAFRA</font></th>
                           <th class="small" bgcolor="#2a7a1a"><font color="white"><?php
                                                                                 $mesFin = substr($fecha, 14, 2);
@@ -601,6 +622,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                         <tr>
                           <td class="small"><?= $tabla_toneladas4[$i]["V_RAZON_SOCIAL"] ?></td>
                           <td class="small"><?= $tabla_toneladas4[$i]["V_NOMBRE"] ?></td>
+                          <td class="small"><?= $tabla_toneladas4[$i]["S_AREA"] ?></td>
                           <td class="small"><?= $tabla_toneladas4[$i]["V_PARTE_ALTERNATIVA"] ?></td>
                           <td class="small"><?= number_format($tabla_toneladas4[$i]["CDN_MES2"]/1000, 2) ?></td>
                           <td class="small"><?= number_format($tabla_toneladas4[$i]["CDN_MES1"]/1000, 2) ?></td>
@@ -610,7 +632,7 @@ $tabla_toneladas5 = $modelNomina->tabla_toneladas5($fecha);
                       </tbody>
                       <tfoot style="background-color: #000000; color:#ffffff ">
                          <tr>
-                             <th colspan="3" style="text-align:right">Total Toneladas:</th>
+                             <th colspan="4" style="text-align:right">Total Toneladas:</th>
                              <th></th>
                              <th></th>
                              <th></th>
@@ -1157,7 +1179,7 @@ $(document).ready(function() {
 
           // Total over all pages
           total = api
-              .column( 4 )
+              .column( 5 )
               .data()
               .reduce( function (a, b) {
                   return Intl.NumberFormat('es-MX').format(intVal(a) + intVal(b));
@@ -1166,7 +1188,7 @@ $(document).ready(function() {
               }, 0 );
 
               total2 = api
-                  .column( 3 )
+                  .column( 4 )
                   .data()
                   .reduce( function (a, b) {
                       return Intl.NumberFormat('es-MX').format(intVal(a) + intVal(b));
@@ -1175,7 +1197,7 @@ $(document).ready(function() {
                   }, 0 );
 
                   total3 = api
-                      .column( 2 )
+                      .column( 3 )
                       .data()
                       .reduce( function (a, b) {
                           return Intl.NumberFormat('es-MX').format(intVal(a) + intVal(b));
@@ -1186,7 +1208,7 @@ $(document).ready(function() {
 
           // Total over this page
           pageTotal = api
-              .column( 4, { page: 'current'} )
+              .column( 5, { page: 'current'} )
               .data()
               .reduce( function (a, b) {
                 var numero  = intVal(a) + intVal(b);
@@ -1196,7 +1218,7 @@ $(document).ready(function() {
               }, 0 );
 
               pageTotal2 = api
-                  .column( 3, { page: 'current'} )
+                  .column( 4, { page: 'current'} )
                   .data()
                   .reduce( function (a, b) {
                       //return Intl.NumberFormat().format(intVal(a) + intVal(b));
@@ -1206,7 +1228,7 @@ $(document).ready(function() {
                   }, 0 );
 
                   pageTotal3 = api
-                      .column( 2, { page: 'current'} )
+                      .column( 3, { page: 'current'} )
                       .data()
                       .reduce( function (a, b) {
                           //return Intl.NumberFormat().format(intVal(a) + intVal(b));
@@ -1216,17 +1238,17 @@ $(document).ready(function() {
                       }, 0 );
 
           // Update footer
-          $( api.column( 4 ).footer() ).html(
+          $( api.column( 5 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal, 2)
           );
 
-          $( api.column( 3 ).footer() ).html(
+          $( api.column( 4 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal2, 2) +''
           );
 
-          $( api.column( 2 ).footer() ).html(
+          $( api.column( 3 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal3, 2)
           );
@@ -1304,7 +1326,7 @@ $(document).ready(function() {
 
           // Total over all pages
           total = api
-              .column( 5 )
+              .column( 6 )
               .data()
               .reduce( function (a, b) {
                   var numero  = intVal(a) + intVal(b);
@@ -1314,7 +1336,7 @@ $(document).ready(function() {
               }, 0 );
 
               total2 = api
-                  .column( 4 )
+                  .column( 5 )
                   .data()
                   .reduce( function (a, b) {
                       var numero  = intVal(a) + intVal(b);
@@ -1324,7 +1346,7 @@ $(document).ready(function() {
                   }, 0 );
 
                   total3 = api
-                      .column( 3 )
+                      .column( 4 )
                       .data()
                       .reduce( function (a, b) {
                           var numero  = intVal(a) + intVal(b);
@@ -1335,7 +1357,7 @@ $(document).ready(function() {
 
           // Total over this page
           pageTotal = api
-              .column( 5, { page: 'current'} )
+              .column( 6, { page: 'current'} )
               .data()
               .reduce( function (a, b) {
                   var numero  = intVal(a) + intVal(b);
@@ -1345,7 +1367,7 @@ $(document).ready(function() {
               }, 0 );
 
               pageTotal2 = api
-                  .column( 4, { page: 'current'} )
+                  .column( 5, { page: 'current'} )
                   .data()
                   .reduce( function (a, b) {
                       var numero  = intVal(a) + intVal(b);
@@ -1355,7 +1377,7 @@ $(document).ready(function() {
                   }, 0 );
 
                   pageTotal3 = api
-                      .column( 3, { page: 'current'} )
+                      .column( 4, { page: 'current'} )
                       .data()
                       .reduce( function (a, b) {
                           var numero  = intVal(a) + intVal(b);
@@ -1365,18 +1387,18 @@ $(document).ready(function() {
                       }, 0 );
 
           // Update footer
-          $( api.column( 5 ).footer() ).html(
+          $( api.column( 6 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               //''+pageTotal
               ''+number_format(pageTotal, 2)
           );
 
-          $( api.column( 4 ).footer() ).html(
+          $( api.column( 5 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal2, 2)
           );
 
-          $( api.column( 3 ).footer() ).html(
+          $( api.column( 4 ).footer() ).html(
               //''+pageTotal +' ('+ total +' total)'
               ''+number_format(pageTotal3, 2)
           );

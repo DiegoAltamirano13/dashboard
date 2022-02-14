@@ -1316,7 +1316,7 @@ function grafica_cc_no_aduanadas($dia_ce_cc,$fec_ini_ce_cc,$fec_fin_ce_cc)
         		AND pla.iid_plaza <> 23
 				ORDER BY v_dolares DESC ";
 
-				#echo $sql;
+#$				echo $sql;
 		$stid = oci_parse($conn, $sql);
 				ociexecute($stid);
 

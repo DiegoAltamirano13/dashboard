@@ -376,7 +376,7 @@ $class_active = $_SESSION['modulo_actual'];
 
 
       <!-- ****** INICIA MENU DE TALENTO HUMANO ****** -->
-        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19,20,22,23,31,52'); if ($modulos_valida > 0){ ?>
+        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19,20,22,23,31,52,57'); if ($modulos_valida > 0){ ?>
         <li class="<?php if($active=="rotacion_personal.php" || $active=="nomina_pagada.php" ){echo "active";}?> treeview">
           <a href="#">
             <i class="fa fa-users"></i> <span>Talento Humano</span>
@@ -396,6 +396,11 @@ $class_active = $_SESSION['modulo_actual'];
             <!--TERMINA BOTTON ROTACION DE PERSONAL -->
             <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
             <li class="<?php if($active=="rotacion_personal_semana_quincena.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal_semana_quincena.php"><i class="fa fa-circle-o"></i> Rotación de Personal (Semanal)</a>
+            </li>
+            <?php } ?>
+            <!--INICIA BOTTON ROTACION DE PERSONAL DETALLE GENERAL-->
+            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '57'); if ($modulos_valida > 0){ ?>
+            <li class="<?php if($active=="rotacion_personal_gral.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal_gral.php"><i class="fa fa-circle-o"></i> Rotación de Personal (Detalle Gral.)</a>
             </li>
             <?php } ?>
             <!-- BOTTON OMINA PAGADA -->

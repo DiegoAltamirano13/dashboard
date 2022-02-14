@@ -280,14 +280,15 @@ public function tabla_toneladas3($fecha){
 
 	$conn = conexion::conectar();
 	$res_array = array();
-	$sql = "SELECT Z.V_NOMBRE, Z.V_RAZON_SOCIAL, Z.V_PARTE_ALTERNATIVA, SUM(Z.CDS_N_MES1) AS CDS_N_MES1, SUM(Z.CDS_N_MES2) AS CDS_N_MES2 FROM (
+	$sql = "SELECT Z.V_NOMBRE, Z.V_RAZON_SOCIAL, Z.V_PARTE_ALTERNATIVA, SUM(Z.CDS_N_MES1) AS CDS_N_MES1, SUM(Z.CDS_N_MES2) AS CDS_N_MES2, Z.S_AREA FROM (
         SELECT T1.* FROM (
-        SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, SUM(X.CANTIDADN) AS CDS_N_MES1, NULL AS CDS_N_MES2
+        SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, SUM(X.CANTIDADN) AS CDS_N_MES1, NULL AS CDS_N_MES2, X.S_AREA
         FROM ( select a.v_nombre,
                       t.iid_num_cliente as cliente,
                      s.v_razon_social,
                      q.c_peso_total AS CANTIDADN ,
-                      u.v_parte_alternativa
+                      u.v_parte_alternativa,
+                      (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND T.S_AREA = AA.S_AREA ) AS S_AREA
                from op_in_recibo_deposito t,
                     op_in_recibo_deposito_det q,
                     op_ce_tipo_cambio r,
@@ -312,7 +313,8 @@ public function tabla_toneladas3($fecha){
                      t.iid_num_cliente as cliente,
                      c.v_razon_social,
                      (q.c_peso_total*-1) AS CANTIDADN,
-                     u.v_parte_alternativa
+                     u.v_parte_alternativa,
+                     (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND R.S_AREA = AA.S_AREA ) AS S_AREA
               from op_in_ord_salida t,
                    op_in_ord_salida_det q,
                    op_in_recibo_deposito r,
@@ -337,17 +339,18 @@ public function tabla_toneladas3($fecha){
                    and q.iid_um=v.iid_ume
                    and c.iid_num_cliente <> 1261
                    and ((r.vid_certificado is not null AND r.vid_certificado NOT IN (SELECT S.VID_CERTIFICADO FROM op_in_recibo_deposito S WHERE S.IID_ALMACEN in (1468 $almacen_rt) AND S.VID_CERTIFICADO LIKE '%-N%' ))) )X
-        GROUP BY X.V_PARTE_ALTERNATIVA, X.V_NOMBRE, X.V_RAZON_SOCIAL
+        GROUP BY X.V_PARTE_ALTERNATIVA, X.V_NOMBRE, X.V_RAZON_SOCIAL, X.S_AREA
         ORDER BY  X.V_PARTE_ALTERNATIVA,  X.V_NOMBRE, X.V_RAZON_SOCIAL ASC  ) T1
 
         UNION ALL
 
         SELECT T2.* FROM (
-        SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, NULL AS CDS_N_MES1, SUM(X.CANTIDADS2) AS CDS_S_MES2 FROM ( select a.v_nombre,
+        SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, NULL AS CDS_N_MES1, SUM(X.CANTIDADS2) AS CDS_S_MES2, X.S_AREA FROM ( select a.v_nombre,
                       t.iid_num_cliente as cliente,
                       s.v_razon_social,
                       q.c_peso_total as CANTIDADS2,
-                      u.v_parte_alternativa
+                      u.v_parte_alternativa,
+                      (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND T.S_AREA = AA.S_AREA ) AS S_AREA
                from op_in_recibo_deposito t,
                     op_in_recibo_deposito_det q,
                     op_ce_tipo_cambio r,
@@ -372,7 +375,8 @@ public function tabla_toneladas3($fecha){
                      t.iid_num_cliente as cliente,
                      c.v_razon_social,
                      (q.c_peso_total*-1) as CANTIDADS2,
-                     u.v_parte_alternativa
+                     u.v_parte_alternativa,
+                     (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND R.S_AREA = AA.S_AREA ) AS S_AREA
               from op_in_ord_salida t,
                    op_in_ord_salida_det q,
                    op_in_recibo_deposito r,
@@ -397,16 +401,16 @@ public function tabla_toneladas3($fecha){
                    and q.iid_um=v.iid_ume
                    and c.iid_num_cliente <> 1261
                    and ((r.vid_certificado is not null AND r.vid_certificado NOT IN (SELECT S.VID_CERTIFICADO FROM op_in_recibo_deposito S WHERE S.IID_ALMACEN in (1468 $almacen_rt) AND S.VID_CERTIFICADO LIKE '%-N%' ))) )X
-        GROUP BY X.V_PARTE_ALTERNATIVA,  X.V_NOMBRE, X.V_RAZON_SOCIAL
+        GROUP BY X.V_PARTE_ALTERNATIVA,  X.V_NOMBRE, X.V_RAZON_SOCIAL, X.S_AREA
         ORDER BY X.V_PARTE_ALTERNATIVA ,  X.V_NOMBRE, X.V_RAZON_SOCIAL ASC
         ) T2  ) Z
 
-        GROUP BY Z.V_PARTE_ALTERNATIVA, Z.V_NOMBRE, Z.V_RAZON_SOCIAL
+        GROUP BY Z.V_PARTE_ALTERNATIVA, Z.V_NOMBRE, Z.V_RAZON_SOCIAL, Z.S_AREA
         ORDER BY Z.V_PARTE_ALTERNATIVA";
 			$stid = oci_parse($conn, $sql);
 			oci_execute($stid);
 
-      #echo $sql;
+    #  echo $sql;
 
 			while (($row = oci_fetch_assoc($stid)) != false)
 			{
@@ -460,14 +464,15 @@ public function tabla_toneladas4($fecha){
 
 	$conn = conexion::conectar();
 	$res_array = array();
-	$sql = "SELECT Z.V_NOMBRE, Z.V_RAZON_SOCIAL, Z.V_PARTE_ALTERNATIVA, SUM(Z.CDS_N_MES1) AS CDN_MES1, SUM(Z.CDS_N_MES2) AS CDN_MES2 FROM (
+	$sql = "SELECT Z.V_NOMBRE, Z.V_RAZON_SOCIAL, Z.V_PARTE_ALTERNATIVA, SUM(Z.CDS_N_MES1) AS CDN_MES1, SUM(Z.CDS_N_MES2) AS CDN_MES2, Z.S_AREA FROM (
 				SELECT T1.* FROM (
-				SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL,X.V_PARTE_ALTERNATIVA, SUM(X.CANTIDADN) AS CDS_N_MES1, NULL AS CDS_N_MES2
+				SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL,X.V_PARTE_ALTERNATIVA, SUM(X.CANTIDADN) AS CDS_N_MES1, NULL AS CDS_N_MES2, X.S_AREA
 				FROM ( select a.v_nombre,
 				              t.iid_num_cliente as cliente,
 				             s.v_razon_social,
 				             q.c_peso_total AS CANTIDADN ,
-				              u.v_parte_alternativa
+				              u.v_parte_alternativa,
+                      (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND T.S_AREA = AA.S_AREA ) AS S_AREA
 				       from op_in_recibo_deposito t,
 				            op_in_recibo_deposito_det q,
 				            op_ce_tipo_cambio r,
@@ -493,7 +498,8 @@ public function tabla_toneladas4($fecha){
 				             t.iid_num_cliente as cliente,
 				             c.v_razon_social,
 				             (q.c_peso_total*-1) AS CANTIDADN,
-				             u.v_parte_alternativa
+				             u.v_parte_alternativa,
+                     (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND R.S_AREA = AA.S_AREA ) AS S_AREA
 				      from op_in_ord_salida t,
 				           op_in_ord_salida_det q,
 				           op_in_recibo_deposito r,
@@ -519,17 +525,18 @@ public function tabla_toneladas4($fecha){
                    and c.iid_num_cliente <> 1261
                    and c.iid_num_cliente <> 1658
 				           and ((r.vid_certificado is not null AND r.vid_certificado NOT IN (SELECT S.VID_CERTIFICADO FROM op_in_recibo_deposito S WHERE S.IID_ALMACEN in (1468 $almacen_rt) AND S.VID_CERTIFICADO LIKE '%-N%' ))) )X
-				GROUP BY X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA
+				GROUP BY X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, X.S_AREA
 				ORDER BY  X.V_PARTE_ALTERNATIVA ASC  ) T1
 
 				UNION ALL
 
 				SELECT T2.* FROM (
-				SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, NULL AS CDS_N_MES1, SUM(X.CANTIDADS2) AS CDS_S_MES2 FROM ( select a.v_nombre,
+				SELECT X.V_NOMBRE, X.V_RAZON_SOCIAL, X.V_PARTE_ALTERNATIVA, NULL AS CDS_N_MES1, SUM(X.CANTIDADS2) AS CDS_S_MES2, X.S_AREA FROM ( select a.v_nombre,
 				              t.iid_num_cliente as cliente,
 				              s.v_razon_social,
 				              q.c_peso_total as CANTIDADS2,
-				              u.v_parte_alternativa
+				              u.v_parte_alternativa,
+                      (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND T.S_AREA = AA.S_AREA ) AS S_AREA
 				       from op_in_recibo_deposito t,
 				            op_in_recibo_deposito_det q,
 				            op_ce_tipo_cambio r,
@@ -555,7 +562,8 @@ public function tabla_toneladas4($fecha){
 				             t.iid_num_cliente as cliente,
 				             c.v_razon_social,
 				             (q.c_peso_total*-1) as CANTIDADS2,
-				             u.v_parte_alternativa
+				             u.v_parte_alternativa,
+                     (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND R.S_AREA = AA.S_AREA ) AS S_AREA
 				      from op_in_ord_salida t,
 				           op_in_ord_salida_det q,
 				           op_in_recibo_deposito r,
@@ -581,10 +589,10 @@ public function tabla_toneladas4($fecha){
                    and c.iid_num_cliente <> 1261
                    and c.iid_num_cliente <> 1658
 				           and ((r.vid_certificado is not null AND r.vid_certificado NOT IN (SELECT S.VID_CERTIFICADO FROM op_in_recibo_deposito S WHERE S.IID_ALMACEN IN (1468 $almacen_rt) AND S.VID_CERTIFICADO LIKE '%-N%' ))) )X
-				GROUP BY X.V_NOMBRE, X.V_RAZON_SOCIAL,X.V_PARTE_ALTERNATIVA
+				GROUP BY X.V_NOMBRE, X.V_RAZON_SOCIAL,X.V_PARTE_ALTERNATIVA, X.S_AREA
 				ORDER BY X.V_PARTE_ALTERNATIVA ASC
 				) T2  ) Z
-				GROUP BY Z.V_NOMBRE, Z.V_RAZON_SOCIAL,Z.V_PARTE_ALTERNATIVA
+				GROUP BY Z.V_NOMBRE, Z.V_RAZON_SOCIAL,Z.V_PARTE_ALTERNATIVA, Z.S_AREA
 				ORDER BY Z.V_PARTE_ALTERNATIVA, Z.V_RAZON_SOCIAL";
 //or (r.vid_certificado is null and r.i_administrativo = 1)
         #echo $sql;
@@ -777,7 +785,8 @@ public function tabla_toneladas6($fecha, $almacen){
                        V_PARTE_ALTERNATIVA,
                        SUM(CANTIDADN)AS CANTIDADN,
                        SUM(CANTIDADS) AS CANTIDADS ,
-                       CLIENTE
+                       CLIENTE,
+                       S_AREA
                 FROM ( select a.v_nombre,
                               t.iid_num_cliente as cliente,
                               s.v_razon_social,
@@ -787,7 +796,8 @@ public function tabla_toneladas6($fecha, $almacen){
                               CASE WHEN (SUBSTR(t.vid_certificado, -1, 1) = 'S') AND T.VID_CERTIFICADO IS NOT NULL THEN
                                         q.c_peso_total
                                    END as CANTIDADS,
-                              u.v_parte_alternativa
+                              u.v_parte_alternativa,
+                              (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND T.S_AREA = AA.S_AREA ) AS S_AREA
                         from op_in_recibo_deposito t,
                              op_in_recibo_deposito_det q,
                              op_ce_tipo_cambio r,
@@ -817,7 +827,8 @@ public function tabla_toneladas6($fecha, $almacen){
                                  CASE WHEN (SUBSTR(r.vid_certificado, -1, 1) = 'S') AND r.vid_certificado IS NOT NULL THEN
                                       (q.c_peso_total*-1)
                                  END AS CANTIDADS,
-                                     u.v_parte_alternativa
+                                 u.v_parte_alternativa,
+                                 (SELECT AA.V_DESCRIPCION FROM ALMACEN_AREAS AA WHERE AA.IID_ALMACEN = A.IID_ALMACEN AND R.S_AREA = AA.S_AREA ) AS S_AREA
                            from op_in_ord_salida t,
                                 op_in_ord_salida_det q,
                                 op_in_recibo_deposito r,
@@ -840,7 +851,7 @@ public function tabla_toneladas6($fecha, $almacen){
                                  and u.v_parte_alternativa like '%ZAFRA%')
                                  and q.iid_um=v.iid_ume
                                  and ((r.vid_certificado is not null AND r.vid_certificado NOT IN (SELECT S.VID_CERTIFICADO FROM op_in_recibo_deposito S WHERE S.IID_ALMACEN IN (1468 $almacen_rt) AND S.VID_CERTIFICADO LIKE '%-N%' ))) and c.iid_num_cliente <> 1261 )
-                GROUP BY V_NOMBRE, V_RAZON_SOCIAL, V_PARTE_ALTERNATIVA, CLIENTE ORDER BY CLIENTE, V_PARTE_ALTERNATIVA";
+                GROUP BY V_NOMBRE, V_RAZON_SOCIAL, V_PARTE_ALTERNATIVA, CLIENTE, S_AREA ORDER BY CLIENTE, V_PARTE_ALTERNATIVA";
 
               #  echo $sql;
                 if ($almacen == 1586) {
