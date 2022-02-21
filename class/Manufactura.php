@@ -579,6 +579,7 @@ class Op_in_car_des_info
 		$union_Noreste = "";
 		$union_Leon = "";
 
+		$STATUS_PROGRAMADOS = "  AND CARGAS.N_STATUS = 1";
 		$arrayReal =array("Val"=>$select_manufac_global_plaza);
 
 		$arrayCount = count($select_manufac_global_plaza);
@@ -604,6 +605,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'MÉXICO (ARGO)') {
 						$data_link = " ";
@@ -622,6 +624,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'GOLFO (ARGO)') {
 						$data_link = " ";
@@ -640,6 +643,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'PENINSULA (ARGO)') {
 						$data_link = " ";
@@ -658,6 +662,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'PUEBLA (ARGO)') {
 						$data_link = " ";
@@ -676,6 +681,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'BAJIO (ARGO)') {
 						$data_link = " ";
@@ -694,6 +700,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'OCCIDENTE (ARGO)') {
 						$data_link = " ";
@@ -712,6 +719,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}elseif ($plaza_manufac == 'NORESTE (ARGO)') {
 						$data_link = " ";
@@ -730,6 +738,7 @@ class Op_in_car_des_info
 								AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 								AND cargas.iid_regimen = 1
 								AND CARGAS.N_CROSSDOCK = 0
+								$STATUS_PROGRAMADOS
 								UNION";
 					}
 		}else {
@@ -756,6 +765,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									////////////////////////////// CASO PARA PLAZA 4 (MEXICO)//////////////////////////////////////
@@ -776,6 +786,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									////////////////////////////// CASO PARA PLAZA 5 (GOLFO)//////////////////////////////////////
@@ -796,6 +807,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									////////////////////////////// CASO PARA PLAZA 6 (PENINSULA)//////////////////////////////////////
@@ -816,6 +828,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									////////////////////////////// CASO PARA PLAZA 7 (PUEBLA)//////////////////////////////////////
@@ -836,6 +849,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									//////////////////////////////// CASO PARA PLAZA 8 (BAJIO) ////////////////////////////////////
@@ -856,6 +870,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									////////////////////////////// CASO PARA PLAZA 17 (OCCIDENTE)//////////////////////////////////////
@@ -876,6 +891,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 									////////////////////////////// CASO PARA PLAZA 18 (NORESTE)//////////////////////////////////////
@@ -896,6 +912,7 @@ class Op_in_car_des_info
 												AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 												AND cargas.iid_regimen = 1
 												AND CARGAS.N_CROSSDOCK = 0
+												$STATUS_PROGRAMADOS
 												UNION";
 									break;
 						}
@@ -919,6 +936,7 @@ class Op_in_car_des_info
 									   AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
 									   AND cargas.iid_regimen = 1
 									   AND CARGAS.N_CROSSDOCK = 0
+										 $STATUS_PROGRAMADOS
 									UNION
 										$select_cd
 									  FROM op_in_solicitud_carga_descarga cargas
@@ -935,7 +953,8 @@ class Op_in_car_des_info
 									   AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 									   AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
 									   AND cargas.iid_regimen = 2
-									   AND CARGAS.N_CROSSDOCK = 0 ";
+									   AND CARGAS.N_CROSSDOCK = 0
+										 $STATUS_PROGRAMADOS ";
 
 	  $sql_termina = " UNION $select_cd
 										FROM op_in_solicitud_carga_descarga cargas
@@ -953,6 +972,7 @@ class Op_in_car_des_info
 										AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
 										AND cargas.iid_regimen = 1
 										AND CARGAS.N_CROSSDOCK = 0
+										$STATUS_PROGRAMADOS
 									UNION $select_cd
 									FROM op_in_solicitud_carga_descarga cargas
 									LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
@@ -969,6 +989,7 @@ class Op_in_car_des_info
 									 AND TO_CHAR(CARGAS.D_FEC_RECEPCION, 'YYYY') >= 2021
 									 AND cargas.iid_regimen = 2
 									 AND CARGAS.N_CROSSDOCK = 0
+									 $STATUS_PROGRAMADOS
 									 ORDER BY llega_aprox ASC ";
 
 		$sql = $select_cd." FROM op_in_solicitud_carga_descarga cargas
@@ -985,6 +1006,7 @@ class Op_in_car_des_info
 				AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 				AND cargas.iid_regimen = 1
 				AND CARGAS.N_CROSSDOCK = 0
+				$STATUS_PROGRAMADOS
 				UNION".
 		    $select_cd." FROM op_in_solicitud_carga_descarga cargas
 				LEFT JOIN almacen alm ON alm.iid_almacen = cargas.id_almacen
@@ -999,11 +1021,12 @@ class Op_in_car_des_info
 				AND (cargas.n_virtual is null or cargas.n_virtual = 0)
 				AND cargas.iid_regimen = 2
 				AND CARGAS.N_CROSSDOCK = 0
+				$STATUS_PROGRAMADOS
 				$sql_process
 				$sql_termina";
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid );
-  #  echo $sql;
+   	#echo $sql;
 
 		while (($row = oci_fetch_assoc($stid)) != false)
 		{

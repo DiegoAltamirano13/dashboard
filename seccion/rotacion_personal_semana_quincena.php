@@ -1268,7 +1268,7 @@ $(function () {
 
     $('#graf_barSemanal').highcharts({
         chart: {
-            type: 'line'
+            type: 'column'
         },
          title: {
             text: 'ROTACIÓN DE PERSONAL (SEMANAL)'
@@ -1792,7 +1792,7 @@ $(function(){
   });
 });
 </script>
-
+<!--
 <script type= "text/javascript">
 $(function(){
   Highcharts.setOptions({
@@ -1963,7 +1963,7 @@ $(function(){
   });
 });
 </script>
-
+-->
 <script type= "text/javascript">
 $(function(){
   Highcharts.setOptions({
@@ -2139,16 +2139,16 @@ $(function(){
     },
     series:[{
       name:'% ROTACION DE PERSONAL GENERAL',
-      type: 'line',
+      type: 'column',
       data: data1,
       color: "yellow",
     },{
       name:'% ROTACIÓN DE PERSONAL ADMINISTRATIVO',
-      type: 'line',
+      type: 'column',
       data: data2,
     },{
       name:'% ROTACIÓN DE PERSONAL OPERATIVO',
-      type: 'line',
+      type: 'column',
       data: data3,
     }/*,{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-1;} else { echo substr($fecha, 6, 5)-1;} ?>',

@@ -997,7 +997,7 @@ $(function () {
 
     $('#graf_bar').highcharts({
         chart: {
-            type: 'line'
+            type: 'column'
         },
          title: {
             text: 'ROTACIÓN DE PERSONAL'
@@ -1077,15 +1077,15 @@ $(function () {
           x: -10,
         },
         series:  [{
-          showInLegend:false,
+          showInLegend:true,
             name: 'Personal Activo',
             data: data1,
         }, {
-          showInLegend:false,
+          showInLegend:true,
             name: 'Personal de Baja',
             data: data2,
         },{
-          showInLegend:false,
+          showInLegend:true,
             name: 'Personal Nuevo',
             data: data3,
         }]
@@ -1605,7 +1605,7 @@ $(function(){
   ];
   $('#graf_perM2').highcharts({
     chart:{
-      type:'line'
+      type:'column'
     },
     title:{
       text:'ROTACIÓN ANUAL GENERAL, ADMINISTRATIVO Y OPERATIVO.'
@@ -1673,16 +1673,16 @@ $(function(){
     },
     series:[{
       name:'% ROTACION DE PERSONAL GENERAL',
-      type: 'line',
+      type: 'column',
       data: data1,
       color: "yellow",
     },{
       name:'% ROTACIÓN DE PERSONAL ADMINISTRATIVO',
-      type: 'line',
+      type: 'column',
       data: data2,
     },{
       name:'% ROTACIÓN DE PERSONAL OPERATIVO',
-      type: 'line',
+      type: 'column',
       data: data3,
     }/*,{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-1;} else { echo substr($fecha, 6, 5)-1;} ?>',

@@ -480,7 +480,9 @@ class RotacionPersonal
 
 		if ($tipo == 1 ) {
 			$and_tipo = " ";
+			$INNER_TIPO = " ";
 		}elseif ($tipo == 2 ) {
+			$INNER_TIPO = " INNER JOIN RH_PUESTOS RP ON RP.IID_PUESTO = CON.IID_PUESTO AND RP.N_TIPO_PUESTO = 2 ";
 			$and_tipo = " AND con.iid_puesto in (180, 167, 213, 107, 210, 201, 211, 112, 111, 115,
                                           32, 135, 138, 173, 164, 113, 161, 38, 109, 110, 108,
                                           73, 77, 114, 63, 288, 302, 287, 267, 291, 303, 281,
@@ -497,6 +499,7 @@ class RotacionPersonal
                                           153, 134, 317, 177, 243, 318, 295, 350, 260, 290, 269, 326,
                                           244, 316, 263, 338, 308, 289) ";
 		}elseif ($tipo == 3 ) {
+			$INNER_TIPO = " INNER JOIN RH_PUESTOS RP ON RP.IID_PUESTO = CON.IID_PUESTO AND RP.N_TIPO_PUESTO IN( 1, 3) ";
 			$and_tipo = " AND CON.iid_puesto IN (170, 182, 172, 19, 294, 292, 324, 268, 165, 41, 168, 51, 44, 72,
 				 																	 52, 43, 166, 258, 71, 195, 207, 197, 205, 178, 209, 214, 237, 88,
 																					 89, 60, 145, 226, 92, 90, 148, 91, 312, 68, 70, 54, 82, 83, 9, 246, 155, 192, 18, 321, 141, 232, 184, 327, 12, 37, 348, 152, 278, 87,
@@ -537,6 +540,7 @@ class RotacionPersonal
 				                                       (2, 3, 4, 5, 6, 7, 8, 17, 18)
 				         INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado
 				                                   AND con.iid_contrato = per.iid_contrato
+								$INNER_TIPO
 				         WHERE per.s_status = 0
 				           AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
 				           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio'
@@ -544,8 +548,7 @@ class RotacionPersonal
 				           AND CAN.HABILITADO = 0
 									 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 									 AND (PER.IID_NUMNOMINA = $num_nomina)
-									 $CANCELACION_TIPO
-								 	 $and_tipo) AS BAJA,
+									 $CANCELACION_TIPO) AS BAJA,
 				       (SELECT COUNT(per.iid_empleado) AS BAJA
 				          FROM no_personal per
 				         INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado
@@ -598,7 +601,9 @@ class RotacionPersonal
 
 		if ($tipo == 1 ) {
 			$and_tipo = " ";
+			$INNER_TIPO = "  ";
 		}elseif ($tipo == 2 ) {
+			$INNER_TIPO = " INNER JOIN RH_PUESTOS RP ON RP.IID_PUESTO = CON.IID_PUESTO AND RP.N_TIPO_PUESTO = 2 ";
 			$and_tipo = " AND con.iid_puesto in (180, 167, 213, 107, 210, 201, 211, 112, 111, 115,
                                           32, 135, 138, 173, 164, 113, 161, 38, 109, 110, 108,
                                           73, 77, 114, 63, 288, 302, 287, 267, 291, 303, 281,
@@ -615,6 +620,7 @@ class RotacionPersonal
                                           153, 134, 317, 177, 243, 318, 295, 350, 260, 290, 269, 326,
                                           244, 316, 263, 338, 308, 289) ";
 		}elseif ($tipo == 3 ) {
+			$INNER_TIPO = " INNER JOIN RH_PUESTOS RP ON RP.IID_PUESTO = CON.IID_PUESTO AND RP.N_TIPO_PUESTO IN( 1, 3) ";
 			$and_tipo = " AND CON.iid_puesto IN (170, 182, 172, 19, 294, 292, 324, 268, 165, 41, 168, 51, 44, 72,
 				 																	 52, 43, 166, 258, 71, 195, 207, 197, 205, 178, 209, 214, 237, 88,
 																					 89, 60, 145, 226, 92, 90, 148, 91, 312, 68, 70, 54, 82, 83, 9, 246, 155, 192, 18, 321, 141, 232, 184, 327, 12, 37, 348, 152, 278, 87,
@@ -656,6 +662,7 @@ class RotacionPersonal
 				                                       (2, 3, 4, 5, 6, 7, 8, 17, 18)
 				         INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado
 				                                   AND con.iid_contrato = per.iid_contrato
+								$INNER_TIPO
 				         WHERE per.s_status = 0
 				           AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
 				           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio'
@@ -663,8 +670,7 @@ class RotacionPersonal
 				           AND CAN.HABILITADO = 0
 									 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 									 AND (PER.IID_NUMNOMINA = $num_nomina)
-									 $CANCELACION_TIPO
-								 	 $and_tipo) AS BAJA,
+									 $CANCELACION_TIPO) AS BAJA,
 				       (SELECT COUNT(per.iid_empleado) AS BAJA
 				          FROM no_personal per
 				         INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado
@@ -691,7 +697,8 @@ class RotacionPersonal
 				 ORDER BY pla.N_MES) X
 				 where X.BAJA <> 0 and X.ACTIVO <>0
 				 GROUP BY X.ANIO ";//315
-				 #echo $sql;
+
+				# echo $sql;
 				$stid = oci_parse($conn,$sql);
 				oci_execute($stid);
 				while (($row = oci_fetch_assoc($stid))!= false) {
@@ -796,7 +803,7 @@ class RotacionPersonal
 													 AND PER.IID_NUMNOMINA = 2
 	                         AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074) ) as ACTIVO
 	  FROM ALMACEN ALM
-	  WHERE ALM.iid_plaza IN (3)
+	  WHERE ALM.iid_plaza IN ($in_plaza)
 	  ORDER BY ALM.iid_plaza";
 	  #echo $sql;
 	  $stid = oci_parse($conn, $sql);
