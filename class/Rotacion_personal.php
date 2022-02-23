@@ -103,7 +103,7 @@ class RotacionPersonal
          INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
          LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
          AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO ".$and_fecha_cancel."
-         WHERE ".$and_fecha_act2." RCAN.FECHA_CANCELACION IS NULL AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074) ".$and_plaza.$and_contrato.$and_depto.$and_area."
+         WHERE ".$and_fecha_act2." RCAN.FECHA_CANCELACION IS NULL AND per.iid_empleado not in(209) ".$and_plaza.$and_contrato.$and_depto.$and_area."
 				 AND PER.IID_NUMNOMINA <> 2
 		) AS activo,
 		(SELECT COUNT(*)
@@ -111,8 +111,7 @@ class RotacionPersonal
 						INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato
 						INNER JOIN no_contrato con ON con.iid_contrato = per.iid_contrato AND con.iid_empleado = per.iid_empleado
 						WHERE per.s_status = 0 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5  ".$and_fecha_can.$and_plaza.$and_contrato.$and_depto.$and_area.$and_habilitado."
-						AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
-						AND CAN.N_MOTIVO_CANCELA NOT IN (1)
+						AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 						AND PER.IID_NUMNOMINA <> 2
 		) AS baja,
 		(SELECT COUNT(*)
@@ -120,14 +119,15 @@ class RotacionPersonal
 						INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato
 						INNER JOIN no_contrato con ON con.iid_contrato = per.iid_contrato AND con.iid_empleado = per.iid_empleado
 						WHERE per.s_status = 0 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5  ".$and_fecha_can.$and_plaza.$and_contrato.$and_depto.$and_area.$and_habilitado2."
-		 AND per.iid_empleado not in (2400)
+		 AND per.iid_empleado not in (209)
+		 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 	 	 AND PER.IID_NUMNOMINA <> 2 ) as baja_habilitado,
 		 (SELECT COUNT(*)
  						FROM rh_cancelacion_contrato can
  						INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato
  						INNER JOIN no_contrato con ON con.iid_contrato = per.iid_contrato AND con.iid_empleado = per.iid_empleado
  						WHERE per.s_status = 0 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5  ".$and_fecha_can.$and_plaza.$and_contrato.$and_depto.$and_area.$and_habilitado."
- 						AND CAN.N_MOTIVO_CANCELA IN (1)
+						AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 						AND PER.IID_NUMNOMINA <> 2
  		) AS BAJA_NO_CONTEMPLADO
 						FROM DUAL";
@@ -182,8 +182,7 @@ class RotacionPersonal
                           AND con.iid_contrato = per.iid_contrato
                           WHERE per.s_status = 0 AND to_char(can.fecha_cancelacion, 'yyyy') = to_char(SYSDATE, 'YYYY')
                           AND can.fecha_cancelacion <= trunc( ADD_MONTHS(LAST_DAY( TO_DATE(SYSDATE) ),0) ) AND CAN.HABILITADO = 0
-													AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
-													AND CAN.N_MOTIVO_CANCELA NOT IN (1)
+													AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 													AND PER.IID_NUMNOMINA <> 2
                           AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5 ) D ";
 
@@ -267,8 +266,7 @@ class RotacionPersonal
 				INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza = pla.iid_plaza
 				INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
 				WHERE per.s_status = 0 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5 ".$and_fecha_can.$and_contrato.$and_depto.$and_area.$and_habilitado."
-							AND can.iid_empleado not in (1930, 2272, 2074)
-							AND CAN.N_MOTIVO_CANCELA NOT IN (1)
+							AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 							AND PER.IID_NUMNOMINA <> 2
 				) AS baja
 				,(
@@ -276,7 +274,7 @@ class RotacionPersonal
 	         INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
 	         LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
 	                                                 AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO ".$fecha_cancel."
-	         WHERE ".$and_fecha_act2." RCAN.FECHA_CANCELACION IS NULL AND per.iid_plaza = pla.iid_plaza AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
+	         WHERE ".$and_fecha_act2." RCAN.FECHA_CANCELACION IS NULL AND per.iid_plaza = pla.iid_plaza AND per.iid_empleado not in(209)
 					 AND PER.IID_NUMNOMINA <> 2
 			 ) as activo,
         (SELECT count(per.iid_empleado)
@@ -297,7 +295,7 @@ class RotacionPersonal
 				 	 ) as activon
 				FROM plaza pla
 				WHERE pla.iid_plaza IN (".$in_plaza.") ORDER BY pla.iid_plaza";
-				#echo $sql;
+			#	echo $sql;
 				$stid = oci_parse($conn, $sql);
 				oci_execute($stid);
 
@@ -360,7 +358,6 @@ class RotacionPersonal
                      WHERE per.s_status = 0
 										 			AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                            AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '".$andFecha."'
-													 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
                            AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES " .$and_habilitado."
 													 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 													 AND PER.IID_NUMNOMINA <> 2
@@ -374,7 +371,7 @@ class RotacionPersonal
                      WHERE per.iid_plaza IN(".$in_plaza.")
                            AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$andFecha."', 'mm/yyyy')))
 													 AND RCAN.FECHA_CANCELACION IS NULL
-													 AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
+													 AND per.iid_empleado not in(209)
 													 AND PER.IID_NUMNOMINA <> 2
 												 ) as ACTIVO,
 									 ( SELECT COUNT(CAN.IID_EMPLEADO) AS EMPLEADO
@@ -382,7 +379,6 @@ class RotacionPersonal
 									   INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(".$in_plaza.")
 										 INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
 										 WHERE per.s_status = 0
-										 					 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 												 			 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
 											  			 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '".$and_fecha2."'
 												 			 AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES " .$and_habilitado."
@@ -396,7 +392,7 @@ class RotacionPersonal
 										  WHERE per.iid_plaza IN(".$in_plaza.")
 															AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$and_fecha2."', 'mm/yyyy')))
 															AND RCAN.FECHA_CANCELACION IS NULL
-															AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
+															AND per.iid_empleado not in(209)
 															AND PER.IID_NUMNOMINA <> 2
 											) as ACTIVO_ANTERIOR,
 											( SELECT COUNT(CAN.IID_EMPLEADO) AS EMPLEADO
@@ -404,7 +400,6 @@ class RotacionPersonal
 	 									   INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(".$in_plaza.")
 	 										 INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
 	 										 WHERE per.s_status = 0
-	 										 					 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 	 												 			 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
 	 											  			 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '".$and_fecha3."'
 	 												 			 AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES " .$and_habilitado."
@@ -418,7 +413,7 @@ class RotacionPersonal
 	 										  WHERE per.iid_plaza IN(".$in_plaza.")
 	 															AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$and_fecha3."', 'mm/yyyy')))
 	 															AND RCAN.FECHA_CANCELACION IS NULL
-	 															AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
+	 															AND per.iid_empleado not in(209)
 																AND PER.IID_NUMNOMINA <> 2
 	 											) as ACTIVO_ANTERIOR2,
 												( SELECT COUNT(CAN.IID_EMPLEADO) AS EMPLEADO
@@ -515,7 +510,8 @@ class RotacionPersonal
 		if ($anio < 2020) {
 			$CANCELACION_TIPO = "";
 		}else {
-			$CANCELACION_TIPO = "AND CAN.N_MOTIVO_CANCELA NOT IN (1 )";
+			//$CANCELACION_TIPO = "AND CAN.N_MOTIVO_CANCELA NOT IN (1 )";
+			$CANCELACION_TIPO = "";
 		}
 
 		$conn = conexion::conectar();
@@ -536,8 +532,8 @@ class RotacionPersonal
 				           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio'
 				           AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES
 				           AND CAN.HABILITADO = 0
-									 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 									 AND PER.IID_NUMNOMINA <> 2
+									 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 									 $CANCELACION_TIPO) AS BAJA,
 				       (SELECT COUNT(per.iid_empleado) AS BAJA
 				          FROM no_personal per
@@ -555,7 +551,7 @@ class RotacionPersonal
 				           AND (PER.d_fecha_ingreso <=
 				               LAST_DAY(TO_DATE(PLA.N_MES || '/$anio', 'mm/yyyy')))
 				           AND RCAN.FECHA_CANCELACION IS NULL
-				           AND per.iid_empleado not in (209, 1, 2400, 1930, 2272, 2074)
+				           AND per.iid_empleado not in (209)
 									 AND PER.IID_NUMNOMINA <> 2
 								 		) as ACTIVO,
 				           '$anio' AS ANIO
@@ -631,7 +627,7 @@ class RotacionPersonal
 		if ($anio < 2020) {
 			$CANCELACION_TIPO = "";
 		}else {
-			$CANCELACION_TIPO = "AND CAN.N_MOTIVO_CANCELA NOT IN (1 )";
+			$CANCELACION_TIPO = " ";
 		}
 
 		$conn = conexion::conectar();
@@ -652,8 +648,8 @@ class RotacionPersonal
 				           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio'
 				           AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES
 				           AND CAN.HABILITADO = 0
-									 AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 									 AND PER.IID_NUMNOMINA <> 2
+									 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 									 $CANCELACION_TIPO) AS BAJA,
 				       (SELECT COUNT(per.iid_empleado) AS BAJA
 				          FROM no_personal per
@@ -763,8 +759,7 @@ class RotacionPersonal
 	                  WHERE per.s_status = 0
 													AND PER.IID_PLAZA IN(".$in_plaza.")
 	                        AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
-													AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
-													AND CAN.N_MOTIVO_CANCELA NOT IN (1 )
+													AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 													AND PER.IID_NUMNOMINA <> 2
 	                        ".$and_fecha_can.$and_contrato.$and_depto.$and_area.$and_habilitado." ) AS bajaxalm ,
 	          ( SELECT count(per.iid_empleado)
@@ -782,7 +777,7 @@ class RotacionPersonal
 										 			 ".$and_fecha_act2."
 	                         RCAN.FECHA_CANCELACION IS NULL
 													 AND PER.IID_PLAZA IN (".$in_plaza.")
-	                         AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
+	                         AND per.iid_empleado not in(209)
 												 	 AND PER.IID_NUMNOMINA <> 2  ) as ACTIVO
 	  FROM ALMACEN ALM
 	  WHERE ALM.iid_plaza IN ($in_plaza)
@@ -941,8 +936,8 @@ class RotacionPersonal
 				INNER JOIN rh_puestos pue ON pue.iid_puesto = con.iid_puesto
 				INNER JOIN rh_cat_depto dep ON dep.iid_depto = con.iid_depto
 				LEFT JOIN rh_cat_areas ar ON ar.iid_area = con.iid_area AND ar.iid_depto = con.iid_depto
-				WHERE per.s_status = 0 AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
-				AND CAN.N_MOTIVO_CANCELA NOT IN (1 )
+				WHERE per.s_status = 0 AND per.iid_empleado not in(209)
+				AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 				AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5 ".$and_plaza.$and_contrato.$and_depto.$and_area.$and_fecha.$and_habilitado." AND PER.IID_NUMNOMINA <> 2 ";
 
 				#echo $sql;
@@ -1045,6 +1040,7 @@ class RotacionPersonal
 													AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
 													 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '".$andFecha."'
 													 AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES " .$and_habilitado."
+													 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 												 	 AND PER.IID_NUMNOMINA <> 2 ) AS BAJA ,
 										( SELECT COUNT(per.iid_empleado) AS BAJA
 														 FROM no_personal per
@@ -1055,7 +1051,7 @@ class RotacionPersonal
 										 WHERE per.iid_plaza IN(".$in_plaza.")
 													 AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$andFecha."', 'mm/yyyy')))
 													 AND RCAN.FECHA_CANCELACION IS NULL
-													 AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
+													 AND per.iid_empleado not in(209)
 													 AND PER.IID_NUMNOMINA <> 2
 												 ) as ACTIVO
 													 FROM RH_MESES_GRAFICAS pla

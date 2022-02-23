@@ -1505,13 +1505,13 @@ $(function(){
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-1;} else { echo substr($fecha, 6, 5)-1;} ?>',
       data: data4,
     },{
-      name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-2;} else { echo substr($fecha, 6, 5)-2;} ?>',
+      name:'Personal Activo del <?php if ($fecha == 'ALL') { echo date('Y')-2;} else { echo substr($fecha, 6, 5)-2;} ?>',
       data: data5,
     },{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-2;} else { echo substr($fecha, 6, 5)-2;} ?>',
       data: data6,
     },{
-      name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-3;} else { echo substr($fecha, 6, 5)-3;} ?>',
+      name:'Personal Activo del <?php if ($fecha == 'ALL') { echo date('Y')-3;} else { echo substr($fecha, 6, 5)-3;} ?>',
       data: data7,
     },{
       name:'Personal Baja del <?php if ($fecha == 'ALL') { echo date('Y')-3;} else { echo substr($fecha, 6, 5)-3;} ?>',

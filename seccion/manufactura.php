@@ -1542,7 +1542,8 @@ $contador_descargas=0;
                    case ( $info_manufac_car_des[$i]["STATUS"] >= 1 )://si es mayor o igual a 1
                    $reg_veh_descarga = date_create($info_manufac_car_des[$i]["REGISTRADO"]);
 
-                   $dif_min = (strtotime($info_manufac_car_des[$i]["REGISTRADO"])-strtotime($info_manufac_car_des[$i]["LLEGA"]))/60;
+                   $dif_min = (strtotime($info_manufac_car_des[$i]["LLEGA"])-strtotime($info_manufac_car_des[$i]["REGISTRADO"]))/60;
+                   //echo $dif_min;
                    if ($dif_min >= 10) {
                      echo '<li class="timeline__step done">';//se pinta de color azul el circulo
                        echo '<input class="timeline__step-radio" id="trigger1{{identifier}}" name="trigger{{identifier}}" type="radio">';

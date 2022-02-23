@@ -283,8 +283,7 @@ $promedio_rot_sdo_q=number_format(($sumatoria_rot_sdo_q/12),2);
             </div>
           </div>
           <div class="box-body">
-
-            <div class="input-group">
+          <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Comparar Año:</span>
               <select class="form-control select2" id="fil_anio_uno" style="width: 100%;">
                 <?php for($i=date("Y"); $i>1996; $i--){?>
@@ -1022,7 +1021,7 @@ Highcharts.chart('graf_1', {
       enabled: false
     },
     chart: {
-        type: 'spline'
+        type: 'column'
     },
     title: {
         text: '<b>PLANTILLA DE PERSONAL <?=$anio_dos?> VS <?=$anio_uno?></b>'
@@ -1112,7 +1111,7 @@ var data_ant_q = [
 
 Highcharts.chart('graf_2', {
     chart: {
-        type: 'spline'
+        type: 'column'
     },
     credits: {
       enabled: false
@@ -1259,7 +1258,7 @@ var data_ant_q = [
 
 Highcharts.chart('graf_3', {
     chart: {
-        type: 'spline'
+        type: 'column'
     },
     credits: {
       enabled: false
@@ -1353,7 +1352,7 @@ Highcharts.chart('graf_4', {
       enabled: false
     },
     chart: {
-        type: 'spline'
+        type: 'column'
     },
     title: {
         text: '<b>DETALLE DEPTO. IMPUTABLE <?=$anio_dos?> VS <?=$anio_uno?></b>'

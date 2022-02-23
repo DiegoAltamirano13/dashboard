@@ -28,64 +28,64 @@ class Rotacion {
     $and_habilitado = " AND CAN.HABILITADO = 0  ";
     $in_plaza = "2,3,4,5,6,7,8,17,18";
 
+
     $sql ="SELECT PLA.N_MES,
-                PLA.MES,
+       				  PLA.MES,
                     ( SELECT COUNT(CAN.IID_EMPLEADO) AS EMPLEADO
                              FROM rh_cancelacion_contrato can
-                     INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(".$in_plaza.")
+                     INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN($in_plaza)
                      INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
                      WHERE per.s_status = 0
-                          AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
-                           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '".$andFecha."'
-                           --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
-                           AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES " .$and_habilitado."
-                           AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
-                           --AND PER.IID_NUMNOMINA <> 2
-                           AND PER.IID_NUMNOMINA in ($num_nomina)
-                         ) AS BAJA ,
+										 			 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
+                           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$andFecha'
+													 /*AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)*/
+                           AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES AND CAN.HABILITADO=0
+													 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
+													 AND PER.IID_NUMNOMINA in($num_nomina)
+												 ) AS BAJA ,
+
                     ( SELECT COUNT(per.iid_empleado) AS BAJA
                              FROM no_personal per
                      INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado
                            AND con.iid_contrato = per.iid_contrato
-                     LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
-                           AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO AND RCAN.FECHA_CANCELACION <= LAST_DAY(to_date(PLA.N_MES||'/".$andFecha."','mm/yyyy') )
-                     WHERE per.iid_plaza IN(".$in_plaza.")
-                           AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$andFecha."', 'mm/yyyy')))
-                           AND RCAN.FECHA_CANCELACION IS NULL
-                           AND per.iid_empleado not in(209)
-                           --AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
-                           --AND PER.IID_NUMNOMINA <> 2
-                           AND PER.IID_NUMNOMINA in ($num_nomina)
-                         ) as ACTIVO,
-                   ( SELECT COUNT(CAN.IID_EMPLEADO) AS EMPLEADO
-                     FROM rh_cancelacion_contrato can
-                     INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(".$in_plaza.")
-                     INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
-                     WHERE per.s_status = 0
-                               --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
-                               AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
-                               AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '".$and_fecha2."'
-                               AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES " .$and_habilitado."
-                               --AND PER.IID_NUMNOMINA <> 2
-                               AND PER.IID_NUMNOMINA in ($num_nomina)
-                               AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)) AS BAJA_ANTERIOR,
-                    ( SELECT COUNT(per.iid_empleado) AS BAJA
-                      FROM no_personal per
-                      INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
-                      LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
-                              AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO AND RCAN.FECHA_CANCELACION <= LAST_DAY(to_date(PLA.N_MES||'/".$and_fecha2."','mm/yyyy') )
-                      WHERE per.iid_plaza IN(".$in_plaza.")
-                              AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/".$and_fecha2."', 'mm/yyyy')))
-                              AND RCAN.FECHA_CANCELACION IS NULL
-                              AND per.iid_empleado not in(209)
-                              --AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
-                              --AND PER.IID_NUMNOMINA <> 2
-                              AND PER.IID_NUMNOMINA in ($num_nomina)
-                      ) as ACTIVO_ANTERIOR
-                           FROM RH_MESES_GRAFICAS pla
-                           GROUP BY PLA.N_MES, PLA.MES
-                           ORDER BY pla.N_MES";
+										 LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
+													 AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO AND RCAN.FECHA_CANCELACION <= LAST_DAY(to_date(PLA.N_MES||'/$andFecha','mm/yyyy') )
+                     WHERE per.iid_plaza IN($in_plaza)
+                           AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/$andFecha', 'mm/yyyy')))
+													 AND RCAN.FECHA_CANCELACION IS NULL
+													 AND per.iid_empleado not in(209)
+													 AND PER.IID_NUMNOMINA in($num_nomina)
+												 ) as ACTIVO,
 
+									 ( SELECT COUNT(CAN.IID_EMPLEADO) AS EMPLEADO
+										 FROM rh_cancelacion_contrato can
+									   INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN($in_plaza)
+										 INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
+										 WHERE per.s_status = 0
+										 					 /*AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)*/
+												 			 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
+											  			 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$and_fecha2'
+												 			 AND TO_CHAR(CAN.FECHA_CANCELACION, 'MM') = PLA.N_MES AND CAN.HABILITADO=0
+															 AND PER.IID_NUMNOMINA in($num_nomina)
+														 	 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)) AS BAJA_ANTERIOR,
+
+										( SELECT COUNT(per.iid_empleado) AS BAJA
+										  FROM no_personal per
+											INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato
+											LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
+															AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO AND RCAN.FECHA_CANCELACION <= LAST_DAY(to_date(PLA.N_MES||'/$and_fecha2','mm/yyyy') )
+										  WHERE per.iid_plaza IN($in_plaza)
+															AND (PER.d_fecha_ingreso <= LAST_DAY(TO_DATE(PLA.N_MES||'/$and_fecha2', 'mm/yyyy')))
+															AND RCAN.FECHA_CANCELACION IS NULL
+															AND per.iid_empleado not in(209)
+															AND PER.IID_NUMNOMINA in($num_nomina)
+											) as ACTIVO_ANTERIOR
+
+
+													 FROM RH_MESES_GRAFICAS pla
+                           GROUP BY PLA.N_MES, PLA.MES
+													 ORDER BY pla.N_MES";
+                          # echo $sql;
     $stid = oci_parse($conn, $sql);
             oci_execute($stid);
 
@@ -119,10 +119,10 @@ public function motivos($andFecha, $num_nomina) {                               
           WHERE per.s_status = 0
                 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$andFecha'
-                --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
+                /*AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)*/
                 AND CAN.HABILITADO = 0
                 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
-                --AND PER.IID_NUMNOMINA <> 2
+                /*AND PER.IID_NUMNOMINA <> 2*/
                 AND PER.IID_NUMNOMINA in ($num_nomina)
                 ORDER BY CAN.N_MOTIVO_CANCELA";
 
@@ -152,16 +152,16 @@ public function causas_baja_anio_ant($motivos,$anio_ant, $num_nomina) {         
       if($nom_motivo=="OTROS"){
         $columnas=$columnas.
         "(SELECT COUNT(CON.IID_EMPLEADO) AS TOTAL FROM rh_cancelacion_contrato can INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(2,3,4,5,6,7,8,17,18) INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato INNER JOIN RH_PUESTOS pue ON pue.iid_puesto=con.iid_puesto INNER JOIN PLAZA pl ON pl.iid_plaza=per.iid_plaza WHERE per.s_status = 0 AND (can.fecha_cancelacion -
-        per.D_FECHA_INGRESO) > 5 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant' /*AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)*/ AND CAN.HABILITADO=0 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL) AND CAN.IID_PUESTO=ID_PUESTO AND CAN.N_MOTIVO_CANCELA IS NULL AND PER.IID_NUMNOMINA in ($num_nomina) GROUP BY pue.Iid_Puesto, PUE.V_DESCRIPCION) AS $nom_motivo";
+        per.D_FECHA_INGRESO) > 5 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant'  AND CAN.HABILITADO=0 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL) AND CAN.IID_PUESTO=ID_PUESTO AND CAN.N_MOTIVO_CANCELA IS NULL AND PER.IID_NUMNOMINA in ($num_nomina) GROUP BY pue.Iid_Puesto, PUE.V_DESCRIPCION) AS $nom_motivo";
       }else{
         $columnas=$columnas.
         "(SELECT COUNT(CON.IID_EMPLEADO) AS TOTAL FROM rh_cancelacion_contrato can INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(2,3,4,5,6,7,8,17,18) INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato INNER JOIN RH_PUESTOS pue ON pue.iid_puesto=con.iid_puesto INNER JOIN PLAZA pl ON pl.iid_plaza=per.iid_plaza WHERE per.s_status = 0 AND (can.fecha_cancelacion -
-        per.D_FECHA_INGRESO) > 5 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant' /*AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)*/ AND CAN.HABILITADO=0 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL) AND CAN.IID_PUESTO=ID_PUESTO AND CAN.N_MOTIVO_CANCELA = $id_motivo AND PER.IID_NUMNOMINA in ($num_nomina) GROUP BY pue.Iid_Puesto, PUE.V_DESCRIPCION) AS $nom_motivo";
+        per.D_FECHA_INGRESO) > 5 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant'  AND CAN.HABILITADO=0 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL) AND CAN.IID_PUESTO=ID_PUESTO AND CAN.N_MOTIVO_CANCELA = $id_motivo AND PER.IID_NUMNOMINA in ($num_nomina) GROUP BY pue.Iid_Puesto, PUE.V_DESCRIPCION) AS $nom_motivo";
       }
     }else {
         $columnas=$columnas.
         "(SELECT COUNT(CON.IID_EMPLEADO) AS TOTAL FROM rh_cancelacion_contrato can INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado AND per.iid_contrato = can.iid_contrato AND per.iid_plaza IN(2,3,4,5,6,7,8,17,18) INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado AND con.iid_contrato = per.iid_contrato INNER JOIN RH_PUESTOS pue ON pue.iid_puesto=con.iid_puesto INNER JOIN PLAZA pl ON pl.iid_plaza=per.iid_plaza WHERE per.s_status = 0 AND (can.fecha_cancelacion -
-        per.D_FECHA_INGRESO) > 5 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant' /*AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)*/ AND CAN.HABILITADO=0 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL) AND CAN.IID_PUESTO=ID_PUESTO AND CAN.N_MOTIVO_CANCELA = $id_motivo AND PER.IID_NUMNOMINA in ($num_nomina) GROUP BY pue.Iid_Puesto, PUE.V_DESCRIPCION) AS $nom_motivo,";
+        per.D_FECHA_INGRESO) > 5 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant'  AND CAN.HABILITADO=0 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL) AND CAN.IID_PUESTO=ID_PUESTO AND CAN.N_MOTIVO_CANCELA = $id_motivo AND PER.IID_NUMNOMINA in ($num_nomina) GROUP BY pue.Iid_Puesto, PUE.V_DESCRIPCION) AS $nom_motivo,";
     }
   }
 
@@ -179,7 +179,6 @@ public function causas_baja_anio_ant($motivos,$anio_ant, $num_nomina) {         
           WHERE per.s_status = 0
                 AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                 AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant'
-                --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
                 AND CAN.HABILITADO=0
                 AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
                 AND PER.IID_NUMNOMINA in ($num_nomina)
@@ -218,7 +217,6 @@ public function comparativo_puestos_bajas($anio_ant, $sdo_anio_ant,$num_nomina) 
                           AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                           AND TO_CHAR(can.fecha_cancelacion, 'YYYY') IN( $anio_ant)
                           AND CAN.IID_PUESTO=ID_PUESTO
-                          --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
                           AND CAN.HABILITADO=0
                           AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
                           AND PER.IID_NUMNOMINA in ($num_nomina)
@@ -236,7 +234,6 @@ public function comparativo_puestos_bajas($anio_ant, $sdo_anio_ant,$num_nomina) 
                        AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                        AND TO_CHAR(can.fecha_cancelacion, 'YYYY') IN( $sdo_anio_ant)
                        AND CAN.IID_PUESTO=ID_PUESTO
-                       --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
                        AND CAN.HABILITADO=0
                        AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
                        AND PER.IID_NUMNOMINA in ($num_nomina)
@@ -254,7 +251,6 @@ public function comparativo_puestos_bajas($anio_ant, $sdo_anio_ant,$num_nomina) 
                       WHERE per.s_status = 0
                             AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                             AND TO_CHAR(can.fecha_cancelacion, 'YYYY') IN( $anio_ant,$sdo_anio_ant)
-                            --AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
                             AND CAN.HABILITADO=0
                             AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
                             AND PER.IID_NUMNOMINA in ($num_nomina)
@@ -288,7 +284,7 @@ public function rotacion_plaza($anio_ant, $sdo_anio_ant, $num_nomina) {         
                 WHERE per.s_status = 0
                        AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                        AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$anio_ant'
-                       AND CAN.HABILITADO = 0 /*AND can.iid_empleado not in (1930, 2272, 2074)*/
+                       AND CAN.HABILITADO = 0
                        AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
                        AND PER.IID_NUMNOMINA IN($num_nomina) ) AS baja ,
 
@@ -297,11 +293,11 @@ public function rotacion_plaza($anio_ant, $sdo_anio_ant, $num_nomina) {         
                        AND con.iid_contrato = per.iid_contrato
                        LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
                        AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO
-                       AND RCAN.FECHA_CANCELACION <= trunc(to_date('01/01/$anio_ant','dd/mm/yyyy') )
+                       AND RCAN.FECHA_CANCELACION <= trunc(to_date('31/12/$anio_ant','dd/mm/yyyy') )
                 WHERE per.d_fecha_ingreso < trunc(to_date('31/12/$anio_ant','dd/mm/yyyy') )
                       AND RCAN.FECHA_CANCELACION IS NULL AND per.iid_plaza = pla.iid_plaza
+                      /*AND per.iid_empleado not in(209)*/
                       AND per.iid_empleado not in(209)
-                      --AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
                       AND PER.IID_NUMNOMINA IN($num_nomina) ) as activo,
 
               	(SELECT COUNT(CAN.IID_EMPLEADO) FROM rh_cancelacion_contrato can
@@ -313,7 +309,7 @@ public function rotacion_plaza($anio_ant, $sdo_anio_ant, $num_nomina) {         
                 WHERE per.s_status = 0
                        AND (can.fecha_cancelacion - per.D_FECHA_INGRESO) > 5
                        AND TO_CHAR(can.fecha_cancelacion, 'YYYY') = '$sdo_anio_ant'
-                       AND CAN.HABILITADO = 0 /*AND can.iid_empleado not in (1930, 2272, 2074)*/
+                       AND CAN.HABILITADO = 0
                        AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
                        AND PER.IID_NUMNOMINA IN($num_nomina) ) AS baja_ant ,
 
@@ -322,14 +318,14 @@ public function rotacion_plaza($anio_ant, $sdo_anio_ant, $num_nomina) {         
                        AND con.iid_contrato = per.iid_contrato
                        LEFT OUTER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_CONTRATO = CON.IID_CONTRATO
                        AND RCAN.IID_EMPLEADO = CON.IID_EMPLEADO
-                       AND RCAN.FECHA_CANCELACION <= trunc(to_date('01/01/$sdo_anio_ant','dd/mm/yyyy') )
+                       AND RCAN.FECHA_CANCELACION <= trunc(to_date('31/12/$sdo_anio_ant','dd/mm/yyyy') )
                 WHERE per.d_fecha_ingreso < trunc(to_date('31/12/$sdo_anio_ant','dd/mm/yyyy') )
                       AND RCAN.FECHA_CANCELACION IS NULL AND per.iid_plaza = pla.iid_plaza
+                      /*AND per.iid_empleado not in(209)*/
                       AND per.iid_empleado not in(209)
-                      --AND per.iid_empleado not in(209, 1, 2400, 1930, 2272, 2074)
                       AND PER.IID_NUMNOMINA IN($num_nomina) ) as activo_ant
           FROM plaza pla WHERE pla.iid_plaza IN (2,3,4,5,6,7,8,17,18) ORDER BY pla.iid_plaza";
-
+#echo $sql;
   $stid = oci_parse($conn, $sql);
           oci_execute($stid);
 
