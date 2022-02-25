@@ -137,7 +137,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
         <small>Control panel</small>
         <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
       </h1>
-      <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
+      <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49, 58'); if ($modulos_valida > 0){ ?>
       <?php echo "<br><center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       <?php } ?>
       <ol class="breadcrumb">
@@ -160,7 +160,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
           <button type='button' class='btn btn-link' data-toggle="modal" data-target="#modal_sel_plaza_glo"><i class="fa fa-toggle-on"></i>  Selección de plazas</button>
         </li>-->
         <?php //} ?>
-        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
+        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49, 58'); if ($modulos_valida > 0){ ?>
         <?php if ($i_plaza==2){ ?><!-- FILTRO P/PLAZA CORPORATIVO -->
         <li>
           <button type='button' class='btn btn-link' data-toggle="modal" data-target="#modal_sel_plaza_glo"><i class="fa fa-toggle-on"></i>  Selección de plazas</button>
@@ -798,7 +798,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
 
-                  <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 41); if($modulos_valida > 0){ ?>
+                  <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 58); if($modulos_valida > 0){ ?>
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/cap_bodegas.png" alt="Icono Modulo"></span>

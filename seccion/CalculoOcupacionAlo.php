@@ -253,7 +253,7 @@ function autoload($clase){
   spl_autoload_register('autoload');
 //////////////////////////// VALIDACION DEL MODULO ASIGNADO
 $modulos_valida = Perfil::modulos_valida($_SESSION['iid_empleado'], 6);
-$modulos_valida2 = Perfil::modulos_valida($_SESSION['iid_empleado'], 42);
+$modulos_valida2 = Perfil::modulos_valida($_SESSION['iid_empleado'], 58);
 if($modulos_valida == 0 AND $modulos_valida2 == 0)
 {
   header('Location: index.php');

@@ -298,7 +298,7 @@ $class_active = $_SESSION['modulo_actual'];
       <!-- ****** TERMINA MENU DE COMERCIAL ****** -->
 
       <!-- ****** INICIA MENU DE COMERCIO EXTERIOR ****** -->
-        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '8,9,24,25,34,35,36'); if ($modulos_valida > 0){ ?>
+        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '8,9,24,25,39'); if ($modulos_valida > 0){ ?>
         <li class="<?php if($active=="cartas_cupo.php"||$active=="pedimentos.php"){echo "active";}?> treeview">
           <a href="#">
             <i class="fa fa-ship"></i> <span>Comercio exterior</span>
@@ -435,7 +435,7 @@ $class_active = $_SESSION['modulo_actual'];
       <!-- ****** TERMINA MENU DE TALENTO HUMANO ****** -->
 
       <!-- ****** INICIA MENU DE OPERACIONES ****** -->
-        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
+        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 53,29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49, 58'); if ($modulos_valida > 0){ ?>
         <li class="<?php if ($active == "rack.php" || $active == "manufactura.php"||$active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?> treeview">
           <a href="#">
             <i class="fa fa-truck"></i> <span>Operaciones</span>
@@ -531,7 +531,7 @@ $class_active = $_SESSION['modulo_actual'];
             <?php } ?>
 
             <!--OPERACIONES ALO-->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '34,36,41,42,47,49');
+            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '34,36,41,42,47,49, 58');
                   $modulos_valida2 = Perfil::modulos_valida($iid_empleado, '47'); if ($modulos_valida > 0){ ?>
             <li class="<?php if ($active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?>">
               <a href="#"><i class="fa fa-circle-o"></i> OPERACIONES ALO
@@ -552,7 +552,7 @@ $class_active = $_SESSION['modulo_actual'];
                   <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '42'); if ($modulos_valida > 0){ ?>
                   <li class="<?php if ($active == "OcupacionClienteAlo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="OcupacionClienteAlo.php"><i class="fa fa-circle-o"></i> Tiempo De Mercancia En Almacen (ALO)</a></li>
                   <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '42'); if ($modulos_valida > 0){ ?>
+                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '58'); if ($modulos_valida > 0){ ?>
                   <li class="<?php if ($active == "CalculoOcupacionAlo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="CalculoOcupacionAlo.php"><i class="fa fa-circle-o"></i>  OcupaciÓn De Almacen (ALO)</a></li>
                   <?php } ?>
                   <!-- REPORTE ALO -->
