@@ -80,7 +80,7 @@ class NominaPagada
                                            AND M.C_ANIO = S.C_ANIO
                                            AND M.C_CONSECUTIVO = S.C_CONSECUTIVO
                  INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
-       WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+       WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
               $andFecha
               AND S.IID_PLAZA = PLA.IID_PLAZA
               ), 0) AS EFECTIVO
@@ -132,7 +132,7 @@ class NominaPagada
 			                                           AND M.C_ANIO = S.C_ANIO
 			                                           AND M.C_CONSECUTIVO = S.C_CONSECUTIVO
 			                 INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
-			       WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+			       WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
 			              AND TO_CHAR(S.D_FECHA_APLICACION, 'YYYY') = $andFecha
 			              AND TO_CHAR(S.D_FECHA_APLICACION, 'MM') = PLA.N_MES
 			              AND S.IID_PLAZA IN ($in_plaza)
@@ -181,7 +181,7 @@ class NominaPagada
 			                                           AND M.C_ANIO = S.C_ANIO
 			                                           AND M.C_CONSECUTIVO = S.C_CONSECUTIVO
 			                 INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
-			       WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+			       WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
 			              AND TO_CHAR(S.D_FECHA_APLICACION, 'YYYY') = $andFecha
 			              AND TO_CHAR(S.D_FECHA_APLICACION, 'MM') = PLA.N_MES
 			              AND S.IID_PLAZA IN ($in_plaza)
@@ -231,7 +231,7 @@ class NominaPagada
 																								 AND M.C_ANIO = S.C_ANIO
 																								 AND M.C_CONSECUTIVO = S.C_CONSECUTIVO
 											 INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
-						 WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+						 WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
 										AND TO_CHAR(S.D_FECHA_APLICACION, 'YYYY') = $andFecha
 										AND TO_CHAR(S.D_FECHA_APLICACION, 'MM') = PLA.N_MES
 										AND S.IID_PLAZA IN ($in_plaza)
@@ -281,7 +281,7 @@ class NominaPagada
 																								 AND M.C_ANIO = S.C_ANIO
 																								 AND M.C_CONSECUTIVO = S.C_CONSECUTIVO
 											 INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
-						 WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+						 WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
 										AND TO_CHAR(S.D_FECHA_APLICACION, 'YYYY') = $andFecha
 										AND TO_CHAR(S.D_FECHA_APLICACION, 'MM') = PLA.N_MES
 										AND S.IID_PLAZA IN ($in_plaza)
@@ -327,7 +327,7 @@ class NominaPagada
                                    AND M.C_ANIO = S.C_ANIO
                                    AND M.C_CONSECUTIVO = S.C_CONSECUTIVO
          INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
-					WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+					WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
 					     	AND M.C_ANIO = $anio
 								AND M.IID_PLAZA IN ($in_plaza)
 					ORDER BY M.C_ANIO";
@@ -487,7 +487,7 @@ class NominaPagada
          INNER JOIN NO_PERSONAL P ON P.IID_EMPLEADO = S.IID_EMPLEADO
          INNER JOIN PLAZA PLA ON M.IID_PLAZA = PLA.IID_PLAZA
 				 INNER JOIN RH_CANCELACION_CONTRATO RCAN ON RCAN.IID_EMPLEADO = P.IID_EMPLEADO AND RCAN.IID_CONTRATO = P.IID_CONTRATO
-					WHERE M.V_DESCRIPCION LIKE '%FINIQUITO%'
+					WHERE  M.I_TIPO_NOM_ESP IN (4, 14)
 								AND M.IID_PLAZA IN ($in_plaza)
 								$andFec2
 					ORDER BY M.C_ANIO";

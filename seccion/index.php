@@ -53,10 +53,17 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
   }else{
     if(isset($_POST['nomPlaza']))
     $_SESSION['nomPlaza'] = $_POST['nomPlaza'];
-    $plaza = $_SESSION['nomPlaza'];
+    $nom_plaza = $_SESSION['nomPlaza'];
   }
 
-  $plaza = $_SESSION['nomPlaza'];
+  $nom_plaza = $_SESSION['nomPlaza'];
+
+  if($nom_plaza=='CÓRDOBA' || $nom_plaza=='CORPORATIVO' || $nom_plaza=='ALL'){
+    $visible = "display: ";
+  }else {
+    $visible= "display: none";
+  }
+  //echo $visible;
 
   $obj_filtros->mod_5_vehiculos_manufactura();
   $obj_filtros->mod_6_operaciones_veh_agro();
@@ -137,7 +144,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
         <small>Control panel</small>
         <?php //if($_SESSION['area']==3){echo "<center><h4> PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>";} ?><!--FILTRAR UNICAMENTE P/DEPTO. OPERACIONES -->
       </h1>
-      <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49, 58'); if ($modulos_valida > 0){ ?>
+      <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
       <?php echo "<br><center><h4>PLAZA ( ".$_SESSION['nomPlaza']." )</h4></center>"; ?><!--FILTRO GENERAL -->
       <?php } ?>
       <ol class="breadcrumb">
@@ -160,7 +167,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
           <button type='button' class='btn btn-link' data-toggle="modal" data-target="#modal_sel_plaza_glo"><i class="fa fa-toggle-on"></i>  Selección de plazas</button>
         </li>-->
         <?php //} ?>
-        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49, 58'); if ($modulos_valida > 0){ ?>
+        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
         <?php if ($i_plaza==2){ ?><!-- FILTRO P/PLAZA CORPORATIVO -->
         <li>
           <button type='button' class='btn btn-link' data-toggle="modal" data-target="#modal_sel_plaza_glo"><i class="fa fa-toggle-on"></i>  Selección de plazas</button>
@@ -357,6 +364,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                 <!-- TERMINA BOTON OP MANUFACTURA -->
                 <!-- INICIA BOTON OP AGRONEGOCIOS -->
                 <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 6); if($modulos_valida > 0){ ?>
+                  <div style="<?= $visible ?>">
                 <div class="col-md-3 col-sm-6 col-xs-12">
                   <div style="background-color:#D9EDF7" class="info-box">
                     <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/agronegocios.png" alt="Icono Modulo"></span>
@@ -369,6 +377,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                     <button class="btn bg-gray  btn-block" data-intro="Botón para entrar al Dashboard Op. Agronegocios">Entrar <i class="fa fa-arrow-circle-right"></i></button>
                     </a>
                   </div>
+                </div>
                 </div>
                 <?php } ?>
                 <!-- TERMINA BOTON OP AGRONEGOCIOS -->
@@ -798,7 +807,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
 
-                  <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 58); if($modulos_valida > 0){ ?>
+                  <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 41); if($modulos_valida > 0){ ?>
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/cap_bodegas.png" alt="Icono Modulo"></span>
@@ -815,6 +824,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 29); if($modulos_valida > 0){ ?>
+                    <div style="<?= $visible ?>">
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/azucar.png" alt="Icono Modulo"></span>
@@ -828,9 +838,11 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                       </a>
                     </div>
                   </div>
+                </div>
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 30); if($modulos_valida > 0){ ?>
+                    <div style="<?= $visible ?>">
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/azucar.png" alt="Icono Modulo"></span>
@@ -844,6 +856,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                       </a>
                     </div>
                   </div>
+                </div>
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 31); if($modulos_valida > 0){ ?>
@@ -863,6 +876,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 32); if($modulos_valida > 0){ ?>
+                    <div style="<?= $visible ?>">
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/graf_azucar.png" alt="Icono Modulo"></span>
@@ -876,6 +890,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                       </a>
                     </div>
                   </div>
+                </div>
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 34); if($modulos_valida > 0){ ?>
@@ -963,6 +978,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
                   <!--BUQUES -->
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 38); if($modulos_valida > 0){ ?>
+                    <div style="<?= $visible ?>">
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/buques.png" alt="Icono Modulo"></span>
@@ -976,6 +992,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                       </a>
                     </div>
                   </div>
+                </div>
                   <?php } ?>
 
                   <!-- cartas cupo crossdock -->
@@ -998,6 +1015,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
                   <!-- Almacenajes en m2 -->
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 40); if($modulos_valida > 0){ ?>
+                    <div style="<?= $visible ?>">
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/tabla_ocupacion.png" alt="Icono Modulo"></span>
@@ -1011,9 +1029,11 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                       </a>
                     </div>
                   </div>
+                </div>
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 43); if($modulos_valida > 0){ ?>
+                    <div style="<?= $visible ?>">
                   <div class="col-md-3 col-sm-6 col-xs-12">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/azucar.png" alt="Icono Modulo"></span>
@@ -1027,6 +1047,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                       </a>
                     </div>
                   </div>
+                </div>
                   <?php } ?>
 
 

@@ -293,7 +293,7 @@ class RotacionPersonal
 				 	 ) as activon
 				FROM plaza pla
 				WHERE pla.iid_plaza IN (".$in_plaza.") ORDER BY pla.iid_plaza";
-				echo $sql;
+			#	echo $sql;
 				$stid = oci_parse($conn, $sql);
 				oci_execute($stid);
 

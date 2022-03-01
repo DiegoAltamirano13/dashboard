@@ -101,6 +101,7 @@ class VentaAlmacen
 				LEFT JOIN plaza pla ON pla.iid_plaza = pre.iid_plaza
 				WHERE pre.n_valor_anio = $fecha AND pre.n_tipo = $pre $andWhere ";
 
+				#echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 

@@ -63,6 +63,7 @@ if ( isset($_GET["plaza"]) ){
   }
 }
 
+
 $almacen = "ALL";
 if (isset($_GET["almacen"])) {
   if ($promotor != "ALL" || $pre == 3) {
@@ -102,7 +103,9 @@ $diego = $insObj_VentaPromotor->tablaDetFacturado(3, 2021, 'ALL', 'ALL', '07', '
     <!-- Main content -->
 
     <section class="content"><!-- Inicia la seccion de Todo el contenido principal -->
-
+      <?php
+      echo $plaza;;
+       ?>
     <!-- ############################ INICIA SECCION TABLA PRESUPUESTADO ############################# -->
     <section>
       <div class="box box-warning">
@@ -148,7 +151,6 @@ $diego = $insObj_VentaPromotor->tablaDetFacturado(3, 2021, 'ALL', 'ALL', '07', '
 
         </div><!--/.box-body-->
       </div>
-      <?php echo $fecha; ?>
     </section>
     <!-- ########################### TERMINA SECCION TABLA PRESUPUESTADO ########################### -->
 

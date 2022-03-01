@@ -109,7 +109,7 @@ class RotacionPersonal
 						FROM rh_cancelacion_contrato can
 						INNER JOIN no_personal per ON per.iid_empleado = can.iid_empleado
 						INNER JOIN no_contrato con ON con.iid_empleado = per.iid_empleado
-						WHERE AND (can.fecha_cancelacion - con.d_fec_inicio) > 5  ".$and_fecha_can.$and_plaza.$and_contrato.$and_depto.$and_area.$and_habilitado."
+						WHERE (can.fecha_cancelacion - con.d_fec_inicio) > 5  ".$and_fecha_can.$and_plaza.$and_contrato.$and_depto.$and_area.$and_habilitado."
 						AND CAN.IID_EMPLEADO NOT IN (1930, 2272, 2074)
 						AND (CAN.N_MOTIVO_CANCELA NOT IN (1) OR CAN.N_MOTIVO_CANCELA IS NULL)
 						AND PER.IID_NUMNOMINA = 2
@@ -131,7 +131,7 @@ class RotacionPersonal
  		) AS BAJA_NO_CONTEMPLADO
 						FROM DUAL";
 
-
+#echo $sql;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 
