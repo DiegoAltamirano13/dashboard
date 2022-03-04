@@ -19,7 +19,10 @@ $class_active = $_SESSION['modulo_actual'];
 
 if($nom_plazaLayout=='CÓRDOBA' || $nom_plazaLayout=='CORPORATIVO' || $nom_plazaLayout=='ALL'){
   $visible = "display: ";
-}else {
+}elseif ($nom_plazaLayout=='BAJIO' || $nom_plazaLayout=='PUEBLA' ) {
+  $visible = "display: ";
+}
+else {
   $visible= "display: none";
 }
 //echo $visible;
@@ -206,382 +209,44 @@ if($nom_plazaLayout=='CÓRDOBA' || $nom_plazaLayout=='CORPORATIVO' || $nom_plaza
 
       <!-- ****** INICIA MENU DE ADMINISTRACION ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '3,14,10,11,12,13,15,37,46,54'); if ($modulos_valida > 0){ ?>
-        <li class="<?php if($active=="remates.php"||$active=="facturacion.php"){echo "active";}?> treeview">
-          <a href="#">
-            <i class="fa fa-folder-open"></i> <span>Administración</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <!-- BOTTON ADMINISTRACION -->
-
-            <!--TERMINA BOTTON ADMINISTRACION -->
-            <!-- BOTTON REMATES -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '14'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="remates.php"){echo "active";}?>"><a class="click_modal_cargando" href="remates.php"><i class="fa fa-circle-o"></i> Remates </a></li>
-            <?php } ?>
-
-            <!-- BOTTON REGISTRO DE INFORMACION FINANCIERA -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '10'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="informacion_financiera.php"){echo "active";}?>"><a class="click_modal_cargando" href="informacion_financiera.php"><i class="fa fa-circle-o"></i> Registrar Inf. Financiera</a></li>
-              <?php } ?>
-            <!--TERMINA BOTTON REGISTRO DE INFORMACION FINANCIERA -->
-            <!-- BOTTON TESORERÍA -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '11'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="tesoreria.php"){echo "active";}?>"><a class="click_modal_cargando" href="tesoreria.php"><i class="fa fa-circle-o"></i> Tesorería</a></li>
-              <?php } ?>
-            <!--TERMINA BOTTON TESORERÍA -->
-            <!-- BOTTON PASIVOS -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '12'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="pasivos.php"){echo "active";}?>"><a class="click_modal_cargando" href="pasivos.php"><i class="fa fa-circle-o"></i> Pasivos Hipotecarios</a></li>
-              <?php } ?>
-            <!--TERMINA BOTTON PASIVOS -->
-            <!-- BOTTON CAPs (Coberturas) -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '13'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="coberturas.php"){echo "active";}?>"><a class="click_modal_cargando" href="coberturas.php"><i class="fa fa-circle-o"></i> CAPs (Coberturas)</a></li>
-              <?php } ?>
-            <!--TERMINA BOTTON CAPs (Coberturas) -->
-            <!-- BOTTON SALDOS DE CLIENTES -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '15'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="saldos_clientes.php"){echo "active";}?>"><a class="click_modal_cargando" href="saldos_clientes.php"><i class="fa fa-circle-o"></i> Saldos de Clientes</a></li>
-              <?php } ?>
-            <!--TERMINA BOTTON SALDOS DE CLIENTES -->
-            <!--PRESUPUESTOS VS INGRESOS-->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '37'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="detalles_Ingresos.php"){echo "active";}?>"><a class="click_modal_cargando" href="detalles_Ingresos.php"><i class="fa fa-circle-o"></i> Presupuesto vs Ingresos</a></li>
-            <?php } ?>
-            <!--TERMINA BOTTON REMATES -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '46'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="facturacion_saldos.php"){echo "active";}?>"><a class="click_modal_cargando" href="facturacion_saldos.php"><i class="fa fa-circle-o"></i> Facturacion X Semana</a></li>
-            <?php } ?>
-            <!--TERMINA remates BONIFICACIONES -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '54'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="indicadores_por_bonificacion.php"){echo "active";}?>"><a class="click_modal_cargando" href="indicadores_por_bonificacion.php"><i class="fa fa-circle-o"></i> Indice de Emision de Notas de Credito</a></li>
-            <?php } ?>
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '55'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="indicadores_por_error.php"){echo "active";}?>"><a class="click_modal_cargando" href="indicadores_por_error.php"><i class="fa fa-circle-o"></i> Indice de Cumplimiento en Facturación de Servicios</a></li>
-            <?php } ?>
-          </ul>
-        </li>
+            <?php include_once('m_administracion.php'); ?>
         <?php } ?>
       <!-- ****** TERMINA MENU DE ADMINISTRACION ****** -->
 
       <!-- ****** INICIA MENU DE COMERCIAL ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '7,16,17,44, 48'); if ($modulos_valida > 0){ ?>
-        <li class="<?php if($active=="comercial.php" || $active=="comp_ingre_clientes.php" || $active=="venta_promotor.php"|| $active == "habilitaciones_bodega.php"){echo "active";}?> treeview">
-          <a href="#">
-            <i class="fa fa-briefcase"></i> <span>Comercial</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <!-- BOTTON COMERCIAL -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '7'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="comercial.php"){echo "active";}?>"><a class="click_modal_cargando" href="comercial.php"><i class="fa fa-circle-o"></i> Prospectos</a></li>
-              <?php }//cierra if para ver modulo activado ?>
-            <!--TERMINA BOTTON COMERCIAL -->
-            <!-- BOTTON COMPARATIVO DE INGRESOS DE CLIENTES -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '16'); if ($modulos_valida > 0){ ?>
-              <li title="Comparativos ingresos de clientes" class="<?php if($active=="comp_ingre_clientes.php"){echo "active";}?>"><a class="click_modal_cargando" href="comp_ingre_clientes.php"><i class="fa fa-circle-o"></i> Compara Ingresos de clientes</a></li>
-              <?php }//cierra if para ver modulo activado ?>
-            <!--TERMINA BOTTON COMPARATIVO DE INGRESOS DE CLIENTES -->
-            <!-- BOTTON FACTURADO VS PRESUPUESTO PROMOTORES -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '17'); if ($modulos_valida > 0){ ?>
-              <li title="Facturado vs Presupuesto Promotores" class="<?php if($active=="venta_promotor.php"){echo "active";}?>"><a class="click_modal_cargando" href="venta_promotor.php"><i class="fa fa-circle-o"></i> Fac.VSPresupuesto Promo.</a></li>
-              <?php }//cierra if para ver modulo activado ?>
-              <!-- POR PLAZAS HABILITADAS -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '21'); if ($modulos_valida > 0){ ?>
-              <li title="Ingresos" class="<?php if($active=="habilitaciones_bodega.php"){echo "active";}?>"><a class="click_modal_cargando" href="habilitaciones_bodega.php"><i class="fa fa-circle-o"></i> Ingresos.</a></li>
-              <?php }//cierra if para ver modulo activado ?>
-            <!--TERMINA BOTTON FACTURADO VS PRESUPUESTO PROMOTORES -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '44'); if ($modulos_valida > 0){ ?>
-            <li title="Facturacion en clientes" class="<?php if($active=="informacionClientesPresupuesto.php"){echo "active";}?>"><a class="click_modal_cargando" href="informacionClientesPresupuesto.php"><i class="fa fa-circle-o"></i> Facturacion Clientes.</a></li>
-            <?php }//cierra if para ver modulo activado ?>
-            <!--TERMINA BOTTON FACTURADO VS PRESUPUESTO PROMOTORES -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '48'); if ($modulos_valida > 0){ ?>
-            <li title="Encuestas Realizadas" class="<?php if($active=="encuestas_realizadas.php"){echo "active";}?>"><a class="click_modal_cargando" href="encuestas_realizadas.php"><i class="fa fa-circle-o"></i> Encuestas Realizadas.</a></li>
-            <?php }//cierra if para ver modulo activado ?>
-
-          </ul>
-        </li>
+            <?php include_once('m_comercial.php'); ?>
         <?php } ?>
       <!-- ****** TERMINA MENU DE COMERCIAL ****** -->
 
       <!-- ****** INICIA MENU DE COMERCIO EXTERIOR ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '8,9,24,25,34,35,36'); if ($modulos_valida > 0){ ?>
-        <li class="<?php if($active=="cartas_cupo.php"||$active=="pedimentos.php"){echo "active";}?> treeview">
-          <a href="#">
-            <i class="fa fa-ship"></i> <span>Comercio exterior</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <!-- BOTTON CARTAS CUPO -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '8'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="cartas_cupo.php"){echo "active";}?>"><a class="click_modal_cargando" href="cartas_cupo.php"><i class="fa fa-circle-o"></i> Cartas cupo</a></li>
-            <?php } ?>
-            <!--TERMINA BOTTON CARTAS CUPO -->
-            <!-- BOTTON PEDIMENTOS-->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '9'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="pedimentos.php"){echo "active";}?>"><a class="click_modal_cargando" href="pedimentos.php"><i class="fa fa-circle-o"></i> Pedimentos</a></li>
-            <?php } ?>
-            <!--TERMINA BOTTON PEDIMENTOS-->
-            <!--CARTAS CUPO -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '24'); if ($modulos_valida > 0){ ?>
-                <li class="<?php if($active=="cartas_cupo_anuales.php"){echo "active";}?>"><a class="click_modal_cargando" href="cartas_cupo_anuales.php"><i class="fa fa-circle-o"></i> Cartas Cupo Por Año</a></li>
-              <?php } ?>
-            <!--CARTAS CUPO -->
-            <!--CARTAS CUPO -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '25'); if ($modulos_valida > 0){ ?>
-                <li class="<?php if($active=="pedimentos_anuales.php"){echo "active";}?>"><a class="click_modal_cargando" href="pedimentos_anuales.php"><i class="fa fa-circle-o"></i> Pedimentos Por Año</a></li>
-              <?php } ?>
-            <!--CARTAS CUPO -->
-
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '39'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if ($active == "cartas_cupo_anuales_crossdock.php"){echo "active";} ?>"><a class="click_modal_cargando" href="cartas_cupo_anuales_crossdock.php"><i class="fa fa-circle-o"></i> Cartas Cupo CrossDock </a></li>
-            <?php } ?>
-
-          </ul>
-        </li>
+            <?php include_once('m_comercio_exterior.php'); ?>
         <?php } ?>
       <!-- ****** TERMINA MENU DE COMERCIO EXTERIOR ****** -->
+
       <!-- ******** INICIA MENU DE SGC ******** -->
        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '56'); if ($modulos_valida > 0){ ?>
-       <li class="<?php if($active=="sgc.php"||$active=="notificaciones.php"||$active=="upload_minuta.php"){echo "active";}?> treeview" title="SISTEMA DE GESTION DE CALIDAD">
-         <a href="#">
-           <i class="fa fa-line-chart"></i> <span>Sistema de Gestion de Calidad</span>
-           <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-         </a>
-         <ul class="treeview-menu">
-           <!-- BOTTON CONTROL DE SACP -->
-           <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '56'); if ($modulos_valida > 0){ ?>
-           <li class="<?php if($active=="sgc.php"||$active=="upload_minuta.php"){echo "active";}?>"><a class="click_modal_cargando" href="sgc.php"><i class="fa fa-circle-o"></i> SACP</a></li>
-           <?php } ?>
-         </ul>
-       </li>
+            <?php include_once('m_sgc.php'); ?>
        <?php } ?>
     <!-- ******** TERMINA MENU DE SGC ******** -->
 
       <!-- ****** INICIA MENU DE SISTEMAS ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '1,2,50'); if ($modulos_valida > 0){ ?>
-        <li class="<?php if($active=="tic.php"||$active=="notificaciones.php"||$active=="upload_minuta.php"){echo "active";}?> treeview" title="TECNOLOGÍAS DE LA INFORMACIÓN">
-          <a href="#">
-            <i class="fa fa-laptop"></i> <span>Tecnologías De la Información</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <!-- BOTTON CONTROL DE PROYECTOS -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '1'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="tic.php"||$active=="upload_minuta.php"){echo "active";}?>"><a class="click_modal_cargando" href="tic.php"><i class="fa fa-circle-o"></i> Control de Proyectos</a></li>
-            <?php } ?>
-          </ul>
-          <ul class="treeview-menu" style="display:none;">
-            <!-- BOTTON CONTROL DE PROYECTOS -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '50'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="Mttos_Tics.php"||$active=="Mttos_Tics.php"){echo "active";}?>"><a class="click_modal_cargando" href="Mttos_Tics.php"><i class="fa fa-circle-o"></i> Control de Mttos</a></li>
-            <?php } ?>
-          </ul>
-        </li>
+            <?php include_once('m_tics.php'); ?>
         <?php } ?>
       <!-- ****** TERMINA MENU DE SISTEMAS ****** -->
 
 
       <!-- ****** INICIA MENU DE TALENTO HUMANO ****** -->
-        <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19,20,22,23,31,52,57'); if ($modulos_valida > 0){ ?>
-        <li class="<?php if($active=="rotacion_personal.php" || $active=="nomina_pagada.php" ){echo "active";}?> treeview">
-          <a href="#">
-            <i class="fa fa-users"></i> <span>Talento Humano</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <!-- BOTTON LISTA PERSONAL -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="lista_Personal.php"){echo "active";}?>"><a class="click_modal_cargando" href="lista_Personal.php"><i class="fa fa-circle-o"></i> Lista de Personal</a>
-            </li>
-            <?php } ?>
-              <!-- BOTTON ROTACION DE PERSONAL -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="rotacion_personal.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal.php"><i class="fa fa-circle-o"></i> Rotación de Personal(Quincenal)</a>
-            </li>
-            <?php } ?>
-            <!--TERMINA BOTTON ROTACION DE PERSONAL -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="rotacion_personal_semana_quincena.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal_semana_quincena.php"><i class="fa fa-circle-o"></i> Rotación de Personal (Semanal)</a>
-            </li>
-            <?php } ?>
-            <!--INICIA BOTTON ROTACION DE PERSONAL DETALLE GENERAL-->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '57'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="rotacion_personal_gral.php"){echo "active";}?>"><a class="click_modal_cargando" href="rotacion_personal_gral.php"><i class="fa fa-circle-o"></i> Rotación de Personal (Detalle Gral.)</a>
-            </li>
-            <?php } ?>
-            <!-- BOTTON OMINA PAGADA -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '20'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="nomina_pagada.php"){echo "active";}?>"><a class="click_modal_cargando" href="nomina_pagada.php"><i class="fa fa-circle-o"></i> Nomina Pagada</a></li>
-            <?php } ?>
-            <!--TERMINA BOTTON OMINA PAGADA -->
-            <!-- Faltas -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '22'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if($active=="dias_descansados.php"){echo "active";}?>"><a class="click_modal_cargando" href="dias_descansados.php"><i class="fa fa-circle-o"></i> Faltas Por Ausentismo/Prestaciones</a></li>
-            <?php } ?>
-              <!-- Faltas -->
-              <!--tiempo extra -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '23'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="tiempo_extra.php"){echo "active";}?>"><a class="click_modal_cargando" href="tiempo_extra.php"><i class="fa fa-circle-o"></i> Tiempo extra</a></li>
-              <?php } ?>
-              <!--tiempo extra -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '23'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="riesgo.php"){echo "active";}?>"><a class="click_modal_cargando" href="riesgo.php"><i class="fa fa-circle-o"></i> Prima de riesgo</a></li>
-              <?php } ?>
-              <!-- cursos -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '31'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="rh_cat_cursos.php"){echo "active";}?>"><a class="click_modal_cargando" href="rh_cat_cursos.php"><i class="fa fa-circle-o"></i> Capacitación</a></li>
-              <?php } ?>
-              <!-- Finiquitos -->
-              <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '52'); if ($modulos_valida > 0){ ?>
-              <li class="<?php if($active=="finiquitos_RH.php"){echo "active";}?>"><a class="click_modal_cargando" href="finiquitos_RH.php"><i class="fa fa-circle-o"></i> Finiquitos</a></li>
-              <?php } ?>
-          </ul>
-        </li>
+      <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '19,20,22,23,31,52,57'); if ($modulos_valida > 0){ ?>
+            <?php include_once('m_talento_humano.php'); ?>
       <?php } ?>
       <!-- ****** TERMINA MENU DE TALENTO HUMANO ****** -->
 
       <!-- ****** INICIA MENU DE OPERACIONES ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
-        <li class="<?php if ($active == "rack.php" || $active == "manufactura.php"||$active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?> treeview">
-          <a href="#">
-            <i class="fa fa-truck"></i> <span>Operaciones</span>
-            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-          </a>
-          <ul class="treeview-menu">
-            <!--TERMINA BOTTON MANUFACTURA -->
-            <!-- BOTTON AGRONEGOCIOS -->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if ($active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?>" style="<?=$visible ?>">
-              <a href="#"><i class="fa fa-circle-o"></i> AGRONEGOCIOS
-                <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-              </a>
-              <ul class="treeview-menu">
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6'); if ($modulos_valida > 0){ ?>
-                <li class="<?php if ($active == "agronegocios.php"){echo "active";} ?>"><a class="click_modal_cargando" href="agronegocios.php"><i class="fa fa-circle-o"></i> VEHÍCULOS AGRONEGOCIOS</a></li>
-                <?php } ?>
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '53'); if ($modulos_valida > 0){ ?>
-                <li class="<?php if ($active == "agronegocios_capbodega.php"){echo "active";} ?>"><a class="click_modal_cargando" href="agronegocios_capbodega.php"><i class="fa fa-circle-o"></i> CAPACIDAD DESCARGA/CARGA</a></li>
-                  <?php } ?>
-                <!--aZUCAr-->
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '29'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "detalles_azucar.php"){echo "active";} ?>"><a class="click_modal_cargando" href="detalles_azucar.php"><i class="fa fa-circle-o"></i> RESUMEN AZÚCAR</a></li>
-                <?php } ?>
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '32'); if ($modulos_valida > 0){ ?>
-                <li>
-                  <a href="#"><i class="fa fa-circle-o"></i> GRAFICAS AZUCAR
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                  </a>
-                  <ul class="treeview-menu">
-                    <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '32'); if ($modulos_valida > 0){ ?>
-                      <li class="<?php if ($active == "azucar_x_anio.php"){echo "active";} ?>"><a class="click_modal_cargando" href="azucar_x_anio.php"><i class="fa fa-circle-o"></i> GRAFICAS DIR. GRAL.</a></li>
-                    <?php } ?>
-                    <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '32'); if ($modulos_valida > 0){ ?>
-                      <li class="<?php if ($active == "azucar_x_anio2.php"){echo "active";} ?>"><a class="click_modal_cargando" href="azucar_x_anio2.php"><i class="fa fa-circle-o"></i> GRAFICAS AZUCAR</a></li>
-                    <?php } ?>
-                  </ul>
-                </li>
-                <?php } ?>
-                <!--granel-->
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '30'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "detalles_granos.php"){echo "active";} ?>"><a class="click_modal_cargando" href="detalles_granos.php"><i class="fa fa-circle-o"></i> RESUMEN GRANOS</a></li>
-                <?php } ?>
-                <!--Ubicacion de embarques -->
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '38'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "mapas_operaciones.php"){echo "active";} ?>"><a class="click_modal_cargando" href="mapas_operaciones.php"><i class="fa fa-circle-o"></i> BUQUES</a></li>
-                <?php } ?>
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '40'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "tabla_ocupacion.php"){echo "active";} ?>"><a class="click_modal_cargando" href="tabla_ocupacion.php"><i class="fa fa-circle-o"></i> M2 EN ALMACEN</a></li>
-                <?php } ?>
-                <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '43'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "temperatura_Granos.php"){echo "active";} ?>"><a class="click_modal_cargando" href="temperatura_Granos.php"><i class="fa fa-circle-o"></i> CALIDAD GRANOS</a></li>
-                <?php } ?>
-              </ul>
-            </li>
-            <?php } ?>
-            <!--Manufactura-->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '5, 27, 28, 18, 45'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if ($active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?>">
-              <a href="#"><i class="fa fa-circle-o"></i> MANUFACTURA
-                <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-                <ul class="treeview-menu">
-                  <!-- BOTTON MANUFACTURA -->
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '5'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "manufactura.php"){echo "active";} ?>"><a class="click_modal_cargando" href="manufactura.php"><i class="fa fa-circle-o"></i>  VEHÍCULOS MANUFACTURA</a></li>
-                  <?php } ?>
-                  <!--Boton Costos-->
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '27'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "Gastos_Maquinaria.php"){echo "active";} ?>"><a class="click_modal_cargando" href="Gastos_Maquinaria.php"><i class="fa fa-circle-o"></i>  COSTOS</a></li>
-                  <?php } ?>
-                  <!--  ocupacion -->
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '28'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "calculo_Ocupacion.php"){echo "active";} ?>"><a class="click_modal_cargando" href="calculo_Ocupacion.php"><i class="fa fa-circle-o"></i>  OCUPACIÓN DE ALMACEN</a></li>
-                  <?php } ?>
-                  <!-- BOTTON UBICACIÓN DE MERCANCÍA -->
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '18'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "rack.php"){echo "active";} ?>"><a class="click_modal_cargando" href="rack.php"><i class="fa fa-circle-o"></i>  UBICACIÓN DE MERCANCÍA</a></li>
-                  <?php } ?>
-                  <!-- INFORMACION VIAS -->
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '45'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "vias_Informacion.php"){echo "active";} ?>"><a class="click_modal_cargando" href="vias_Informacion.php"><i class="fa fa-circle-o"></i>  INFORMACION DE VIAS</a></li>
-                  <?php } ?>
-
-                </ul>
-              </a>
-            </li>
-            <?php } ?>
-
-            <!--OPERACIONES ALO-->
-            <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '34,36,41,42,47,49');
-                  $modulos_valida2 = Perfil::modulos_valida($iid_empleado, '47'); if ($modulos_valida > 0){ ?>
-            <li class="<?php if ($active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?>">
-              <a href="#"><i class="fa fa-circle-o"></i> OPERACIONES ALO
-                <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-                <ul class="treeview-menu">
-
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '34'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "piezas_danadas.php"){echo "active";} ?>"><a class="click_modal_cargando" href="piezas_danadas.php"><i class="fa fa-circle-o"></i> Mercancia No Conforme</a></li>
-                  <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '36'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "errores_captura.php"){echo "active";} ?>"><a class="click_modal_cargando" href="errores_captura.php"><i class="fa fa-circle-o"></i> Errores Captura </a></li>
-                  <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '41'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "operaciones_manufactura_alo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="operaciones_manufactura_alo.php"><i class="fa fa-circle-o"></i> Efectividad Carga y Descarga (ALO)</a></li>
-                  <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '42'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "OcupacionClienteAlo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="OcupacionClienteAlo.php"><i class="fa fa-circle-o"></i> Tiempo De Mercancia En Almacen (ALO)</a></li>
-                  <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '42'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "CalculoOcupacionAlo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="CalculoOcupacionAlo.php"><i class="fa fa-circle-o"></i>  OcupaciÓn De Almacen (ALO)</a></li>
-                  <?php } ?>
-                  <!-- REPORTE ALO -->
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '47'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "reporte_alo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="reporte_alo.php"><i class="fa fa-circle-o"></i>  REPORTE (ALO)</a></li>
-                  <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '49'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "Contenedores_Pendientes_ALO.php"){echo "active";} ?>"><a class="click_modal_cargando" href="Contenedores_Pendientes_ALO.php"><i class="fa fa-circle-o"></i>  REPORTE CONTENEDORES PENDIENTES/ASIGNADOS (ALO)</a></li>
-                  <?php } ?>
-                  <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '51'); if ($modulos_valida > 0){ ?>
-                  <li class="<?php if ($active == "rackAlo.php"){echo "active";} ?>"><a class="click_modal_cargando" href="rackAlo.php"><i class="fa fa-circle-o"></i> REPORTE UBICACIONES (ALO)</a></li>
-                  <?php } ?>
-                </ul>
-              </a>
-            </li>
-            <?php } ?>
-
-
-            <!--TERMINA BOTTON AGRONEGOCIOS -->
-          </ul>
-        </li>
+            <?php include_once('m_operaciones.php'); ?>                        
         <?php } ?>
       <!-- ****** TERMINA MENU DE OPERACIONES ****** -->
 

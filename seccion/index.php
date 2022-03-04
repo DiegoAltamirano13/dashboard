@@ -58,10 +58,14 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
   $nom_plaza = $_SESSION['nomPlaza'];
 
+
+
   if($nom_plaza=='CÓRDOBA' || $nom_plaza=='CORPORATIVO' || $nom_plaza=='ALL'){
     $visible = "display: ";
+  }elseif ($nom_plaza =='BAJIO' || $nom_plaza == 'PUEBLA') {
+    $visible = "display: " ;
   }else {
-    $visible= "display: none";
+    $visible= "display: none;";
   }
   //echo $visible;
 
@@ -808,7 +812,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 41); if($modulos_valida > 0){ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/cap_bodegas.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
@@ -894,7 +898,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 34); if($modulos_valida > 0){ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/mercancia_danada.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
@@ -911,7 +915,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 41); if($modulos_valida > 0){ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/efectividad_icon.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
@@ -928,7 +932,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 42); if($modulos_valida > 0){ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/tabla_ocupacion.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
@@ -945,7 +949,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 36); if($modulos_valida > 0){
                     /*v traslado op_in_vehiculos_recibidos*/ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/correccion_icon.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
@@ -1101,7 +1105,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 47); if($modulos_valida > 0){ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/rack.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
@@ -1117,7 +1121,7 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
                   <?php } ?>
 
                   <?php $modulos_valida = $instacia_modulo->modulos_valida($iid_empleado, 49); if($modulos_valida > 0){ ?>
-                  <div class="col-md-3 col-sm-6 col-xs-12">
+                  <div class="col-md-3 col-sm-6 col-xs-12" style="<?= $visible ?>">
                     <div style="background-color:#D9EDF7" class="info-box">
                       <span style="background-color:#D9EDF7" class="info-box-icon"><img class="img-circle" src="../dist/img/modulos/alo_container.png" alt="Icono Modulo"></span>
                       <div class="info-box-content">
