@@ -153,15 +153,15 @@ $activa_intro_index = $_SESSION["activa_intro_index"];
       <?php } ?>
       <ol class="breadcrumb">
         <li data-intro="Botón para activar la guía de ayuda" class="intro-lead-in">
-        <a href="javascript:void(0)" onclick="tutorial_modal();" class="page-scroll btn btn-xl"><i class="ion-chatbubble-working">Tutorial</i></a>
+        <!--<a href="javascript:void(0)" onclick="tutorial_modal();" class="page-scroll btn btn-xl"><i class="ion-chatbubble-working">Tutorial</i></a>
         </li>
-        <li data-intro="Clic aquí para desactivar o activar el mensaje de guía de ayuda al cargar la pagina">
+        <li data-intro="Clic aquí para desactivar o activar el mensaje de guía de ayuda al cargar la pagina">-->
         <form action="index.php" method="post">
         <?php
         if ($activa_intro_index == false){
-          echo '<button class="btn btn-link btn-xs click_modal_cargando" type="submit" name="activa_intro_index" value="1"><i class="ion-android-done-all">Desactivar</i></button>';
+          //echo '<button class="btn btn-link btn-xs click_modal_cargando" type="submit" name="activa_intro_index" value="1"><i class="ion-android-done-all">Desactivar</i></button>';
         }else{
-          echo '<button class="btn btn-link btn-xs click_modal_cargando" type="submit" name="activa_intro_index" value=""><i class="ion-android-done">Activar</i></button>';
+          //echo '<button class="btn btn-link btn-xs click_modal_cargando" type="submit" name="activa_intro_index" value=""><i class="ion-android-done">Activar</i></button>';
         }
         ?>
         </form>
