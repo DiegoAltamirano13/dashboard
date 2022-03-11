@@ -95,7 +95,7 @@
     <!--OPERACIONES ALO-->
     <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '34,36,41,42,47,49');
           $modulos_valida2 = Perfil::modulos_valida($iid_empleado, '47'); if ($modulos_valida > 0){ ?>
-    <li class="<?php if ($active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?>" style="<?= $visible ?>">
+    <li class="<?php if ($active == "agronegocios.php"||$active == "agronegocios_capbodega.php"){echo "active";} ?>" style="<?= $visible2 ?>">
       <a href="#"><i class="fa fa-circle-o"></i> OPERACIONES ALO
         <span class="pull-right-container">
           <i class="fa fa-angle-left pull-right"></i>

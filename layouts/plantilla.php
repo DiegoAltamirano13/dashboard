@@ -16,14 +16,18 @@ $class_active = $_SESSION['modulo_actual'];
 @$active = array_pop(explode('/', $_SERVER['PHP_SELF']));
 
  $nom_plazaLayout = $_SESSION['nomPlaza'];
+ $visible2="";
 
 if($nom_plazaLayout=='CÓRDOBA' || $nom_plazaLayout=='CORPORATIVO' || $nom_plazaLayout=='ALL'){
   $visible = "display: ";
+  $visible2= "display: ";
 }elseif ($nom_plazaLayout=='BAJIO' || $nom_plazaLayout=='PUEBLA' ) {
-  $visible = "display: ";
+  $visible = "display: none";
+  $visible2 = "display: ";
 }
 else {
   $visible= "display: none";
+  $visible2= "display: none";
 }
 //echo $visible;
 
@@ -246,7 +250,7 @@ else {
 
       <!-- ****** INICIA MENU DE OPERACIONES ****** -->
         <?php $modulos_valida = Perfil::modulos_valida($iid_empleado, '6, 29, 32, 30, 38, 40, 43, 5, 27, 28, 18, 45,34,36,41,42,47,49'); if ($modulos_valida > 0){ ?>
-            <?php include_once('m_operaciones.php'); ?>                        
+            <?php include_once('m_operaciones.php'); ?>
         <?php } ?>
       <!-- ****** TERMINA MENU DE OPERACIONES ****** -->
 
