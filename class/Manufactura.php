@@ -579,7 +579,7 @@ class Op_in_car_des_info
 		$union_Noreste = "";
 		$union_Leon = "";
 
-		$STATUS_PROGRAMADOS = "  AND CARGAS.N_STATUS = 1";
+		$STATUS_PROGRAMADOS = "  AND CARGAS.N_STATUS IN(0, 1)";
 		$arrayReal =array("Val"=>$select_manufac_global_plaza);
 
 		$arrayCount = count($select_manufac_global_plaza);

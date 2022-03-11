@@ -2180,8 +2180,8 @@ $contador_descargas=0;
                   <td class="small"><?= $info_manufac_car_des[$i]["CANTIDAD"] ?></td>
                   <td class="small"><?= $info_manufac_car_des[$i]["ALMACENISTA_N"]." ".$info_manufac_car_des[$i]["ALMACENISTA_P"]." ".$info_manufac_car_des[$i]["ALMACENISTA_M"] ?></td>
                   <td class="small">
-                    <a class="fancybox fancybox.iframe" href="manufactura_det_retarr.php?almacen=<?= $info_manufac_car_des[$i]["ALMACEN_ID"] ?>&arribo=<?= $info_manufac_car_des[$i]["ARRIBO"] ?>">
-                    <span class="badge bg-teal btn"><i class="fa fa-truck"></i> <?= $info_manufac_car_des[$i]["ARRIBO"] ?></span>
+                    <a class="fancybox fancybox.iframe" href="manufactura_det_retarr.php?almacen=<?= $info_manufac_car_des[$i]["ALMACEN_ID"] ?>&arribo=<?= $info_manufac_car_des[$i]["SOLICITUD"] ?>">
+                    <span class="badge bg-teal btn"><i class="fa fa-truck"></i> <?= $info_manufac_car_des[$i]["SOLICITUD"] ?></span>
                     </a>
                   </td>
                   <?php
